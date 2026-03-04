@@ -1,0 +1,16 @@
+{
+  "buildCommand": "bundle exec jekyll build",
+  "outputDirectory": "_site",
+  "installCommand": "bundle install",
+  "functions": {
+    "netlify/functions/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/netlify/functions/:path*"
+    }
+  ]
+}
