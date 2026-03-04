@@ -1,0 +1,57 @@
+<div class="sidebar-sticky">
+
+  <div class="widget newsletter-widget">
+    {% include newsletter.html %}
+  </div>
+
+  {% if include.context == 'post' %}
+  <div class="widget share-widget">
+    <h4>📤 Quick Share</h4>
+    <div class="share-mini">
+      <a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ page.url | absolute_url | url_encode }}" target="_blank" class="share-icon">𝕏</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | absolute_url | url_encode }}" target="_blank" class="share-icon">f</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ page.url | absolute_url | url_encode }}" target="_blank" class="share-icon">in</a>
+      <button class="share-icon" onclick="copyToClipboard('{{ page.url | absolute_url }}')">📋</button>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="widget trending-widget">
+    <h4>🔥 Trending Now</h4>
+    <div class="trending-list" id="trending-sidebar">
+      <div class="trending-item"><a href="#">Loading...</a></div>
+    </div>
+  </div>
+
+  <div class="widget categories-widget">
+    <h4>🏷️ Topics</h4>
+    <div class="tag-cloud">
+      <a href="/category/online-business" class="tag">💰 Online Business</a>
+      <a href="/category/ai-news" class="tag">🤖 AI</a>
+      <a href="/category/finance" class="tag">📈 Finance</a>
+      <a href="/category/tech-skills" class="tag">💻 Coding</a>
+      <a href="/category/wealth" class="tag">🏆 Wealth</a>
+      <a href="/category/viral" class="tag">🔥 Viral</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+async function loadTrendingPosts() {
+  const { data } = await supabase
+    .from('posts')
+    .select('title, slug, like_count')
+    .eq('is_published', true)
+    .order('like_count', { ascending: false })
+    .limit(5);
+  if (!data) return;
+  const el = document.getElementById('trending-sidebar');
+  if (el) el.innerHTML = data.map(p => `
+    <div class="trending-item">
+      <a href="/${p.slug}">${p.title}</a>
+      <span class="trend-meta">❤️ ${p.like_count || 0}</span>
+    </div>`).join('');
+}
+document.addEventListener('DOMContentLoaded', loadTrendingPosts);
+</script>
