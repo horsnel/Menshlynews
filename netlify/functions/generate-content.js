@@ -1,88 +1,56 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// 1. PRE-FLIGHT SAFETY CHECK
-// This prevents the "Silent 500" by checking your Netlify variables immediately.
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error("CRITICAL ERROR: Supabase environment variables are MISSING in Netlify settings.");
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 exports.handler = async (event) => {
-  console.log("--- [START] Automation Triggered ---");
-
-  // 2. AUTHENTICATION CHECK
-  const authHeader = event.headers.authorization;
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  
-  if (event.httpMethod === 'POST' && authHeader !== expectedAuth) {
-    console.error("AUTH FAILURE: The Bearer token from Cron-job.org does not match Netlify's CRON_SECRET.");
+  const auth = event.headers.authorization;
+  if (event.httpMethod === 'POST' && auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return { statusCode: 401, body: 'Unauthorized' };
   }
 
   try {
-    // 3. FETCH NEWS
-    console.log("Step 1: Fetching trending AI/Finance news...");
     const newsRes = await fetch(
       `https://newsapi.org/v2/everything?q=AI+finance+online+business&sortBy=relevancy&pageSize=10&language=en&apiKey=${process.env.NEWSAPI_KEY}`
     );
     const newsData = await newsRes.json();
+    if (!newsData.articles?.length) throw new Error('No articles found');
 
-    if (!newsData.articles?.length) {
-      throw new Error('NewsAPI returned 0 articles. Check your API key or query terms.');
-    }
-
-    // 4. GENERATE CONTENT VIA GROQ
-    console.log("Step 2: Sending data to Groq (Model: llama-3.3-70b-versatile)...");
     const post = await generateBlogPost(newsData.articles.slice(0, 5));
-    console.log("Step 3: AI Generation Success. Title:", post.title);
 
-    // 5. INSERT INTO SUPABASE
-    console.log("Step 4: Attempting Supabase Insert...");
+    // MATCHING YOUR SQL SCHEMA EXACTLY
     const { data, error } = await supabase.from('posts').insert([{
       slug: generateSlug(post.title),
       title: post.title,
       content: post.content,
       excerpt: post.excerpt,
-      category: post.category || 'AI News',
+      category: post.category || 'Finance',
       tags: post.tags || [],
-      meta_description: post.metaDescription, // Ensure this matches your DB column exactly!
+      author_name: 'Horsnel John', // Matches your SQL default
+      tldr: post.tldr || [],       // Added to match your SQL
+      takeaways: post.takeaways || [], // Added to match your SQL
+      meta_description: post.metaDescription,
       keywords: post.keywords || [],
-      is_published: true,
+      is_published: true,          // SET TO TRUE so the Policy allows it to be seen
       published_at: new Date().toISOString()
     }]).select();
 
     if (error) {
-      // If Supabase rejects it, this prints the EXACT reason (e.g., "duplicate slug" or "missing column")
-      console.error("SUPABASE REJECTION DETAILS:", JSON.stringify(error, null, 2));
-      throw new Error(`Database Error: ${error.message}`);
+      console.error("SUPABASE ERROR:", JSON.stringify(error, null, 2));
+      throw error;
     }
 
-    console.log("--- [SUCCESS] Post Published! ---");
-    return { 
-      statusCode: 200, 
-      body: JSON.stringify({ success: true, slug: data[0].slug }) 
-    };
-
+    return { statusCode: 200, body: JSON.stringify({ success: true, post: data[0] }) };
   } catch (error) {
-    console.error("FUNCTION CRASHED:", error.message);
-    return { 
-      statusCode: 500, 
-      body: JSON.stringify({ error: error.message }) 
-    };
+    console.error("CRASH:", error.message);
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };
 
 async function generateBlogPost(articles) {
   const articlesText = articles.map(a => `• ${a.title}: ${a.description || ''}`).join('\n');
 
-  const prompt = `You are Horsnel John, a finance and business expert. Write a high-quality blog post in Markdown based on these topics:
-${articlesText}
-
-Return ONLY a valid JSON object with these fields: title, excerpt, content, category, tags (array), metaDescription, keywords (array).`;
+  const prompt = `You are Horsnel John, a finance expert. Write a blog post based on: ${articlesText}.
+  Return ONLY JSON with: title, excerpt, content (markdown), category, tags (array), tldr (array of 3 points), takeaways (array of 3 points), metaDescription, keywords (array).`;
 
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -91,25 +59,16 @@ Return ONLY a valid JSON object with these fields: title, excerpt, content, cate
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile', // The current active high-end model
+      model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
-      max_tokens: 3000,
-      response_format: { type: "json_object" } // Forces Groq to return clean JSON (no intro text)
+      response_format: { type: "json_object" }
     })
   });
 
   const data = await res.json();
-  if (data.error) throw new Error(`Groq API Error: ${data.error.message}`);
-
-  const content = data.choices[0].message.content;
-  return JSON.parse(content);
+  return JSON.parse(data.choices[0].message.content);
 }
 
 function generateSlug(title) {
-  return title.toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .substring(0, 60) + '-' + Date.now().toString(36);
+  return title.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-').substring(0, 60) + '-' + Date.now().toString(36);
 }
