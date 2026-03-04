@@ -1,0 +1,53 @@
+<header class="site-header" id="header">
+  <div class="container">
+    <div class="header-inner">
+
+      <a href="/" class="logo">
+        <div class="logo-text">
+          <span class="logo-main">Menshly</span><span class="logo-sub">news</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" id="main-nav">
+        <ul class="nav-list">
+          <li><a href="/" class="nav-link {% if page.url == '/' %}active{% endif %}">Home</a></li>
+          <li class="has-dropdown">
+            <a href="#" class="nav-link">Categories</a>
+            <ul class="dropdown">
+              <li><a href="/category/online-business">💰 Online Business</a></li>
+              <li><a href="/category/ai-news">🤖 AI News</a></li>
+              <li><a href="/category/finance">📈 Finance</a></li>
+              <li><a href="/category/tech-skills">💻 Tech Skills</a></li>
+              <li><a href="/category/wealth">🏆 Wealth</a></li>
+              <li><a href="/category/viral">🔥 Viral</a></li>
+            </ul>
+          </li>
+          <li><a href="/about" class="nav-link">About</a></li>
+          <li><a href="/subscribe" class="nav-link nav-cta">Subscribe</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle">🌙</button>
+        <button class="mobile-menu-toggle" aria-label="Menu" id="mobile-menu-toggle">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/category/online-business">💰 Online Business</a></li>
+      <li><a href="/category/ai-news">🤖 AI News</a></li>
+      <li><a href="/category/finance">📈 Finance</a></li>
+      <li><a href="/category/tech-skills">💻 Tech Skills</a></li>
+      <li><a href="/category/wealth">🏆 Wealth</a></li>
+      <li><a href="/category/viral">🔥 Viral</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/subscribe">Subscribe</a></li>
+    </ul>
+  </div>
+</header>
