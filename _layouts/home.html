@@ -1,0 +1,147 @@
+---
+layout: default
+---
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="pulse">●</span> AI-Generated Daily at 8 AM UTC</div>
+      <h1 class="hero-title">AI-Powered Intelligence for the <span class="highlight">Modern Hustler</span></h1>
+      <p class="hero-description">Online business strategies, AI breakthroughs, finance news, and wealth creation tactics. Curated by AI, delivered daily, 100% free.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-number" data-count="1247">0</span><span class="stat-label">Articles Published</span></div>
+        <div class="stat"><span class="stat-number" data-count="50">0</span><span class="stat-label">K+ Monthly Readers</span></div>
+        <div class="stat"><span class="stat-number">$0</span><span class="stat-label">Operating Cost</span></div>
+      </div>
+      <div class="hero-cta">
+        <a href="#latest-posts" class="btn btn-primary">Start Reading</a>
+        <a href="/subscribe" class="btn btn-secondary">Join Newsletter</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floating-cards">
+        <div class="float-card" style="--delay: 0s">💰 Online Business</div>
+        <div class="float-card" style="--delay: 0.2s">🤖 AI News</div>
+        <div class="float-card" style="--delay: 0.4s">📈 Finance</div>
+        <div class="float-card" style="--delay: 0.6s">🔥 Viral Trends</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="category-pills">
+  <div class="container">
+    <div class="pills-wrapper">
+      <a href="/" class="pill active">All</a>
+      <a href="/category/online-business" class="pill">💰 Online Business</a>
+      <a href="/category/ai-news" class="pill">🤖 AI News</a>
+      <a href="/category/finance" class="pill">📈 Finance</a>
+      <a href="/category/tech-skills" class="pill">💻 Tech Skills</a>
+      <a href="/category/wealth" class="pill">🏆 Wealth</a>
+      <a href="/category/viral" class="pill">🔥 Viral</a>
+    </div>
+  </div>
+</section>
+
+<section class="main-content" id="latest-posts">
+  <div class="container">
+    <div class="content-grid">
+      <div class="posts-feed">
+        <div class="section-header">
+          <h2>🔥 Latest Intelligence</h2>
+          <div class="view-toggle">
+            <button class="toggle-btn active" data-view="grid">Grid</button>
+            <button class="toggle-btn" data-view="list">List</button>
+          </div>
+        </div>
+        <div class="posts-container grid-view" id="posts-container">
+          <div class="loading-message">Loading intelligence...</div>
+        </div>
+        <button class="load-more-btn" id="load-more" style="display: none;">Load More Intelligence</button>
+      </div>
+      <aside class="home-sidebar">{% include sidebar.html context="home" %}</aside>
+    </div>
+  </div>
+</section>
+
+<script>
+let currentPage = 1;
+
+async function loadPosts(page = 1) {
+  const container = document.getElementById('posts-container');
+  if (page === 1) container.innerHTML = '<div class="loading-message">Loading...</div>';
+
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('is_published', true)
+    .order('published_at', { ascending: false })
+    .range((page - 1) * 12, page * 12 - 1);
+
+  if (error) { container.innerHTML = '<p>Error loading posts.</p>'; return; }
+  if (page === 1) container.innerHTML = '';
+  renderPosts(posts);
+
+  const btn = document.getElementById('load-more');
+  btn.style.display = posts.length === 12 ? 'block' : 'none';
+}
+
+function renderPosts(posts) {
+  const container = document.getElementById('posts-container');
+  posts.forEach(post => {
+    const card = document.createElement('article');
+    card.className = 'post-card';
+    card.innerHTML = `
+      <a href="/${post.slug}" class="card-link">
+        <div class="card-image">
+          ${post.featured_image
+            ? `<img src="${post.featured_image}" alt="${post.title}" loading="lazy">`
+            : `<div class="placeholder-image"></div>`}
+          <span class="card-category">${post.category}</span>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">${post.title}</h3>
+          <p class="card-excerpt">${(post.excerpt || post.content || '').substring(0, 150)}...</p>
+          <div class="card-meta">
+            <span class="card-date">${new Date(post.published_at).toLocaleDateString()}</span>
+            <span class="card-likes">❤️ ${post.like_count || 0}</span>
+          </div>
+        </div>
+      </a>`;
+    container.appendChild(card);
+  });
+}
+
+document.getElementById('load-more').addEventListener('click', () => {
+  currentPage++;
+  loadPosts(currentPage);
+});
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const container = document.getElementById('posts-container');
+    container.className = 'posts-container ' + btn.dataset.view + '-view';
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadPosts();
+  animateStats();
+});
+
+function animateStats() {
+  document.querySelectorAll('.stat-number[data-count]').forEach(stat => {
+    const target = parseInt(stat.dataset.count);
+    if (!target) return;
+    let current = 0;
+    const step = target / 80;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      stat.textContent = Math.floor(current).toLocaleString() + (stat.dataset.count === '50' ? 'K+' : '');
+      if (current >= target) clearInterval(timer);
+    }, 16);
+  });
+}
+</script>
