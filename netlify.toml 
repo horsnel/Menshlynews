@@ -1,6 +1,10 @@
 [build]
   command = "bundle exec jekyll build"
   publish = "_site"
+  
+  # ADD THIS: Skip slow post-processing
+  [build.processing]
+    skip_processing = true
 
 [build.environment]
   JEKYLL_ENV = "production"
@@ -9,6 +13,9 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  
+  # ADD THIS: Don't bundle Supabase (smaller function)
+  external_node_modules = ["@supabase/supabase-js"]
 
 [[redirects]]
   from = "/api/*"
