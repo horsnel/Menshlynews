@@ -1,0 +1,9 @@
+{
+  "name": "menshlynews",
+  "version": "1.0.0",
+  "description": "AI-Powered Intelligence for the Modern Hustler",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "node-fetch": "^3.3.2"
+  }
+}
