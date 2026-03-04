@@ -1,0 +1,108 @@
+<section class="comments-section" id="comments">
+  <div class="comments-header">
+    <h3>💬 Comments <span class="comments-count" id="comments-count">0</span></h3>
+    <button class="comments-toggle" id="comments-toggle" aria-expanded="true">Hide</button>
+  </div>
+
+  <div class="comments-container" id="comments-container">
+
+    <div class="comments-tabs">
+      <button class="tab-btn active" data-tab="giscus">GitHub Discussions</button>
+      <button class="tab-btn" data-tab="native">Native Comments</button>
+    </div>
+
+    <div class="tab-content active" id="giscus-tab">
+      <!-- ⚠️ CHANGE THESE 3 VALUES after visiting giscus.app -->
+      <script src="https://giscus.app/client.js"
+        data-repo="GITHUB_USERNAME/menshlynews"
+        data-repo-id="YOUR_GISCUS_REPO_ID"
+        data-category="Announcements"
+        data-category-id="YOUR_GISCUS_CATEGORY_ID"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </div>
+
+    <div class="tab-content" id="native-tab" style="display:none">
+      <form class="comment-form" id="comment-form" data-post-id="{{ page.id }}">
+        <div class="form-row">
+          <input type="text" name="author_name" placeholder="Your name" required maxlength="50">
+          <input type="email" name="author_email" placeholder="Email (not published)" required>
+        </div>
+        <div class="form-group">
+          <textarea name="content" placeholder="Share your thoughts..." required maxlength="2000" rows="4"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+      </form>
+      <div class="comments-list" id="comments-list"></div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('giscus-tab').style.display = btn.dataset.tab === 'giscus' ? 'block' : 'none';
+    document.getElementById('native-tab').style.display = btn.dataset.tab === 'native' ? 'block' : 'none';
+    if (btn.dataset.tab === 'native') loadComments();
+  });
+});
+
+async function loadComments() {
+  const postId = document.getElementById('comment-form').dataset.postId;
+  if (!postId) return;
+  const { data, error } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('post_id', postId)
+    .eq('is_approved', true)
+    .order('created_at', { ascending: false });
+  if (error) return;
+  document.getElementById('comments-count').textContent = data.length;
+  const list = document.getElementById('comments-list');
+  list.innerHTML = data.length === 0
+    ? '<p class="no-comments">Be the first to comment!</p>'
+    : data.map(c => `
+      <article class="comment">
+        <img src="${c.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(c.author_name)}" class="comment-avatar" alt="">
+        <div>
+          <strong>${escapeHtml(c.author_name)}</strong>
+          <time>${new Date(c.created_at).toLocaleDateString()}</time>
+          <p>${escapeHtml(c.content)}</p>
+        </div>
+      </article>`).join('');
+}
+
+document.getElementById('comment-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const { error } = await supabase.from('comments').insert([{
+    post_id: e.target.dataset.postId,
+    author_name: fd.get('author_name'),
+    author_email: fd.get('author_email'),
+    content: fd.get('content'),
+    is_approved: true,
+    author_avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(fd.get('author_name'))}`
+  }]);
+  if (error) { showToast('Error posting comment'); return; }
+  showToast('Comment posted!');
+  e.target.reset();
+  loadComments();
+});
+
+function escapeHtml(t) {
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+</script>
