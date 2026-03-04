@@ -1,0 +1,23 @@
+{% if include.type == 'youtube' %}
+<div class="video-wrapper youtube">
+  <iframe
+    src="https://www.youtube.com/embed/{{ include.id }}?rel=0&modestbranding=1"
+    title="{{ include.title | default: 'YouTube video' }}"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    loading="lazy">
+  </iframe>
+</div>
+{% elsif include.type == 'dailymotion' %}
+<div class="video-wrapper dailymotion">
+  <iframe
+    src="https://www.dailymotion.com/embed/video/{{ include.id }}?queue-autoplay-next=0&sharing-enable=0&ui-logo=0"
+    title="{{ include.title | default: 'Dailymotion video' }}"
+    frameborder="0"
+    allow="autoplay; fullscreen; picture-in-picture"
+    allowfullscreen
+    loading="lazy">
+  </iframe>
+</div>
+{% endif %}
