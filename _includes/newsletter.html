@@ -1,0 +1,43 @@
+{% if include.type == 'inline' %}
+<section class="newsletter-inline">
+  <div class="container">
+    <div class="newsletter-box">
+      <div class="newsletter-content">
+        <h3>🚀 Level Up Your Income</h3>
+        <p>Join <strong>12,000+ hustlers</strong> getting daily AI-curated strategies. No fluff, 100% free.</p>
+        <form class="newsletter-form-inline" id="newsletter-form-inline">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit" class="btn btn-primary">Join Free</button>
+        </form>
+        <p class="newsletter-note">🔒 No spam. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% else %}
+<div class="newsletter-widget">
+  <h4>📧 Daily Briefing</h4>
+  <p>Get AI-curated intelligence every morning.</p>
+  <form class="newsletter-form" id="newsletter-form-sidebar">
+    <input type="email" placeholder="your@email.com" required>
+    <button type="submit" class="btn btn-primary">Subscribe</button>
+  </form>
+  <p class="form-note">Join 12,000+ readers. No spam.</p>
+</div>
+{% endif %}
+
+<script>
+['newsletter-form-inline', 'newsletter-form-sidebar'].forEach(id => {
+  const form = document.getElementById(id);
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = e.target.querySelector('input[type="email"]').value;
+    const { error } = await supabase.from('subscribers').insert([{ email: email.toLowerCase() }]);
+    if (error && error.code === '23505') { showToast("You're already subscribed!"); return; }
+    if (error) { showToast('Error subscribing.'); return; }
+    showToast('🎉 Welcome to the hustle!');
+    e.target.reset();
+  });
+});
+</script>
