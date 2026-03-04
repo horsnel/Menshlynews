@@ -1,4 +1,3 @@
-get-posts.js
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
@@ -14,27 +13,42 @@ exports.handler = async (event) => {
     'Content-Type': 'application/json'
   };
 
-  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
 
   try {
-    const { category, page = '1', limit = '12' } = event.queryStringParameters || {};
-    const pageNum = parseInt(page);
-    const limitNum = parseInt(limit);
+    const params = event.queryStringParameters || {};
+    const category = params.category;
+    const page = parseInt(params.page || '1');
+    const limit = parseInt(params.limit || '12');
 
     let query = supabase
       .from('posts')
       .select('*')
       .eq('is_published', true)
       .order('published_at', { ascending: false })
-      .range((pageNum - 1) * limitNum, pageNum * limitNum - 1);
+      .range((page - 1) * limit, page * limit - 1);
 
-    if (category) query = query.eq('category', category);
+    if (category) {
+      query = query.eq('category', category);
+    }
 
     const { data: posts, error } = await query;
+
     if (error) throw error;
 
-    return { statusCode: 200, headers, body: JSON.stringify({ posts, page: pageNum }) };
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ posts: posts || [], page: page })
+    };
+
   } catch (error) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: error.message })
+    };
   }
 };
