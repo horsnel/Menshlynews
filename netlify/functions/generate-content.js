@@ -1,12 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
-
-// Initialize Supabase
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
-// API Keys (already set in your Netlify env vars)
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const NEWSAPI_KEY = process.env.NEWSAPI_KEY;
 
@@ -14,149 +7,85 @@ exports.handler = async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false;
   
   try {
-    console.log('🚀 Starting content generation...');
+    // Fetch news
+    const newsRes = await fetch(
+      `https://newsapi.org/v2/top-headlines?category=technology&language=en&pageSize=3&apiKey=${NEWSAPI_KEY}`
+    );
+    const newsData = await newsRes.json();
+    const articles = newsData.articles.slice(0, 3);
     
-    // Step 1: Fetch news
-    const news = await fetchNews();
-    console.log('📰 Fetched', news.length, 'articles');
+    // Generate with GROQ (UPDATED MODEL)
+    const prompt = `Write a tech/finance blog post based on these headlines. Return JSON only:
+
+${articles.map(a => `- ${a.title}: ${a.description}`).join('\n')}
+
+Format: {"title":"...","slug":"...","content":"markdown...","excerpt":"...","category":"Tech and Finance","tags":["..."],"tldr":["..."],"takeaways":["..."],"meta_description":"...","keywords":["..."]}`;
+
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.2-70b-versatile', // ✅ UPDATED
+        messages: [{role: 'user', content: prompt}],
+        temperature: 0.7,
+        max_tokens: 4000
+      })
+    });
     
-    // Step 2: Generate content with GROQ
-    const generated = await generateWithGroq(news);
-    console.log('✍️ Content generated:', generated.title);
+    const groqData = await groqRes.json();
+    const text = groqData.choices[0].message.content;
+    const json = text.match(/\{[\s\S]*\}/)[0];
+    const gen = JSON.parse(json);
     
-    // Step 3: Structure and save post
-    const post = createPostData(generated, news[0]);
+    // Save to Supabase
+    const post = {
+      slug: `${gen.slug}-${Date.now().toString(36)}`,
+      title: gen.title,
+      content: gen.content,
+      excerpt: gen.excerpt,
+      category: gen.category,
+      tags: gen.tags,
+      author_name: 'Horsnel John',
+      author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HorsnelJohn&backgroundColor=b6e3f4',
+      featured_image: articles[0]?.urlToImage || null,
+      tldr: gen.tldr,
+      takeaways: gen.takeaways,
+      meta_description: gen.meta_description,
+      keywords: gen.keywords,
+      is_published: true,
+      published_at: new Date().toISOString()
+    };
     
-    const { data, error } = await supabase
-      .from('posts')
-      .insert([post])
-      .select()
-      .single();
+    const saveRes = await fetch(`${SUPABASE_URL}/rest/v1/posts`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(post)
+    });
     
-    if (error) throw error;
-    console.log('💾 Post saved:', data.id);
+    const saved = await saveRes.json();
     
-    // Step 4: Trigger rebuild
-    const rebuildStatus = await triggerRebuild();
+    // Trigger rebuild
+    if (process.env.BUILD_HOOK_URL) {
+      await fetch(process.env.BUILD_HOOK_URL, {method: 'POST'});
+    }
     
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        post: { id: data.id, title: data.title, slug: data.slug },
-        rebuildStatus
-      })
+      body: JSON.stringify({success: true, post: {id: saved[0].id, title: saved[0].title}})
     };
     
   } catch (err) {
-    console.error('❌ Error:', err.message);
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: err.message })
+      body: JSON.stringify({success: false, error: err.message})
     };
   }
 };
-
-// Fetch tech/business news
-async function fetchNews() {
-  const cats = ['technology', 'business'];
-  const cat = cats[Math.floor(Math.random() * cats.length)];
-  
-  const res = await fetch(
-    `https://newsapi.org/v2/top-headlines?category=${cat}&language=en&pageSize=3&apiKey=${NEWSAPI_KEY}`
-  );
-  
-  const data = await res.json();
-  if (data.status !== 'ok') throw new Error(data.message);
-  return data.articles;
-}
-
-// Generate blog post with GROQ
-async function generateWithGroq(articles) {
-  const context = articles.map(a => `${a.title}: ${a.description}`).join('\n');
-  
-  const prompt = `Write a tech/finance blog post based on this news. Return JSON:
-
-${context}
-
-Format:
-{
-  "title": "60 char max",
-  "slug": "url-slug",
-  "content": "Markdown, 800 words, ## sections",
-  "excerpt": "150 char hook",
-  "category": "Tech and Finance",
-  "tags": ["AI","Tech","Finance"],
-  "tldr": ["3 key points"],
-  "takeaways": ["3 insights"],
-  "meta_description": "160 char SEO",
-  "keywords": ["5","keywords"]
-}`;
-
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'llama-3.1-70b-versatile',
-      messages: [
-        {role: 'system', content: 'Return valid JSON only'},
-        {role: 'user', content: prompt}
-      ],
-      temperature: 0.7,
-      max_tokens: 4000
-    })
-  });
-  
-  const data = await res.json();
-  const text = data.choices[0].message.content;
-  
-  // Extract JSON
-  const json = text.match(/```json\n([\s\S]*?)\n```/)?.[1] 
-            || text.match(/```\n([\s\S]*?)\n```/)?.[1] 
-            || text;
-            
-  return JSON.parse(json.trim());
-}
-
-// Create post object
-function createPostData(gen, source) {
-  const now = new Date();
-  
-  return {
-    slug: `${gen.slug}-${Date.now().toString(36)}`,
-    title: gen.title,
-    content: gen.content,
-    excerpt: gen.excerpt,
-    category: gen.category || 'Tech and Finance',
-    tags: gen.tags || ['Tech', 'Finance'],
-    author_name: 'Horsnel John',
-    author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HorsnelJohn&backgroundColor=b6e3f4',
-    featured_image: source?.urlToImage || null,
-    youtube_embed: null,
-    dailymotion_embed: null,
-    tldr: gen.tldr || [],
-    takeaways: gen.takeaways || [],
-    meta_description: gen.meta_description,
-    keywords: gen.keywords || [],
-    view_count: 0,
-    like_count: 0,
-    is_published: true,
-    published_at: now.toISOString()
-  };
-}
-
-// Trigger Netlify rebuild
-async function triggerRebuild() {
-  const hook = process.env.BUILD_HOOK_URL;
-  if (!hook) return 'no_hook';
-  
-  try {
-    const res = await fetch(hook, {method: 'POST'});
-    return res.ok ? 'triggered' : 'failed';
-  } catch (e) {
-    return 'error';
-  }
-}
