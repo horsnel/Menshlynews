@@ -6,8 +6,12 @@ const supabase = createClient(
 );
 
 exports.handler = async (event) => {
+  // 1. Log the start so you see it in Netlify
+  console.log("Function triggered at:", new Date().toISOString());
+
   const auth = event.headers.authorization;
   if (event.httpMethod === 'POST' && auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.error("Unauthorized attempt: check your CRON_SECRET");
     return { statusCode: 401, body: 'Unauthorized' };
   }
 
@@ -17,10 +21,15 @@ exports.handler = async (event) => {
     );
     const newsData = await newsRes.json();
 
-    if (!newsData.articles?.length) throw new Error('No articles from NewsAPI');
+    if (!newsData.articles?.length) {
+      throw new Error('No articles returned from NewsAPI. Check your API key or query.');
+    }
 
+    // 2. Pass articles to generator
+    console.log("Fetching content from Groq...");
     const post = await generateBlogPost(newsData.articles.slice(0, 5));
 
+    // 3. Insert into Supabase
     const { data, error } = await supabase.from('posts').insert([{
       slug: generateSlug(post.title),
       title: post.title,
@@ -34,20 +43,40 @@ exports.handler = async (event) => {
       published_at: new Date().toISOString()
     }]).select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase Error:", error);
+      throw error;
+    }
 
-    await fetch(`${process.env.SITE_URL}/.netlify/functions/send-share-notification`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.CRON_SECRET}`
-      },
-      body: JSON.stringify({ post: data[0] })
-    });
+    console.log("Post saved successfully:", data[0].slug);
 
-    return { statusCode: 200, body: JSON.stringify({ success: true, post: data[0] }) };
+    // Optional notification call (wrapped in try/catch so it doesn't kill the main process)
+    try {
+      if (process.env.SITE_URL) {
+        await fetch(`${process.env.SITE_URL}/.netlify/functions/send-share-notification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.CRON_SECRET}`
+          },
+          body: JSON.stringify({ post: data[0] })
+        });
+      }
+    } catch (notifyError) {
+      console.warn("Notification failed, but post was saved.", notifyError.message);
+    }
+
+    return { 
+      statusCode: 200, 
+      body: JSON.stringify({ success: true, slug: data[0].slug }) 
+    };
+
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    console.error("FUNCTION CRASHED:", error.message);
+    return { 
+      statusCode: 500, 
+      body: JSON.stringify({ error: error.message }) 
+    };
   }
 };
 
@@ -55,22 +84,11 @@ async function generateBlogPost(articles) {
   const articlesText = articles.map(a => `• ${a.title}: ${a.description || ''}`).join('\n');
 
   const prompt = `You are Horsnel John, an AI-powered finance and online business expert writing for Menshlynews.
-
 Write a high-quality blog post based on these trending topics:
 ${articlesText}
 
-Topics we cover: online business (YouTube, TikTok, blogging), AI tools, forex, crypto, affiliate marketing, coding, wealth creation.
-
-Return ONLY valid JSON with these exact fields:
-{
-  "title": "Numbered or how-to style title",
-  "excerpt": "2-3 sentence hook under 200 chars",
-  "content": "800-1000 word article in markdown with ## headings",
-  "category": "One of: Online Business, AI News, Finance, Tech Skills, Wealth, Viral",
-  "tags": ["tag1", "tag2", "tag3"],
-  "metaDescription": "SEO description under 160 chars",
-  "keywords": ["keyword1", "keyword2", "keyword3"]
-}`;
+Topics: online business, AI tools, forex, crypto, affiliate marketing, coding, wealth creation.
+Return ONLY valid JSON.`;
 
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -79,17 +97,22 @@ Return ONLY valid JSON with these exact fields:
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'llama-3.1-70b-versatile',
+      model: 'llama-3.3-70b-versatile', // UPDATED MODEL
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 2000,
-      temperature: 0.7
+      temperature: 0.7,
+      response_format: { type: "json_object" } // Forces Groq to return clean JSON
     })
   });
 
   const data = await res.json();
+  
+  if (data.error) {
+    throw new Error(`Groq API Error: ${data.error.message}`);
+  }
+
   const text = data.choices?.[0]?.message?.content || '{}';
-  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  return JSON.parse(cleaned);
+  return JSON.parse(text);
 }
 
 function generateSlug(title) {
