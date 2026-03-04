@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  {% include head.html %}
+</head>
+<body class="loading">
+  <div id="preloader">
+    <div class="spinner"></div>
+  </div>
+
+  {% include header.html %}
+
+  <main class="main-wrapper">
+    {{ content }}
+  </main>
+
+  {% include footer.html %}
+
+  <div id="toast-container"></div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="{{ '/assets/js/supabase-client.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/likes.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/share.js' | relative_url }}"></script>
+
+  {% if page.comments != false %}
+  <script src="{{ '/assets/js/comments.js' | relative_url }}"></script>
+  {% endif %}
+</body>
+</html>
