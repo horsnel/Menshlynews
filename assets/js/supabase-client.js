@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://ztbzwckmrtwwcumajezn.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_9rmDLmyLW_9rteGNAbtngQ_eY7hNiKH';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0Ynp3Y2ttcnR3d2N1bWFqZXpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1ODk2MTIsImV4cCI6MjA4ODE2NTYxMn0.ZNjvI6ECRr_60IKMNHvQM7wTmkp6eLqVY_SrP5pvSwo';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
