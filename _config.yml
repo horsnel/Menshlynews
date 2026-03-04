@@ -1,0 +1,90 @@
+title: "Menshlynews"
+description: "AI-Powered Intelligence for Online Business, Finance & Digital Hustling"
+url: "https://menshlynews.netlify.app"
+baseurl: ""
+permalink: /:title/
+
+author:
+  name: "Horsnel John"
+  email: "editor@menshlynews.com"
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=HorsnelJohn&backgroundColor=b6e3f4"
+  bio: "AI-powered finance analyst and digital entrepreneur curator. Tracking the future of online business, AI advancement, and wealth creation."
+
+social:
+  twitter: "menshlynews"
+  facebook: "menshlynews"
+  reddit: "menshlynews"
+  substack: "menshlynews"
+  youtube: "menshlynews"
+  tiktok: "menshlynews"
+
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-paginate
+
+paginate: 12
+paginate_path: "/page/:num/"
+
+collections:
+  posts:
+    output: true
+    permalink: /:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Horsnel John"
+      comments: true
+  - scope:
+      path: ""
+    values:
+      image: /assets/images/default-og.jpg
+
+exclude:
+  - scripts/
+  - netlify/functions/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - .git/
+  - .github/
+  - README.md
+  - LICENSE
+
+sass:
+  style: compressed
+
+timezone: UTC
+
+menshly:
+  categories:
+    - name: "Online Business"
+      description: "Blogging, vlogging, YouTube, TikTok monetization"
+      icon: "💰"
+    - name: "AI News"
+      description: "Artificial intelligence breakthroughs and tools"
+      icon: "🤖"
+    - name: "Finance"
+      description: "Forex, crypto, investing, market analysis"
+      icon: "📈"
+    - name: "Tech Skills"
+      description: "Coding, app dev, web design tutorials"
+      icon: "💻"
+    - name: "Wealth"
+      description: "Richest people, success stories, biographies"
+      icon: "🏆"
+    - name: "Viral"
+      description: "Trending social media, viral content analysis"
+      icon: "🔥"
