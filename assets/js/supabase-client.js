@@ -1,4 +1,3 @@
-// ⚠️ CHANGE THESE TWO VALUES:
 const SUPABASE_URL = 'https://ztbzwckmrtwwcumajezn.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_9rmDLmyLW_9rteGNAbtngQ_eY7hNiKH';
 
