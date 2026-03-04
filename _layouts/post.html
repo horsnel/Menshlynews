@@ -1,0 +1,130 @@
+---
+layout: default
+---
+
+<article class="post-single" itemscope itemtype="https://schema.org/NewsArticle">
+
+  <header class="post-header">
+    <div class="container">
+      <div class="post-meta-top">
+        <span class="post-category">{{ page.category | default: "Finance" }}</span>
+        <span class="post-date">
+          <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+            {{ page.date | date: "%B %d, %Y" }}
+          </time>
+        </span>
+        <span class="post-read-time">⏱️ {{ content | number_of_words | divided_by: 200 | append: " min read" }}</span>
+      </div>
+
+      <h1 class="post-title" itemprop="headline">{{ page.title }}</h1>
+
+      {% if page.excerpt %}
+      <p class="post-excerpt" itemprop="description">{{ page.excerpt }}</p>
+      {% endif %}
+
+      {% include author-box.html %}
+    </div>
+  </header>
+
+  {% if page.youtube_id %}
+  <div class="post-media"><div class="container">{% include video-embed.html type="youtube" id=page.youtube_id %}</div></div>
+  {% elsif page.dailymotion_id %}
+  <div class="post-media"><div class="container">{% include video-embed.html type="dailymotion" id=page.dailymotion_id %}</div></div>
+  {% elsif page.featured_image %}
+  <div class="post-media"><div class="container"><img src="{{ page.featured_image }}" alt="{{ page.title }}" itemprop="image" loading="eager"></div></div>
+  {% endif %}
+
+  <div class="post-content-wrapper">
+    <div class="container">
+      <div class="post-grid">
+
+        <div class="post-content" itemprop="articleBody">
+
+          {% if page.tldr %}
+          <div class="tldr-box">
+            <h3>⚡ TL;DR</h3>
+            <ul>{% for point in page.tldr %}<li>{{ point }}</li>{% endfor %}</ul>
+          </div>
+          {% endif %}
+
+          {{ content }}
+
+          {% if page.takeaways %}
+          <div class="takeaways-box">
+            <h3>🎯 Key Takeaways</h3>
+            <ol>{% for takeaway in page.takeaways %}<li>{{ takeaway }}</li>{% endfor %}</ol>
+          </div>
+          {% endif %}
+
+          {% if page.sources %}
+          <div class="post-sources">
+            <h3>📚 Sources</h3>
+            <ul>
+              {% for source in page.sources %}
+              <li><a href="{{ source.url }}" target="_blank" rel="noopener nofollow">{{ source.title }} — {{ source.publication }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          {% if page.tags %}
+          <div class="post-tags">
+            {% for tag in page.tags %}<a href="/tag/{{ tag | slugify }}" class="tag">{{ tag }}</a>{% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="post-actions">
+            <button class="like-button" data-post-id="{{ page.id }}" aria-label="Like this post">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="like-count">0</span>
+            </button>
+          </div>
+
+          {% include share-buttons.html %}
+
+        </div>
+
+        <aside class="post-sidebar">
+          {% include sidebar.html context="post" %}
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  {% include newsletter.html type="inline" %}
+
+  <section class="related-posts">
+    <div class="container">
+      <h2>📖 Related Intelligence</h2>
+      <div class="posts-grid" id="related-posts-grid"></div>
+    </div>
+  </section>
+
+  {% if page.comments != false %}
+  {% include comments.html %}
+  {% endif %}
+
+</article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ page.title | escape }}",
+  "description": "{{ page.excerpt | default: page.description | escape }}",
+  "image": "{{ page.featured_image | absolute_url }}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "author": {
+    "@type": "Person",
+    "name": "Horsnel John",
+    "url": "{{ '/about' | absolute_url }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Menshlynews",
+    "logo": { "@type": "ImageObject", "url": "{{ '/assets/images/logo.png' | absolute_url }}" }
+  },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ page.url | absolute_url }}" }
+}
+</script>
