@@ -6,7 +6,9 @@ import { TrendingUp, Clock, Heart } from 'lucide-react';
 import { posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 import { Header } from '@/components/header';
-import { HeroSection } from '@/components/hero-section';
+import { HeroCarousel } from '@/components/hero-carousel';
+import { NewsTicker } from '@/components/news-ticker';
+import { CompactPostCard } from '@/components/compact-post-card';
 import { TrendingTags } from '@/components/trending-tags';
 import { ArticleCard } from '@/components/article-card';
 import { ArticleReader } from '@/components/article-reader';
@@ -48,7 +50,6 @@ export default function HomePage() {
     if (sortBy === 'popular') {
       result.sort((a, b) => b.likes - a.likes);
     } else {
-      // "recent" - posts are already in date order in the data
       result.sort((a, b) => {
         const dateA = new Date(a.date).getTime();
         const dateB = new Date(b.date).getTime();
@@ -59,7 +60,27 @@ export default function HomePage() {
     return result;
   }, [sortBy, activeCategory, activeTag, searchQuery]);
 
-  // Remove featured post from the grid (it's shown in hero)
+  // Posts for the CNN-style hero section
+  // Carousel shows featured + top posts (handled inside HeroCarousel)
+  // Side cards show the remaining popular posts
+  const carouselPostIds = [
+    ...posts.filter((p) => p.featured).map((p) => p.id),
+    ...posts
+      .filter((p) => !p.featured)
+      .sort((a, b) => b.likes - a.likes)
+      .slice(0, 3)
+      .map((p) => p.id),
+  ].slice(0, 5);
+
+  const sideCardPosts = posts
+    .filter((p) => !carouselPostIds.includes(p.id))
+    .sort((a, b) => b.likes - a.likes)
+    .slice(0, 4);
+
+  const leftSidePosts = sideCardPosts.slice(0, 2);
+  const rightSidePosts = sideCardPosts.slice(2, 4);
+
+  // Posts for the grid below
   const gridPosts = filteredPosts.filter(
     (p) => !(p.featured && !activeCategory && !activeTag && !searchQuery.trim())
   );
@@ -69,14 +90,45 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f0f0]">
       <Header />
+      <NewsTicker />
 
-      {/* Only show hero and trending tags when no filters are active */}
+      {/* CNN-Style Hero Section — Only when no filters active */}
       {!activeCategory && !activeTag && !searchQuery.trim() && (
-        <>
-          <HeroSection />
-          <TrendingTags />
-        </>
+        <section className="py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-5">
+              {/* Left Side Cards */}
+              <div className="hidden lg:flex flex-col gap-4">
+                {leftSidePosts.map((post, index) => (
+                  <CompactPostCard key={post.id} post={post} index={index} />
+                ))}
+              </div>
+
+              {/* Center Carousel */}
+              <div className="lg:col-span-2">
+                <HeroCarousel />
+              </div>
+
+              {/* Right Side Cards */}
+              <div className="hidden lg:flex flex-col gap-4">
+                {rightSidePosts.map((post, index) => (
+                  <CompactPostCard key={post.id} post={post} index={index + 2} />
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile: Show side cards as horizontal row */}
+            <div className="lg:hidden mt-4 grid grid-cols-2 gap-3">
+              {sideCardPosts.map((post, index) => (
+                <CompactPostCard key={post.id} post={post} index={index} />
+              ))}
+            </div>
+          </div>
+        </section>
       )}
+
+      {/* Trending Tags */}
+      {!activeCategory && !activeTag && !searchQuery.trim() && <TrendingTags />}
 
       {/* Active filter indicator */}
       {(activeCategory || activeTag || searchQuery.trim()) && (
