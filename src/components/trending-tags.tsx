@@ -37,8 +37,8 @@ export function TrendingTags() {
               onClick={() => setActiveTag(activeTag === tag ? null : tag)}
               className={`tag-pill px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                 activeTag === tag
-                  ? 'bg-emerald-600 text-white border-emerald-600'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-600'
+                  ? 'bg-[#166f4f] text-white border-[#166f4f]'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-[#166f4f]'
               }`}
             >
               {tag}

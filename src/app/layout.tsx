@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased bg-slate-50 text-slate-800`}
+        className={`${inter.variable} ${playfair.variable} antialiased bg-[#f0f0f0] text-[#121212]`}
       >
         {children}
         <Toaster />

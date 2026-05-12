@@ -17,12 +17,12 @@ export interface Post {
 }
 
 export const categories = [
-  { name: "Investing", icon: "📈", count: 45, color: "bg-blue-100 text-blue-700" },
-  { name: "Saving", icon: "💰", count: 32, color: "bg-emerald-100 text-emerald-700" },
-  { name: "Retirement", icon: "🏖️", count: 28, color: "bg-purple-100 text-purple-700" },
-  { name: "Crypto", icon: "₿", count: 24, color: "bg-orange-100 text-orange-700" },
-  { name: "Real Estate", icon: "🏠", count: 19, color: "bg-red-100 text-red-700" },
-  { name: "Side Hustles", icon: "🚀", count: 15, color: "bg-teal-100 text-teal-700" },
+  { name: "Investing", icon: "📈", count: 45, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Saving", icon: "💰", count: 32, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Retirement", icon: "🏖️", count: 28, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Crypto", icon: "₿", count: 24, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Real Estate", icon: "🏠", count: 19, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Side Hustles", icon: "🚀", count: 15, color: "bg-[#166f4f]/10 text-[#1c7352]" },
 ];
 
 export const posts: Post[] = [

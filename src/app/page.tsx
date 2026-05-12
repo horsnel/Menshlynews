@@ -67,7 +67,7 @@ export default function HomePage() {
   const { setSortBy } = useBlogStore();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#f0f0f0]">
       <Header />
 
       {/* Only show hero and trending tags when no filters are active */}
@@ -83,26 +83,26 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center gap-3 flex-wrap">
             {activeCategory && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-sm">
-                <span className="font-medium text-emerald-700">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f0f0] border border-[#76bf9f] text-sm">
+                <span className="font-medium text-[#1c7352]">
                   Category: {activeCategory}
                 </span>
                 <button
                   onClick={() => useBlogStore.getState().setActiveCategory(null)}
-                  className="text-emerald-500 hover:text-emerald-700 font-bold"
+                  className="text-[#166f4f] hover:text-[#1c7352] font-bold"
                 >
                   ×
                 </button>
               </div>
             )}
             {activeTag && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-sm">
-                <span className="font-medium text-teal-700">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#166f4f]/10 border border-[#76bf9f] text-sm">
+                <span className="font-medium text-[#1c7352]">
                   Tag: {activeTag}
                 </span>
                 <button
                   onClick={() => useBlogStore.getState().setActiveTag(null)}
-                  className="text-teal-500 hover:text-teal-700 font-bold"
+                  className="text-[#166f4f] hover:text-[#1c7352] font-bold"
                 >
                   ×
                 </button>
@@ -131,7 +131,7 @@ export default function HomePage() {
           {/* Section Header with Sort */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 serif">
+              <h2 className="text-2xl font-bold text-[#121212] serif">
                 {activeCategory || activeTag || searchQuery.trim()
                   ? 'Filtered Articles'
                   : 'Latest Articles'}
@@ -145,7 +145,7 @@ export default function HomePage() {
                 onClick={() => setSortBy('recent')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   sortBy === 'recent'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-[#f0f0f0] text-[#1c7352]'
                     : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
@@ -156,7 +156,7 @@ export default function HomePage() {
                 onClick={() => setSortBy('popular')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   sortBy === 'popular'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-[#f0f0f0] text-[#1c7352]'
                     : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
@@ -205,7 +205,7 @@ export default function HomePage() {
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#166f4f] to-[#1c7352] flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-lg font-bold text-white serif">
@@ -231,7 +231,7 @@ export default function HomePage() {
                         onClick={() =>
                           useBlogStore.getState().setActiveCategory(item)
                         }
-                        className="hover:text-emerald-400 transition-colors"
+                        className="hover:text-[#76bf9f] transition-colors"
                       >
                         {item}
                       </button>
@@ -250,7 +250,7 @@ export default function HomePage() {
                 {['About Us', 'Contact', 'Privacy Policy', 'Terms of Service'].map(
                   (item) => (
                     <li key={item}>
-                      <span className="hover:text-emerald-400 transition-colors cursor-pointer">
+                      <span className="hover:text-[#76bf9f] transition-colors cursor-pointer">
                         {item}
                       </span>
                     </li>
@@ -270,9 +270,9 @@ export default function HomePage() {
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-[#166f4f]/30"
               />
-              <button className="w-full px-3 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 transition-colors">
+              <button className="w-full px-3 py-2 rounded-lg bg-[#166f4f] text-white text-sm font-medium hover:bg-[#166f4f] transition-colors">
                 Subscribe
               </button>
             </div>

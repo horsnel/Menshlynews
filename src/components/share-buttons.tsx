@@ -69,8 +69,8 @@ export function ShareButtons({
           onClick={handleCopyLink}
           className={`p-2 rounded-full transition-colors ${
             copied
-              ? 'text-emerald-500 bg-emerald-50'
-              : 'text-slate-400 hover:bg-emerald-50 hover:text-emerald-500'
+              ? 'text-[#166f4f] bg-[#f0f0f0]'
+              : 'text-slate-400 hover:bg-[#f0f0f0] hover:text-[#166f4f]'
           }`}
           aria-label="Copy link"
         >
@@ -102,8 +102,8 @@ export function ShareButtons({
         onClick={handleCopyLink}
         className={`p-2.5 rounded-lg transition-colors border ${
           copied
-            ? 'text-emerald-500 bg-emerald-50 border-emerald-200'
-            : 'text-slate-400 border-slate-200 hover:bg-emerald-50 hover:text-emerald-500'
+            ? 'text-[#166f4f] bg-[#f0f0f0] border-[#76bf9f]'
+            : 'text-slate-400 border-slate-200 hover:bg-[#f0f0f0] hover:text-[#166f4f]'
         }`}
         aria-label="Copy link"
       >

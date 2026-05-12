@@ -108,25 +108,25 @@ export function ArticleReader({ post }: ArticleReaderProps) {
         {/* Article Content */}
         <article className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           {/* Category badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-6">
-            <span className="text-emerald-600 text-sm">{post.categoryIcon}</span>
-            <span className="text-emerald-700 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f0f0f0] border border-[#76bf9f] mb-6">
+            <span className="text-[#166f4f] text-sm">{post.categoryIcon}</span>
+            <span className="text-[#1c7352] text-xs font-semibold uppercase tracking-wider">
               {post.category}
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-tight mb-6 serif">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#121212] leading-tight mb-6 serif">
             {post.title}
           </h1>
 
           {/* Author info */}
           <div className="flex items-center gap-3 mb-8 text-sm text-slate-500">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#76bf9f] to-[#166f4f] flex items-center justify-center text-white text-sm font-bold">
               HJ
             </div>
             <div>
-              <p className="font-semibold text-slate-800">{post.author}</p>
+              <p className="font-semibold text-[#121212]">{post.author}</p>
               <div className="flex items-center gap-2 text-slate-500">
                 <span>{post.date}</span>
                 <span>·</span>

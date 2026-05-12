@@ -19,16 +19,16 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-4">
-              <span className="text-emerald-600 text-sm font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f0f0] border border-[#76bf9f] mb-4">
+              <span className="text-[#166f4f] text-sm font-semibold">
                 {featuredPost.categoryIcon}
               </span>
-              <span className="text-emerald-700 text-xs font-semibold uppercase tracking-wider">
+              <span className="text-[#1c7352] text-xs font-semibold uppercase tracking-wider">
                 Featured
               </span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-tight mb-4 serif">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#121212] leading-tight mb-4 serif">
               {featuredPost.title}
             </h2>
 
@@ -38,7 +38,7 @@ export function HeroSection() {
 
             <div className="flex items-center gap-4 mb-6 text-sm text-slate-500">
               <div className="flex items-center gap-1.5">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#76bf9f] to-[#166f4f] flex items-center justify-center text-white text-xs font-bold">
                   HJ
                 </div>
                 <span className="font-medium text-slate-700">
@@ -56,7 +56,7 @@ export function HeroSection() {
 
             <button
               onClick={() => setCurrentArticle(featuredPost)}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25 group"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white font-semibold hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-lg shadow-[#166f4f]/25 group"
             >
               Read Article
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -81,7 +81,7 @@ export function HeroSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-emerald-700">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-[#1c7352]">
                   <span>{featuredPost.categoryIcon}</span>
                   <span>{featuredPost.category}</span>
                 </div>
@@ -89,8 +89,8 @@ export function HeroSection() {
             </div>
 
             {/* Decorative element */}
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-emerald-100 rounded-2xl -z-10" />
-            <div className="absolute -top-4 -left-4 w-16 h-16 bg-teal-100 rounded-xl -z-10" />
+            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#76bf9f]/20 rounded-2xl -z-10" />
+            <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#76bf9f]/20 rounded-xl -z-10" />
           </motion.div>
         </div>
       </div>

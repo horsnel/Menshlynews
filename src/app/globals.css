@@ -142,14 +142,14 @@ body {
   transition: all 0.2s;
 }
 .tag-pill:hover {
-  background-color: #059669;
+  background-color: #166f4f;
   color: white;
-  border-color: #059669;
+  border-color: #166f4f;
 }
 
 .newsletter-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  box-shadow: 0 0 0 3px rgba(22, 111, 79, 0.1);
 }
 
 /* Prose styles for article content */
@@ -186,10 +186,10 @@ body {
 }
 
 .prose-content blockquote {
-  border-left: 4px solid #059669;
+  border-left: 4px solid #166f4f;
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
-  background: #ecfdf5;
+  background: rgba(22, 111, 79, 0.1);
   border-radius: 0 0.5rem 0.5rem 0;
   color: #064e3b;
 }
@@ -201,7 +201,7 @@ body {
 }
 
 .prose-content a {
-  color: #059669;
+  color: #166f4f;
   text-decoration: underline;
 }
 

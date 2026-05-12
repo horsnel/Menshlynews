@@ -82,14 +82,14 @@ export function Header() {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => handleNavClick(null)}
           >
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#166f4f] to-[#1c7352] flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-slate-900 leading-tight serif">
+              <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
                 Menshlynews
               </h1>
-              <p className="text-[10px] text-emerald-600 font-medium -mt-0.5 tracking-wide">
+              <p className="text-[10px] text-[#166f4f] font-medium -mt-0.5 tracking-wide">
                 Where AI Meets Revenue
               </p>
             </div>
@@ -103,7 +103,7 @@ export function Header() {
                 onClick={() => handleNavClick(link.category)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeCategory === link.category
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-[#f0f0f0] text-[#1c7352]'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -144,7 +144,7 @@ export function Header() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search articles..."
-                        className="w-full px-4 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                        className="w-full px-4 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#166f4f]/20 focus:border-[#166f4f]"
                       />
                     </div>
                     {searchResults.length > 0 && (
@@ -155,7 +155,7 @@ export function Header() {
                             onClick={() => handleSearchResultClick(post)}
                             className="w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                           >
-                            <p className="text-sm font-medium text-slate-900 line-clamp-1">
+                            <p className="text-sm font-medium text-[#121212] line-clamp-1">
                               {post.title}
                             </p>
                             <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">
@@ -178,7 +178,7 @@ export function Header() {
             {/* Subscribe Button */}
             <a
               href="#newsletter"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-medium hover:from-emerald-600 hover:to-teal-700 transition-all shadow-sm"
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-medium hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-sm"
             >
               Subscribe
             </a>
@@ -212,7 +212,7 @@ export function Header() {
                   onClick={() => handleNavClick(link.category)}
                   className={`px-3 py-2.5 rounded-lg text-sm font-medium text-left transition-colors ${
                     activeCategory === link.category
-                      ? 'bg-emerald-50 text-emerald-700'
+                      ? 'bg-[#f0f0f0] text-[#1c7352]'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -222,7 +222,7 @@ export function Header() {
               <a
                 href="#newsletter"
                 onClick={() => setMobileMenuOpen(false)}
-                className="mt-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-medium text-center"
+                className="mt-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-medium text-center"
               >
                 Subscribe
               </a>

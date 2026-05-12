@@ -53,7 +53,7 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
             className="w-full h-48 sm:h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute top-3 left-3">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-emerald-700">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-[#1c7352]">
               <span>{post.categoryIcon}</span>
               <span>{post.category}</span>
             </span>
@@ -65,7 +65,7 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
           <div>
             {/* Author info */}
             <div className="flex items-center gap-2 mb-2.5 text-xs text-slate-500">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-[10px] font-bold">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#76bf9f] to-[#166f4f] flex items-center justify-center text-white text-[10px] font-bold">
                 HJ
               </div>
               <span className="font-medium text-slate-700">{post.author}</span>
@@ -79,7 +79,7 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
             </div>
 
             {/* Title */}
-            <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-emerald-700 transition-colors serif">
+            <h3 className="text-lg font-bold text-[#121212] mb-2 line-clamp-2 group-hover:text-[#1c7352] transition-colors serif">
               {post.title}
             </h3>
 
@@ -117,7 +117,7 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
               {/* Share */}
               <button
                 onClick={handleShare}
-                className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-emerald-500 transition-colors"
+                className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-[#166f4f] transition-colors"
                 aria-label="Share"
               >
                 <Share2 className="w-4 h-4" />
@@ -130,7 +130,7 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
             {/* Read more */}
             <button
               onClick={handleReadMore}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors group/read"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-[#166f4f] hover:text-[#1c7352] transition-colors group/read"
             >
               Read more
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/read:translate-x-0.5" />
