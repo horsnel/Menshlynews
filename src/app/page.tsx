@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import { TrendingUp, Clock, Heart } from 'lucide-react';
 import { posts } from '@/lib/data';
@@ -299,12 +300,16 @@ export default function HomePage() {
                 Company
               </h4>
               <ul className="space-y-2 text-sm">
-                {['About Us', 'Contact', 'Privacy Policy', 'Terms of Service'].map(
-                  (item) => (
-                    <li key={item}>
-                      <span className="hover:text-[#76bf9f] transition-colors cursor-pointer">
-                        {item}
-                      </span>
+                {[
+                  { label: 'About Us', href: '/about' },
+                  { label: 'Contact', href: '/contact' },
+                  { label: 'Privacy Policy', href: '/privacy' },
+                  { label: 'Terms of Service', href: '/terms' },
+                ].map((item) => (
+                    <li key={item.label}>
+                      <Link href={item.href} className="hover:text-[#76bf9f] transition-colors cursor-pointer">
+                        {item.label}
+                      </Link>
                     </li>
                   )
                 )}

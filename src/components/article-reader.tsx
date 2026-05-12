@@ -19,8 +19,11 @@ export function ArticleReader({ post }: ArticleReaderProps) {
   const displayLikes = liked ? post.likes + 1 : post.likes;
   const [showFloatingShare, setShowFloatingShare] = useState(false);
 
+  // Push a history entry so the browser back button closes the overlay
+  // instead of navigating away from the page entirely
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    window.history.pushState({ articleReader: true }, '');
     return () => {
       document.body.style.overflow = '';
     };
@@ -38,15 +41,25 @@ export function ArticleReader({ post }: ArticleReaderProps) {
     setCurrentArticle(null);
   }, [setCurrentArticle]);
 
+  // Listen for the popstate event (browser back button) to close the overlay
+  useEffect(() => {
+    const handlePopState = () => {
+      handleClose();
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [handleClose]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        handleClose();
+        // Go back in history to trigger popstate, which will close the overlay
+        window.history.back();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleClose]);
+  }, []);
 
   const handleLike = () => {
     toggleLike(post.id);
@@ -76,7 +89,7 @@ export function ArticleReader({ post }: ArticleReaderProps) {
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-slate-100">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
             <button
-              onClick={handleClose}
+              onClick={() => window.history.back()}
               className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
