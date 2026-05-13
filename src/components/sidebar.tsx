@@ -7,7 +7,7 @@ import { useBlogStore } from '@/lib/store';
 import { CategoryIcon } from './category-icon';
 
 export function Sidebar() {
-  const { setCurrentArticle, setActiveCategory, activeCategory } = useBlogStore();
+  const { setCurrentArticle, setActiveCategory, activeCategory, setNewsletterOpen } = useBlogStore();
 
   const popularPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 4);
 
@@ -104,12 +104,10 @@ export function Sidebar() {
         <p className="text-[#76bf9f]/60 text-xs mb-4">
           Get the latest AI money-making strategies delivered to your inbox every week.
         </p>
-        <input
-          type="email"
-          placeholder="your@email.com"
-          className="newsletter-input w-full px-4 py-2.5 rounded-lg bg-white/15 border border-white/20 text-white placeholder-[#76bf9f]/60 text-sm mb-3 backdrop-blur-sm"
-        />
-        <button className="w-full px-4 py-2.5 rounded-lg bg-white text-[#166f4f] text-sm font-semibold hover:bg-[#f0f0f0] transition-colors flex items-center justify-center gap-1.5">
+        <button
+          onClick={() => setNewsletterOpen(true)}
+          className="w-full px-4 py-2.5 rounded-lg bg-white text-[#166f4f] text-sm font-semibold hover:bg-[#f0f0f0] transition-colors flex items-center justify-center gap-1.5"
+        >
           Subscribe
           <ArrowRight className="w-3.5 h-3.5" />
         </button>

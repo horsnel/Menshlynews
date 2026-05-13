@@ -26,6 +26,11 @@ interface BlogStore {
   setActiveCategory: (category: string | null) => void;
   activeTag: string | null;
   setActiveTag: (tag: string | null) => void;
+
+  // Newsletter popup
+  isNewsletterOpen: boolean;
+  setNewsletterOpen: (open: boolean) => void;
+  toggleNewsletter: () => void;
 }
 
 export const useBlogStore = create<BlogStore>()(
@@ -63,6 +68,11 @@ export const useBlogStore = create<BlogStore>()(
       setActiveCategory: (category: string | null) => set({ activeCategory: category }),
       activeTag: null,
       setActiveTag: (tag: string | null) => set({ activeTag: tag }),
+
+      // Newsletter popup
+      isNewsletterOpen: false,
+      setNewsletterOpen: (open: boolean) => set({ isNewsletterOpen: open }),
+      toggleNewsletter: () => set((state) => ({ isNewsletterOpen: !state.isNewsletterOpen })),
     }),
     {
       name: 'menshlynews-blog-store',

@@ -15,6 +15,7 @@ import { ArticleCard } from '@/components/article-card';
 import { ArticleReader } from '@/components/article-reader';
 import { Sidebar } from '@/components/sidebar';
 import { CategoryIcon } from '@/components/category-icon';
+import { NewsletterPopup } from '@/components/newsletter-popup';
 
 export default function HomePage() {
   const { currentArticle, sortBy, activeCategory, activeTag, searchQuery } =
@@ -329,13 +330,11 @@ export default function HomePage() {
               <p className="text-sm mb-3">
                 Get weekly AI money-making tips.
               </p>
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-[#166f4f]/30"
-              />
-              <button className="w-full px-3 py-2 rounded-lg bg-[#166f4f] text-white text-sm font-medium hover:bg-[#166f4f] transition-colors">
-                Subscribe
+              <button
+                onClick={() => useBlogStore.getState().setNewsletterOpen(true)}
+                className="w-full px-3 py-2 rounded-lg bg-[#166f4f] text-white text-sm font-medium hover:bg-[#1c7352] transition-colors"
+              >
+                Subscribe to Newsletter
               </button>
             </div>
           </div>
@@ -353,6 +352,9 @@ export default function HomePage() {
       <AnimatePresence>
         {currentArticle && <ArticleReader post={currentArticle} />}
       </AnimatePresence>
+
+      {/* Newsletter Popup */}
+      <NewsletterPopup />
     </div>
   );
 }
