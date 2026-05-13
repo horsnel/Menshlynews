@@ -9,6 +9,7 @@ import { Post } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 import { ReadingProgress } from './reading-progress';
 import { ShareButtons } from './share-buttons';
+import { CategoryIcon } from './category-icon';
 
 interface ArticleReaderProps {
   post: Post;
@@ -123,7 +124,7 @@ export function ArticleReader({ post }: ArticleReaderProps) {
         <article className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           {/* Category badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f0f0f0] border border-[#76bf9f] mb-6">
-            <span className="text-[#166f4f] text-sm">{post.categoryIcon}</span>
+            <CategoryIcon category={post.category} size={14} className="text-[#166f4f]" />
             <span className="text-[#1c7352] text-xs font-semibold uppercase tracking-wider">
               {post.category}
             </span>

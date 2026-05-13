@@ -4,6 +4,7 @@ import { Heart, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Post } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { CategoryIcon } from './category-icon';
 
 interface CompactPostCardProps {
   post: Post;
@@ -39,7 +40,7 @@ export function CompactPostCard({ post, index }: CompactPostCardProps) {
         {/* Category Badge */}
         <div className="absolute top-2.5 left-2.5">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#166f4f] text-white text-[10px] font-semibold uppercase tracking-wider">
-            <span>{post.categoryIcon}</span>
+            <CategoryIcon category={post.category} size={10} />
             <span>{post.category}</span>
           </span>
         </div>

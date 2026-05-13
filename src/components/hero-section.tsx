@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Clock, User } from 'lucide-react';
 import { posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { CategoryIcon } from './category-icon';
 
 export function HeroSection() {
   const featuredPost = posts.find((p) => p.featured) || posts[0];
@@ -20,9 +21,7 @@ export function HeroSection() {
             transition={{ duration: 0.5 }}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f0f0] border border-[#76bf9f] mb-4">
-              <span className="text-[#166f4f] text-sm font-semibold">
-                {featuredPost.categoryIcon}
-              </span>
+              <CategoryIcon category={featuredPost.category} size={14} className="text-[#166f4f]" />
               <span className="text-[#1c7352] text-xs font-semibold uppercase tracking-wider">
                 Featured
               </span>
@@ -82,7 +81,7 @@ export function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-[#1c7352]">
-                  <span>{featuredPost.categoryIcon}</span>
+                  <CategoryIcon category={featuredPost.category} size={12} />
                   <span>{featuredPost.category}</span>
                 </div>
               </div>

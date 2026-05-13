@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Users, FileText, TrendingUp, Mail, ArrowRight } from 'lucide-react';
 import { categories, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { CategoryIcon } from './category-icon';
 
 export function Sidebar() {
   const { setCurrentArticle, setActiveCategory, activeCategory } = useBlogStore();
@@ -138,7 +139,7 @@ export function Sidebar() {
               }`}
             >
               <div className="flex items-center gap-2">
-                <span className="text-base">{cat.icon}</span>
+                <CategoryIcon category={cat.name} size={16} />
                 <span className="font-medium">{cat.name}</span>
               </div>
               <span

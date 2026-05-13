@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
 import { Post, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { CategoryIcon } from './category-icon';
 
 // Pick top posts for carousel (featured first, then by likes)
 const carouselPosts = [
@@ -80,7 +81,7 @@ export function HeroCarousel() {
             >
               {/* Category Badge */}
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#166f4f] text-white text-xs font-semibold uppercase tracking-wider mb-3">
-                <span>{slide.categoryIcon}</span>
+                <CategoryIcon category={slide.category} size={12} />
                 <span>{slide.category}</span>
               </span>
 

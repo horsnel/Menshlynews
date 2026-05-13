@@ -4,6 +4,7 @@ import { Heart, Share2, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Post } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { CategoryIcon } from './category-icon';
 
 interface ArticleCardProps {
   post: Post;
@@ -53,8 +54,8 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
             className="w-full h-48 sm:h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute top-3 left-3">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-[#1c7352]">
-              <span>{post.categoryIcon}</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-[#1c7352]">
+              <CategoryIcon category={post.category} size={12} />
               <span>{post.category}</span>
             </span>
           </div>

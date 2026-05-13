@@ -4,7 +4,6 @@ export interface Post {
   slug: string;
   excerpt: string;
   category: string;
-  categoryIcon: string;
   image: string;
   author: string;
   date: string;
@@ -17,12 +16,12 @@ export interface Post {
 }
 
 export const categories = [
-  { name: "Investing", icon: "📈", count: 45, color: "bg-[#166f4f]/10 text-[#1c7352]" },
-  { name: "Saving", icon: "💰", count: 32, color: "bg-[#166f4f]/10 text-[#1c7352]" },
-  { name: "Retirement", icon: "🏖️", count: 28, color: "bg-[#166f4f]/10 text-[#1c7352]" },
-  { name: "Crypto", icon: "₿", count: 24, color: "bg-[#166f4f]/10 text-[#1c7352]" },
-  { name: "Real Estate", icon: "🏠", count: 19, color: "bg-[#166f4f]/10 text-[#1c7352]" },
-  { name: "Side Hustles", icon: "🚀", count: 15, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Investing", count: 45, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Saving", count: 32, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Retirement", count: 28, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Crypto", count: 24, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Real Estate", count: 19, color: "bg-[#166f4f]/10 text-[#1c7352]" },
+  { name: "Side Hustles", count: 15, color: "bg-[#166f4f]/10 text-[#1c7352]" },
 ];
 
 export const posts: Post[] = [
@@ -32,7 +31,6 @@ export const posts: Post[] = [
     slug: "ai-powered-content-agency-real-estate",
     excerpt: "Discover how to build a $8K/month content agency serving real estate professionals using AI tools. From automated listing descriptions to social media management, here's the complete blueprint.",
     category: "Side Hustles",
-    categoryIcon: "🚀",
     image: "/images/article-1-real-estate-agency.png",
     author: "Horsnel John",
     date: "Jan 15, 2026",
@@ -315,7 +313,6 @@ This is where you start generating real pipeline.
     slug: "selling-digital-planners-etsy-ai",
     excerpt: "How to create and sell beautiful digital planners on Etsy using AI — from $0 to $5K/month passive income with minimal ongoing effort.",
     category: "Saving",
-    categoryIcon: "💰",
     image: "/images/article-2-digital-planners.png",
     author: "Horsnel John",
     date: "Jan 12, 2026",
@@ -612,7 +609,6 @@ Now that you have a system, replicate it. Speed comes from having a framework.
     slug: "faceless-youtube-channel-ai",
     excerpt: "Build a $10K/month YouTube empire without ever showing your face. The complete guide to AI-powered content creation for the camera-shy entrepreneur.",
     category: "Side Hustles",
-    categoryIcon: "🚀",
     image: "/images/article-3-youtube-faceless.png",
     author: "Horsnel John",
     date: "Jan 10, 2026",
@@ -994,7 +990,6 @@ This is the production block. Follow the process precisely — this becomes your
     slug: "newsletter-business-ai-curated",
     excerpt: "From zero to 10K subscribers and $7K/month — how to build a profitable newsletter using AI to find, curate, and create content your audience craves.",
     category: "Investing",
-    categoryIcon: "📈",
     image: "/images/article-4-newsletter.png",
     author: "Horsnel John",
     date: "Jan 8, 2026",
@@ -1367,7 +1362,6 @@ Write all 5 emails in Beehiiv and set up the automated sequence. Test it by subs
     slug: "ai-powered-seo-agency",
     excerpt: "The complete blueprint for launching a $15K/month SEO agency powered by AI tools. Serve local businesses while AI does the heavy lifting.",
     category: "Investing",
-    categoryIcon: "📈",
     image: "/images/article-5-seo-agency.png",
     author: "Horsnel John",
     date: "Jan 5, 2026",
@@ -1803,7 +1797,6 @@ This block produces the most powerful sales asset you'll ever have: personalized
     slug: "flipping-ai-generated-websites",
     excerpt: "How to build and flip AI-generated websites for $2-10K each on marketplace platforms like Flippa and Acquire. A $6K/month opportunity with low entry barriers.",
     category: "Real Estate",
-    categoryIcon: "🏠",
     image: "/images/article-6-website-flipping.png",
     author: "Horsnel John",
     date: "Jan 3, 2026",
@@ -2146,7 +2139,6 @@ This block creates the actual asset. By the end, you'll have a live website with
     slug: "crypto-yield-farming-defi",
     excerpt: "An advanced guide to earning $12K/month through automated DeFi yield farming strategies. Understand the risks, the rewards, and the AI tools that make it manageable.",
     category: "Crypto",
-    categoryIcon: "₿",
     image: "/images/article-7-crypto-defi.png",
     author: "Horsnel John",
     date: "Jan 1, 2026",
@@ -2526,7 +2518,6 @@ Now that you understand the basics, explore how to optimize your yield.
     slug: "print-on-demand-midjourney-chatgpt",
     excerpt: "Launch a $4K/month print-on-demand business with zero inventory using AI-generated designs. The beginner-friendly guide to selling on Etsy, Amazon, and Redbubble.",
     category: "Saving",
-    categoryIcon: "💰",
     image: "/images/article-8-print-on-demand.png",
     author: "Horsnel John",
     date: "Dec 28, 2025",
@@ -2909,7 +2900,6 @@ Etsy requires more setup than Redbubble but offers higher margins and more buyer
     slug: "building-saas-micro-tools-ai",
     excerpt: "How to build and launch profitable SaaS micro-tools in a single weekend using AI coding assistants. Real examples of tools making $500-3,000/month each.",
     category: "Side Hustles",
-    categoryIcon: "🚀",
     image: "/images/article-9-saas-tools.png",
     author: "Horsnel John",
     date: "Dec 25, 2025",
@@ -3343,7 +3333,6 @@ This is the main build session. Open Cursor and start coding — the AI assistan
     slug: "freelance-copywriting-ai",
     excerpt: "The complete playbook for building a $5K/month freelance copywriting business using AI as your secret weapon. Land clients, deliver quality, and scale.",
     category: "Saving",
-    categoryIcon: "💰",
     image: "/images/article-10-freelance-copywriting.png",
     author: "Horsnel John",
     date: "Dec 22, 2025",
@@ -3714,7 +3703,6 @@ LinkedIn is where freelance copywriters find 80% of their clients. Your profile 
     slug: "tiktok-affiliate-marketing-digital",
     excerpt: "How to make $8K/month promoting digital products on TikTok — even with zero followers. The AI-powered content strategy that's working right now.",
     category: "Side Hustles",
-    categoryIcon: "🚀",
     image: "/images/article-11-tiktok-affiliate.png",
     author: "Horsnel John",
     date: "Dec 20, 2025",
@@ -4154,7 +4142,6 @@ Editing is where good content becomes great content. The formula: fast cuts, cap
     slug: "automated-blog-network-ai",
     excerpt: "The advanced guide to building a $20K/month blog network with AI-powered content pipelines. Scale from one blog to ten with automated research, writing, and publishing.",
     category: "Investing",
-    categoryIcon: "📈",
     image: "/images/article-12-blog-network.png",
     author: "Horsnel John",
     date: "Dec 18, 2025",
