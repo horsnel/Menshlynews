@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Zap } from 'lucide-react';
 import { posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 
@@ -24,7 +23,6 @@ export function NewsTicker() {
         <div className="flex items-center h-9 gap-3">
           {/* Breaking label */}
           <div className="flex items-center gap-1.5 flex-shrink-0 bg-[#166f4f] px-3 py-1 rounded-sm">
-            <Zap className="w-3 h-3 text-[#76bf9f]" />
             <span className="text-[11px] font-bold uppercase tracking-wider">
               Trending
             </span>
