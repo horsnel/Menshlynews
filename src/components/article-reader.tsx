@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ArrowLeft, Heart, Clock } from 'lucide-react';
-import { Post } from '@/lib/data';
+import { Heart, Clock, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { Post, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 import { ReadingProgress } from './reading-progress';
 import { ShareButtons } from './share-buttons';
@@ -15,14 +15,211 @@ interface ArticleReaderProps {
   post: Post;
 }
 
+// Split content at a good mid-point (after the 4th ## heading)
+function splitContent(content: string): { firstHalf: string; secondHalf: string } {
+  const lines = content.split('\n');
+  let headingCount = 0;
+  let splitIndex = lines.length;
+
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].startsWith('## ')) {
+      headingCount++;
+      if (headingCount === 4) {
+        splitIndex = i;
+        break;
+      }
+    }
+  }
+
+  // Fallback: split at 50% if fewer than 4 headings
+  if (headingCount < 4) {
+    splitIndex = Math.floor(lines.length * 0.5);
+    // Find the nearest heading
+    for (let i = splitIndex; i < lines.length; i++) {
+      if (lines[i].startsWith('## ')) {
+        splitIndex = i;
+        break;
+      }
+    }
+  }
+
+  return {
+    firstHalf: lines.slice(0, splitIndex).join('\n'),
+    secondHalf: lines.slice(splitIndex).join('\n'),
+  };
+}
+
+// Mid-article suggestions component
+function MidArticleSuggestions({ currentPost }: { currentPost: Post }) {
+  const { setCurrentArticle } = useBlogStore();
+
+  const suggestions = useMemo(() => {
+    // Get 3 articles from different categories, excluding current
+    const otherPosts = posts.filter(p => p.id !== currentPost.id);
+    const sameCategory = otherPosts.filter(p => p.category === currentPost.category);
+    const differentCategory = otherPosts.filter(p => p.category !== currentPost.category);
+
+    const result: Post[] = [];
+    // Prefer 1 from same category
+    if (sameCategory.length > 0) {
+      result.push(sameCategory[Math.floor(Math.random() * sameCategory.length)]);
+    }
+    // 2 from different categories
+    const shuffled = differentCategory.sort(() => Math.random() - 0.5);
+    result.push(...shuffled.slice(0, 3 - result.length));
+
+    return result.slice(0, 3);
+  }, [currentPost.id, currentPost.category]);
+
+  const handleClick = (post: Post) => {
+    setCurrentArticle(post);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="my-10 py-8 border-t border-b border-slate-200 bg-gradient-to-r from-[#f0f0f0]/50 to-white/50 -mx-4 px-4 sm:-mx-6 sm:px-6">
+      <div className="flex items-center gap-2 mb-5">
+        <div className="w-1 h-6 bg-[#166f4f] rounded-full" />
+        <h3 className="text-lg font-bold text-[#121212]">Continue Reading</h3>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {suggestions.map((suggestion) => (
+          <button
+            key={suggestion.id}
+            onClick={() => handleClick(suggestion)}
+            className="group text-left bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-[#76bf9f]/50 hover:shadow-lg transition-all duration-300"
+          >
+            <div className="relative aspect-[16/9] overflow-hidden">
+              <img
+                src={suggestion.image}
+                alt={suggestion.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute top-2 left-2">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#166f4f] text-white text-[10px] font-semibold uppercase tracking-wider">
+                  <CategoryIcon category={suggestion.category} size={10} />
+                  <span>{suggestion.category}</span>
+                </span>
+              </div>
+            </div>
+            <div className="p-3">
+              <h4 className="text-sm font-bold text-[#121212] line-clamp-2 group-hover:text-[#1c7352] transition-colors leading-snug">
+                {suggestion.title}
+              </h4>
+              <div className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-500">
+                <Clock className="w-3 h-3" />
+                <span>{suggestion.readTime}</span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Previous / Next navigation cards
+function PrevNextNavigation({ currentPost }: { currentPost: Post }) {
+  const { setCurrentArticle } = useBlogStore();
+
+  const { prevPost, nextPost } = useMemo(() => {
+    const currentIndex = posts.findIndex(p => p.id === currentPost.id);
+    return {
+      prevPost: currentIndex > 0 ? posts[currentIndex - 1] : null,
+      nextPost: currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null,
+    };
+  }, [currentPost.id]);
+
+  const handleClick = (post: Post) => {
+    setCurrentArticle(post);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (!prevPost && !nextPost) return null;
+
+  return (
+    <div className="mt-10 pt-8 border-t border-slate-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Previous Article */}
+        {prevPost ? (
+          <button
+            onClick={() => handleClick(prevPost)}
+            className="group text-left bg-white rounded-xl border border-slate-200 p-4 hover:border-[#76bf9f]/50 hover:shadow-lg transition-all duration-300"
+          >
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-2">
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span className="uppercase tracking-wider font-semibold">Previous</span>
+            </div>
+            <div className="flex gap-3">
+              <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                <img
+                  src={prevPost.image}
+                  alt={prevPost.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#1c7352] uppercase tracking-wider mb-1">
+                  <CategoryIcon category={prevPost.category} size={10} />
+                  {prevPost.category}
+                </span>
+                <h4 className="text-sm font-bold text-[#121212] line-clamp-2 group-hover:text-[#1c7352] transition-colors leading-snug">
+                  {prevPost.title}
+                </h4>
+              </div>
+            </div>
+          </button>
+        ) : (
+          <div />
+        )}
+
+        {/* Next Article */}
+        {nextPost ? (
+          <button
+            onClick={() => handleClick(nextPost)}
+            className="group text-left bg-white rounded-xl border border-slate-200 p-4 hover:border-[#76bf9f]/50 hover:shadow-lg transition-all duration-300"
+          >
+            <div className="flex items-center justify-end gap-1.5 text-xs text-[#166f4f] mb-2">
+              <span className="uppercase tracking-wider font-semibold">Next Read</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex gap-3">
+              <div className="flex-1 min-w-0 text-right">
+                <span className="inline-flex items-center gap-1 justify-end text-[10px] font-semibold text-[#1c7352] uppercase tracking-wider mb-1">
+                  <CategoryIcon category={nextPost.category} size={10} />
+                  {nextPost.category}
+                </span>
+                <h4 className="text-sm font-bold text-[#121212] line-clamp-2 group-hover:text-[#1c7352] transition-colors leading-snug">
+                  {nextPost.title}
+                </h4>
+              </div>
+              <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                <img
+                  src={nextPost.image}
+                  alt={nextPost.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+            </div>
+          </button>
+        ) : (
+          <div />
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ArticleReader({ post }: ArticleReaderProps) {
   const { toggleLike, isLiked, setCurrentArticle } = useBlogStore();
   const liked = isLiked(post.id);
   const displayLikes = liked ? post.likes + 1 : post.likes;
   const [showFloatingShare, setShowFloatingShare] = useState(false);
 
+  // Split content for mid-article suggestions
+  const { firstHalf, secondHalf } = useMemo(() => splitContent(post.content), [post.content]);
+
   // Push a history entry so the browser back button closes the overlay
-  // instead of navigating away from the page entirely
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     window.history.pushState({ articleReader: true }, '');
@@ -55,7 +252,6 @@ export function ArticleReader({ post }: ArticleReaderProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        // Go back in history to trigger popstate, which will close the overlay
         window.history.back();
       }
     };
@@ -82,10 +278,9 @@ export function ArticleReader({ post }: ArticleReaderProps) {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+              className="text-sm font-medium text-slate-600 hover:text-[#1c7352] transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back to articles</span>
+              Back to articles
             </button>
 
             <div className="flex items-center gap-2">
@@ -152,9 +347,17 @@ export function ArticleReader({ post }: ArticleReaderProps) {
             />
           </div>
 
-          {/* Article body */}
+          {/* Article body — first half */}
           <div className="prose-content">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{firstHalf}</ReactMarkdown>
+          </div>
+
+          {/* Mid-article suggestions */}
+          <MidArticleSuggestions currentPost={post} />
+
+          {/* Article body — second half */}
+          <div className="prose-content">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{secondHalf}</ReactMarkdown>
           </div>
 
           {/* Tags */}
@@ -170,6 +373,9 @@ export function ArticleReader({ post }: ArticleReaderProps) {
               ))}
             </div>
           </div>
+
+          {/* Previous / Next navigation */}
+          <PrevNextNavigation currentPost={post} />
         </article>
 
         {/* Floating Share Bar */}

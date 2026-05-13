@@ -1,7 +1,16 @@
 'use client';
 
-import { Twitter, Linkedin, Facebook, Link2, Check, Share2, MessageCircle, Mail } from 'lucide-react';
+import { Linkedin, Facebook, Link2, Check, Share2, MessageCircle, Mail } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+
+// Custom X (Twitter) icon — replaces the bird icon
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 
 interface ShareButtonsProps {
   title: string;
@@ -25,10 +34,10 @@ export function ShareButtons({
 
   const shareLinks = [
     {
-      name: 'Twitter / X',
-      icon: Twitter,
+      name: 'X',
+      icon: XIcon,
       url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-      color: 'hover:bg-sky-50 hover:text-sky-500',
+      color: 'hover:bg-slate-50 hover:text-slate-900',
     },
     {
       name: 'LinkedIn',
@@ -62,7 +71,6 @@ export function ShareButtons({
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Fallback for older browsers
       const textArea = document.createElement('textarea');
       textArea.value = url;
       textArea.style.position = 'fixed';
@@ -91,12 +99,9 @@ export function ShareButtons({
         });
         return;
       } catch (err) {
-        // User cancelled the share sheet
         if ((err as DOMException).name === 'AbortError') return;
-        // API failed — fall through to dropdown
       }
     }
-    // No Web Share API available — show the dropdown on desktop
     setShowDropdown(!showDropdown);
   };
 
@@ -238,7 +243,6 @@ export function ShareButtons({
         </button>
         {showDropdown && dropdownContent}
       </div>
-      {/* Copied toast notification */}
       {copied && (
         <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-[#166f4f] text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap z-50 animate-in fade-in slide-in-from-top-1 duration-200">
           Link copied to clipboard!
