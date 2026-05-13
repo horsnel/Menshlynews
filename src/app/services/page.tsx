@@ -128,7 +128,7 @@ export default function ServicesPage() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm mb-6">
               <TrendingUp className="w-4 h-4 text-[#76bf9f]" />
-              <span className="text-[#76bf9f] font-medium">By the team behind Menshlynews</span>
+              <span className="text-[#76bf9f] font-medium">By the team behind Menshly Wire</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold serif mb-6 leading-tight">
               We Build Websites &<br />
@@ -472,11 +472,11 @@ export default function ServicesPage() {
                 <TrendingUp className="w-4 h-4 text-white" />
               </div>
               <span className="text-lg font-bold text-white serif">
-                Menshlynews
+                Menshly Wire
               </span>
             </div>
             <p className="text-xs text-slate-500">
-              &copy; {new Date().getFullYear()} Menshlynews. All rights reserved.
+              &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
             </p>
           </div>
         </div>

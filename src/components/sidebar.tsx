@@ -21,7 +21,7 @@ export function Sidebar() {
         className="bg-white rounded-xl border border-slate-200 p-6"
       >
         <h3 className="text-lg font-bold text-[#121212] mb-3 serif">
-          About Menshlynews
+          About Menshly Wire
         </h3>
         <p className="text-sm text-slate-600 leading-relaxed mb-4">
           Your go-to source for AI-powered money-making strategies, smart

@@ -87,7 +87,7 @@ export default function AboutPage() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
-                  Menshlynews
+                  Menshly Wire
                 </h1>
                 <p className="text-[10px] text-[#166f4f] font-medium -mt-0.5 tracking-wide">
                   Where AI Meets Revenue
@@ -122,7 +122,7 @@ export default function AboutPage() {
             <motion.div variants={fadeInUp}>
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-[#76bf9f] text-sm font-medium mb-6">
                 <TrendingUp className="w-4 h-4" />
-                About Menshlynews
+                About Menshly Wire
               </span>
             </motion.div>
             <motion.h1
@@ -138,7 +138,7 @@ export default function AboutPage() {
               className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed"
             >
               We believe everyone deserves access to smart money strategies.
-              Menshlynews is your trusted guide to leveraging artificial
+              Menshly Wire is your trusted guide to leveraging artificial
               intelligence for financial growth — from side hustles to
               investments.
             </motion.p>
@@ -170,7 +170,7 @@ export default function AboutPage() {
             >
               <div className="prose-content">
                 <p className="text-slate-600 leading-relaxed text-base sm:text-lg">
-                  Menshlynews was born from a simple observation: the AI
+                  Menshly Wire was born from a simple observation: the AI
                   revolution is creating unprecedented opportunities for ordinary
                   people to build wealth — but most of the information out there
                   is either too technical, too vague, or just plain hype.
@@ -186,14 +186,14 @@ export default function AboutPage() {
                 </p>
                 <p className="text-slate-600 leading-relaxed text-base sm:text-lg">
                   In early 2024, Horsnel decided to bridge that gap. He launched
-                  Menshlynews with one clear mission: <strong className="text-[#121212]">make AI-powered
+                  Menshly Wire with one clear mission: <strong className="text-[#121212]">make AI-powered
                   wealth-building strategies accessible, practical, and honest</strong>.
                   What started as a weekly newsletter sent to 50 curious readers
                   has grown into a thriving community of over 50,000 readers
                   across six continents.
                 </p>
                 <p className="text-slate-600 leading-relaxed text-base sm:text-lg">
-                  Today, Menshlynews covers everything from AI-driven investing
+                  Today, Menshly Wire covers everything from AI-driven investing
                   and automated side hustles to cryptocurrency analysis and
                   smart retirement planning. Every article is written with one
                   question in mind: <em>&ldquo;Can our reader take this insight and
@@ -322,7 +322,7 @@ export default function AboutPage() {
                 <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
                   Horsnel is a technology and finance enthusiast with over a
                   decade of experience at the intersection of AI and wealth
-                  creation. He founded Menshlynews to democratize access to
+                  creation. He founded Menshly Wire to democratize access to
                   AI-powered financial strategies, believing that the next wave
                   of wealth creation belongs to those who understand how to
                   harness artificial intelligence. When he&apos;s not writing or
@@ -407,7 +407,7 @@ export default function AboutPage() {
       <footer className="mt-auto border-t border-slate-200 bg-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} Menshlynews. All rights reserved.
+            &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
             Built with ❤️ by Horsnel John.
           </p>
         </div>

@@ -264,7 +264,7 @@ export default function HomePage() {
                   <TrendingUp className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-lg font-bold text-white serif">
-                  Menshlynews
+                  Menshly Wire
                 </span>
               </div>
               <p className="text-sm leading-relaxed">
@@ -358,7 +358,7 @@ export default function HomePage() {
 
           <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs text-slate-500">
             <p>
-              © {new Date().getFullYear()} Menshlynews. All rights reserved.
+              © {new Date().getFullYear()} Menshly Wire. All rights reserved.
               Built with ❤️ by Horsnel John.
             </p>
           </div>

@@ -28,7 +28,7 @@ const sections = [
     content: [
       {
         subtitle: 'Personal Information',
-        text: 'When you visit Menshlynews, subscribe to our newsletter, or interact with our services, we may collect the following personal information: your name, email address, and any other information you voluntarily provide when filling out forms or contacting us. We only collect personal information that you actively and knowingly provide to us.',
+        text: 'When you visit Menshly Wire, subscribe to our newsletter, or interact with our services, we may collect the following personal information: your name, email address, and any other information you voluntarily provide when filling out forms or contacting us. We only collect personal information that you actively and knowingly provide to us.',
       },
       {
         subtitle: 'Automatically Collected Information',
@@ -158,7 +158,7 @@ const sections = [
     content: [
       {
         subtitle: '',
-        text: 'Menshlynews is not directed at individuals under the age of 13 (or the applicable age of consent in your jurisdiction). We do not knowingly collect personal information from children. If you are a parent or guardian and become aware that your child has provided us with personal information, please contact us immediately. If we discover that we have collected personal information from a child without verification of parental consent, we will take steps to delete that information from our servers as quickly as possible.',
+        text: 'Menshly Wire is not directed at individuals under the age of 13 (or the applicable age of consent in your jurisdiction). We do not knowingly collect personal information from children. If you are a parent or guardian and become aware that your child has provided us with personal information, please contact us immediately. If we discover that we have collected personal information from a child without verification of parental consent, we will take steps to delete that information from our servers as quickly as possible.',
       },
     ],
   },
@@ -203,7 +203,7 @@ export default function PrivacyPage() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
-                  Menshlynews
+                  Menshly Wire
                 </h1>
                 <p className="text-[10px] text-[#166f4f] font-medium -mt-0.5 tracking-wide">
                   Where AI Meets Revenue
@@ -270,7 +270,7 @@ export default function PrivacyPage() {
               className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 mb-6"
             >
               <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-                At Menshlynews (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), we are committed
+                At Menshly Wire (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), we are committed
                 to protecting your privacy and ensuring the security of your
                 personal information. This Privacy Policy explains how we
                 collect, use, disclose, and safeguard your information when you
@@ -302,7 +302,7 @@ export default function PrivacyPage() {
                         <div key={idx} className="bg-[#f0f0f0] rounded-xl p-5 border border-slate-200">
                           <div className="space-y-2 text-sm text-slate-600">
                             <p>
-                              <strong className="text-[#121212]">Menshlynews</strong>
+                              <strong className="text-[#121212]">Menshly Wire</strong>
                             </p>
                             <p>Email: <a href="mailto:hello@menshlynews.com" className="text-[#166f4f] hover:underline">hello@menshlynews.com</a></p>
                             <p>Website: <Link href="/" className="text-[#166f4f] hover:underline">menshlynews.com</Link></p>
@@ -359,7 +359,7 @@ export default function PrivacyPage() {
       <footer className="mt-auto border-t border-slate-200 bg-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} Menshlynews. All rights reserved.
+            &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
             Built with ❤️ by Horsnel John.
           </p>
         </div>

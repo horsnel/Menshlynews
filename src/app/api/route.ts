@@ -9,7 +9,7 @@ const VALID_CATEGORIES = ["Investing", "Saving", "Retirement", "Crypto", "Real E
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
 const OPENROUTER_MODEL = "google/gemini-2.0-flash-001";
 
-const ARTICLE_FORMAT_INSTRUCTIONS = `You are writing for Menshlynews, a financial education blog targeted at young men who want to build real income streams. Write in first person, conversational tone, like a friend who's actually done this and made money from it. Be specific with real numbers, tool names, and URLs. No fluff, no filler, no generic advice — only actionable content.
+const ARTICLE_FORMAT_INSTRUCTIONS = `You are writing for Menshly Wire, a financial education blog targeted at young men who want to build real income streams. Write in first person, conversational tone, like a friend who's actually done this and made money from it. Be specific with real numbers, tool names, and URLs. No fluff, no filler, no generic advice — only actionable content.
 
 MANDATORY FORMAT — Follow this structure EXACTLY. Do NOT skip any section:
 
@@ -321,7 +321,7 @@ async function generateContent(title: string, category: string, excerpt: string,
       "Content-Type": "application/json",
       "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
       "HTTP-Referer": "https://menshlynews.com",
-      "X-Title": "Menshlynews Article Generator",
+      "X-Title": "Menshly Wire Article Generator",
     },
     body: JSON.stringify({
       model: OPENROUTER_MODEL,
@@ -453,7 +453,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
-    message: "Menshlynews Article Generator API",
+    message: "Menshly Wire Article Generator API",
     usage: "POST with { title, category, excerpt }",
     categories: VALID_CATEGORIES,
     fallback: OPENROUTER_API_KEY ? "OpenRouter enabled" : "OpenRouter not configured",

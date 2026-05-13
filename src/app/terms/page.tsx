@@ -26,15 +26,15 @@ const sections = [
   {
     title: '1. Acceptance of Terms',
     paragraphs: [
-      'By accessing or using the Menshlynews website (the "Site"), including all content, features, and functionality offered through the Site, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Site.',
-      'These Terms constitute a legally binding agreement between you and Menshlynews ("we," "us," or "our"). By using the Site, you represent that you are at least 18 years of age, or the age of legal majority in your jurisdiction, and have the legal capacity to enter into these Terms.',
+      'By accessing or using the Menshly Wire website (the "Site"), including all content, features, and functionality offered through the Site, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Site.',
+      'These Terms constitute a legally binding agreement between you and Menshly Wire ("we," "us," or "our"). By using the Site, you represent that you are at least 18 years of age, or the age of legal majority in your jurisdiction, and have the legal capacity to enter into these Terms.',
       'We reserve the right to modify, update, or replace any part of these Terms at our sole discretion. It is your responsibility to check the Terms periodically for changes. Your continued use of the Site after the posting of any changes constitutes acceptance of those changes.',
     ],
   },
   {
     title: '2. Use of Our Services',
     paragraphs: [
-      'Menshlynews provides an online publication focused on AI-powered money-making strategies, investment insights, wealth-building tips, and related financial content (the "Services"). You may use our Services only for lawful purposes and in accordance with these Terms.',
+      'Menshly Wire provides an online publication focused on AI-powered money-making strategies, investment insights, wealth-building tips, and related financial content (the "Services"). You may use our Services only for lawful purposes and in accordance with these Terms.',
       'You agree not to use the Site in any way that violates any applicable federal, state, local, or international law or regulation, including without limitation, any laws regarding the export of data or software. You agree not to reproduce, duplicate, copy, sell, resell, or exploit any portion of the Site for any commercial purpose without our express written permission.',
       'You agree not to attempt to gain unauthorized access to, interfere with, damage, or disrupt any parts of the Site, the servers on which the Site is hosted, or any server, computer, or database connected to the Site. You must not use any automated system, including but not limited to robots, spiders, or scrapers, to access the Site for any purpose without our express written permission.',
       'We reserve the right to terminate or restrict your access to the Site at any time, without notice, for any conduct that we, in our sole discretion, believe violates these Terms, is harmful to other users of the Site, or is harmful to us, our affiliates, or third parties.',
@@ -43,9 +43,9 @@ const sections = [
   {
     title: '3. Intellectual Property',
     paragraphs: [
-      'The Site and its entire contents, features, and functionality — including but not limited to all information, software, source code, text, displays, images, graphics, photographs, video, audio, design, presentation, selection, and arrangement — are owned by Menshlynews, its licensors, or other providers of such material, and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.',
+      'The Site and its entire contents, features, and functionality — including but not limited to all information, software, source code, text, displays, images, graphics, photographs, video, audio, design, presentation, selection, and arrangement — are owned by Menshly Wire, its licensors, or other providers of such material, and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.',
       'You are granted a limited, non-exclusive, non-transferable, revocable license to access and use the Site and its content for your personal, non-commercial use only. This license does not include the right to modify, reproduce, distribute, publicly display, publicly perform, or create derivative works of the content without our prior written consent.',
-      'The "Menshlynews" name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Menshlynews. You may not use such marks without our prior written permission. All other names, logos, product and service names, designs, and slogans on the Site are the trademarks of their respective owners.',
+      'The "Menshly Wire" name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Menshly Wire. You may not use such marks without our prior written permission. All other names, logos, product and service names, designs, and slogans on the Site are the trademarks of their respective owners.',
     ],
   },
   {
@@ -59,7 +59,7 @@ const sections = [
   {
     title: '5. Disclaimer',
     paragraphs: [
-      'The information provided on Menshlynews is for general informational and educational purposes only. Nothing on this Site should be construed as professional financial, investment, tax, legal, or other advice. You should not act or refrain from acting on the basis of any content included in the Site without seeking the appropriate financial, legal, or other professional advice from a qualified professional.',
+      'The information provided on Menshly Wire is for general informational and educational purposes only. Nothing on this Site should be construed as professional financial, investment, tax, legal, or other advice. You should not act or refrain from acting on the basis of any content included in the Site without seeking the appropriate financial, legal, or other professional advice from a qualified professional.',
       'All content on the Site is provided "as is" and "as available" without any representations or warranties, express or implied. We do not warrant that the Site will be uninterrupted, timely, secure, or error-free, that the results obtained from the use of the Site will be accurate or reliable, or that the quality of any content obtained through the Site will meet your expectations.',
       'Any reliance you place on the information provided on the Site is strictly at your own risk. Past performance, financial projections, and testimonials are not indicative of future results. Individual results may vary based on your specific circumstances, and we make no guarantees regarding the outcomes of any strategies or recommendations discussed on the Site.',
     ],
@@ -67,7 +67,7 @@ const sections = [
   {
     title: '6. Limitation of Liability',
     paragraphs: [
-      'To the fullest extent permitted by applicable law, in no event shall Menshlynews, its directors, employees, partners, agents, suppliers, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (a) your access to or use of, or inability to access or use, the Site; (b) any conduct or content of any third party on the Site; (c) any content obtained from the Site; or (d) unauthorized access, use, or alteration of your transmissions or content.',
+      'To the fullest extent permitted by applicable law, in no event shall Menshly Wire, its directors, employees, partners, agents, suppliers, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (a) your access to or use of, or inability to access or use, the Site; (b) any conduct or content of any third party on the Site; (c) any content obtained from the Site; or (d) unauthorized access, use, or alteration of your transmissions or content.',
       'In no event shall our total liability to you for all claims arising out of or relating to the use of, or inability to use, the Site exceed the amount you have paid to us, if any, during the twelve (12) months preceding the event giving rise to the claim. This limitation of liability applies whether the alleged liability is based on contract, tort, negligence, strict liability, or any other basis, even if we have been advised of the possibility of such damage.',
       'Some jurisdictions do not allow the exclusion or limitation of certain warranties or liabilities, so the above limitations or exclusions may not apply to you. In such cases, our liability shall be limited to the fullest extent permitted by applicable law.',
     ],
@@ -75,7 +75,7 @@ const sections = [
   {
     title: '7. Indemnification',
     paragraphs: [
-      'You agree to defend, indemnify, and hold harmless Menshlynews, its parent company, officers, directors, employees, agents, licensors, suppliers, and any third-party information providers from and against all losses, expenses, damages, costs, claims, and demands, including reasonable attorneys\' fees and related costs and expenses, arising out of or related to: (a) your use of the Site; (b) your violation of these Terms; (c) your violation of any applicable law or regulation; or (d) your User Content or any content you submit or post on the Site.',
+      'You agree to defend, indemnify, and hold harmless Menshly Wire, its parent company, officers, directors, employees, agents, licensors, suppliers, and any third-party information providers from and against all losses, expenses, damages, costs, claims, and demands, including reasonable attorneys\' fees and related costs and expenses, arising out of or related to: (a) your use of the Site; (b) your violation of these Terms; (c) your violation of any applicable law or regulation; or (d) your User Content or any content you submit or post on the Site.',
       'We reserve the right, at our own expense, to assume the exclusive defense and control of any matter otherwise subject to indemnification by you, and in such case, you agree to cooperate with our defense of such claim. The indemnification obligations under this section shall survive the termination or expiration of these Terms and your use of the Site.',
     ],
   },
@@ -89,8 +89,8 @@ const sections = [
   {
     title: '9. Governing Law',
     paragraphs: [
-      'These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions. Any disputes arising from or relating to these Terms or the use of the Site shall be resolved exclusively in the courts located in the jurisdiction where Menshlynews is headquartered, and you consent to the personal jurisdiction and venue of such courts.',
-      'If any provision of these Terms is found to be unenforceable or invalid by a court of competent jurisdiction, that provision shall be limited or eliminated to the minimum extent necessary so that these Terms shall otherwise remain in full force and effect. The failure of Menshlynews to enforce any right or provision of these Terms shall not constitute a waiver of such right or provision.',
+      'These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions. Any disputes arising from or relating to these Terms or the use of the Site shall be resolved exclusively in the courts located in the jurisdiction where Menshly Wire is headquartered, and you consent to the personal jurisdiction and venue of such courts.',
+      'If any provision of these Terms is found to be unenforceable or invalid by a court of competent jurisdiction, that provision shall be limited or eliminated to the minimum extent necessary so that these Terms shall otherwise remain in full force and effect. The failure of Menshly Wire to enforce any right or provision of these Terms shall not constitute a waiver of such right or provision.',
     ],
   },
   {
@@ -122,7 +122,7 @@ export default function TermsPage() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
-                  Menshlynews
+                  Menshly Wire
                 </h1>
                 <p className="text-[10px] text-[#166f4f] font-medium -mt-0.5 tracking-wide">
                   Where AI Meets Revenue
@@ -189,8 +189,8 @@ export default function TermsPage() {
               className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 mb-6"
             >
               <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-                Welcome to Menshlynews. These Terms of Service govern your use
-                of the Menshlynews website and all related services. By
+                Welcome to Menshly Wire. These Terms of Service govern your use
+                of the Menshly Wire website and all related services. By
                 accessing or using our website, you agree to be bound by these
                 Terms. Please read them carefully before using our services. If
                 you have any questions, please contact us at{' '}
@@ -229,7 +229,7 @@ export default function TermsPage() {
                     <div className="bg-[#f0f0f0] rounded-xl p-5 border border-slate-200">
                       <div className="space-y-2 text-sm text-slate-600">
                         <p>
-                          <strong className="text-[#121212]">Menshlynews</strong>
+                          <strong className="text-[#121212]">Menshly Wire</strong>
                         </p>
                         <p>
                           Email:{' '}
@@ -266,7 +266,7 @@ export default function TermsPage() {
                 Questions About Our Terms?
               </h3>
               <p className="text-white/70 text-sm max-w-lg mx-auto leading-relaxed">
-                We want you to feel confident about using Menshlynews. If
+                We want you to feel confident about using Menshly Wire. If
                 anything in these Terms is unclear or if you have questions,
                 we&apos;re here to help.
               </p>
@@ -285,7 +285,7 @@ export default function TermsPage() {
       <footer className="mt-auto border-t border-slate-200 bg-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} Menshlynews. All rights reserved.
+            &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
             Built with ❤️ by Horsnel John.
           </p>
         </div>

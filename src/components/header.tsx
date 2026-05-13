@@ -88,7 +88,7 @@ export function Header() {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
-                Menshlynews
+                Menshly Wire
               </h1>
               <p className="text-[10px] text-[#166f4f] font-medium -mt-0.5 tracking-wide">
                 Where AI Meets Revenue

@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Menshlynews - Where AI Meets Revenue",
+  title: "Menshly Wire - Where AI Meets Revenue",
   description: "AI-powered finance blog with smart money moves, investing strategies, and wealth building insights.",
   keywords: ["finance", "investing", "AI", "wealth", "money", "blog"],
   authors: [{ name: "Horsnel John" }],

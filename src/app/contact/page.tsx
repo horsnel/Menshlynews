@@ -59,7 +59,7 @@ const faqs = [
       'While we don\'t currently offer personalized financial consulting, our articles are designed to be comprehensive enough to guide your decision-making. We may launch a premium advisory service in the future — subscribe to our newsletter to be the first to know.',
   },
   {
-    question: 'How can I advertise or partner with Menshlynews?',
+    question: 'How can I advertise or partner with Menshly Wire?',
     answer:
       'We work with select partners whose products and services align with our mission of empowering readers with AI-driven wealth strategies. For advertising inquiries and partnership opportunities, please use the contact form with "Advertising & Partnerships" selected as the subject.',
   },
@@ -72,8 +72,8 @@ const faqs = [
 
 const socialLinks = [
   { name: 'Twitter / X', icon: Twitter, handle: '@menshlynews', href: '#' },
-  { name: 'LinkedIn', icon: Linkedin, handle: 'Menshlynews', href: '#' },
-  { name: 'YouTube', icon: Youtube, handle: 'Menshlynews', href: '#' },
+  { name: 'LinkedIn', icon: Linkedin, handle: 'Menshly Wire', href: '#' },
+  { name: 'YouTube', icon: Youtube, handle: 'Menshly Wire', href: '#' },
 ];
 
 export default function ContactPage() {
@@ -109,7 +109,7 @@ export default function ContactPage() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
-                  Menshlynews
+                  Menshly Wire
                 </h1>
                 <p className="text-[10px] text-[#166f4f] font-medium -mt-0.5 tracking-wide">
                   Where AI Meets Revenue
@@ -429,7 +429,7 @@ export default function ContactPage() {
                 Frequently Asked Questions
               </h2>
               <p className="text-slate-500 mt-3 max-w-xl mx-auto">
-                Find quick answers to the most common questions about Menshlynews.
+                Find quick answers to the most common questions about Menshly Wire.
               </p>
             </motion.div>
 
@@ -481,7 +481,7 @@ export default function ContactPage() {
       <footer className="mt-auto border-t border-slate-200 bg-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} Menshlynews. All rights reserved.
+            &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
             Built with ❤️ by Horsnel John.
           </p>
         </div>
