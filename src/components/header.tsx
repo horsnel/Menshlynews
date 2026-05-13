@@ -86,7 +86,7 @@ export function Header() {
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#166f4f] to-[#1c7352] flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <div className="hidden sm:block">
+            <div>
               <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
                 Menshly Wire
               </h1>
