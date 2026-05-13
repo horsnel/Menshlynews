@@ -237,3 +237,56 @@ body {
   font-weight: 700;
   color: #0f172a;
 }
+
+/* Table styles for GFM markdown tables */
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.prose-content thead {
+  background: #166f4f;
+}
+
+.prose-content thead th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+}
+
+.prose-content tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.15s;
+}
+
+.prose-content tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.prose-content tbody tr:hover {
+  background-color: rgba(22, 111, 79, 0.06);
+}
+
+.prose-content tbody td {
+  padding: 0.65rem 1rem;
+  color: #334155;
+  border: none;
+}
+
+.prose-content tbody tr:last-child {
+  border-bottom: none;
+}
+
+.prose-content tbody td strong {
+  color: #166f4f;
+}

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ArrowLeft, Heart, Clock } from 'lucide-react';
 import { Post } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
@@ -162,7 +163,7 @@ export function ArticleReader({ post }: ArticleReaderProps) {
 
           {/* Article body */}
           <div className="prose-content">
-            <ReactMarkdown>{post.content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
           </div>
 
           {/* Tags */}
