@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
-import { TrendingUp, Clock, Heart } from 'lucide-react';
+import { TrendingUp, Clock, Heart, ArrowRight } from 'lucide-react';
 import { posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 import { Header } from '@/components/header';
@@ -256,7 +256,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="mt-auto bg-slate-900 text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
@@ -320,6 +320,23 @@ export default function HomePage() {
                   )
                 )}
               </ul>
+            </div>
+
+            {/* Services */}
+            <div>
+              <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-3">
+                Our Services
+              </h4>
+              <p className="text-sm mb-3 leading-relaxed">
+                Need a website or AI automation? We build digital solutions that grow your business.
+              </p>
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-medium hover:from-[#1c7352] hover:to-[#166f4f] transition-all"
+              >
+                Web Dev & AI Automation
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
             {/* Newsletter */}
