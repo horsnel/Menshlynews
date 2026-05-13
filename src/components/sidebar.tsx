@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { BookOpen, Users, FileText, TrendingUp, Mail, ArrowRight } from 'lucide-react';
 import { categories, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { useLikes } from '@/hooks/use-likes';
 import { CategoryIcon } from './category-icon';
 
 export function Sidebar() {
   const { setCurrentArticle, setActiveCategory, activeCategory, setNewsletterOpen } = useBlogStore();
+  const { getLikeCount } = useLikes();
 
   const popularPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 4);
 
@@ -78,7 +80,7 @@ export function Sidebar() {
                   {post.title}
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
-                  {post.likes.toLocaleString()} likes
+                  {getLikeCount(post.id, post.likes).toLocaleString()} likes
                 </p>
               </div>
             </button>

@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import { Heart, Clock, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Post, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { useLikes } from '@/hooks/use-likes';
 import { ReadingProgress } from './reading-progress';
 import { ShareButtons } from './share-buttons';
 import { CategoryIcon } from './category-icon';
@@ -211,9 +212,10 @@ function PrevNextNavigation({ currentPost }: { currentPost: Post }) {
 }
 
 export function ArticleReader({ post }: ArticleReaderProps) {
-  const { toggleLike, isLiked, setCurrentArticle } = useBlogStore();
+  const { setCurrentArticle } = useBlogStore();
+  const { toggleLike, isLiked, getLikeCount } = useLikes();
   const liked = isLiked(post.id);
-  const displayLikes = liked ? post.likes + 1 : post.likes;
+  const displayLikes = getLikeCount(post.id, post.likes);
   const [showFloatingShare, setShowFloatingShare] = useState(false);
 
   // Split content for mid-article suggestions

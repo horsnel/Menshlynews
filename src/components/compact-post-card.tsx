@@ -4,6 +4,7 @@ import { Heart, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Post } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
+import { useLikes } from '@/hooks/use-likes';
 import { CategoryIcon } from './category-icon';
 
 interface CompactPostCardProps {
@@ -12,9 +13,10 @@ interface CompactPostCardProps {
 }
 
 export function CompactPostCard({ post, index }: CompactPostCardProps) {
-  const { toggleLike, isLiked, setCurrentArticle } = useBlogStore();
+  const { setCurrentArticle } = useBlogStore();
+  const { toggleLike, isLiked, getLikeCount } = useLikes();
   const liked = isLiked(post.id);
-  const displayLikes = liked ? post.likes + 1 : post.likes;
+  const displayLikes = getLikeCount(post.id, post.likes);
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();

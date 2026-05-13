@@ -25,4 +25,16 @@ model Post {
   tags          String   @default("")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  likeRecords   Like[]
+}
+
+model Like {
+  id          String   @id @default(cuid())
+  postId      String
+  fingerprint String
+  createdAt   DateTime @default(now())
+
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, fingerprint])
 }
