@@ -135,17 +135,28 @@ export function Header() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 top-12 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+                    className="absolute right-0 sm:right-0 top-12 w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50"
                   >
                     <div className="p-3">
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search articles..."
-                        className="w-full px-4 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#166f4f]/20 focus:border-[#166f4f]"
-                      />
+                      <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-[#166f4f]/20 focus-within:border-[#166f4f]">
+                        <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <input
+                          ref={searchInputRef}
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search articles..."
+                          className="w-full bg-transparent text-sm focus:outline-none placeholder-slate-400"
+                        />
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery('')}
+                            className="p-1 rounded-full hover:bg-slate-200 transition-colors flex-shrink-0"
+                          >
+                            <X className="w-3.5 h-3.5 text-slate-400" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     {searchResults.length > 0 && (
                       <div className="border-t border-slate-100 max-h-64 overflow-y-auto">

@@ -14,6 +14,7 @@ import { TrendingTags } from '@/components/trending-tags';
 import { ArticleCard } from '@/components/article-card';
 import { ArticleReader } from '@/components/article-reader';
 import { Sidebar } from '@/components/sidebar';
+import { CategoryIcon } from '@/components/category-icon';
 
 export default function HomePage() {
   const { currentArticle, sortBy, activeCategory, activeTag, searchQuery } =
@@ -281,11 +282,15 @@ export default function HomePage() {
                   (item) => (
                     <li key={item}>
                       <button
-                        onClick={() =>
-                          useBlogStore.getState().setActiveCategory(item)
-                        }
-                        className="hover:text-[#76bf9f] transition-colors"
+                        onClick={() => {
+                          useBlogStore.getState().setActiveCategory(item);
+                          useBlogStore.getState().setActiveTag(null);
+                          useBlogStore.getState().setSearchQuery('');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="hover:text-[#76bf9f] transition-colors cursor-pointer flex items-center gap-2"
                       >
+                        <CategoryIcon category={item} size={14} className="text-slate-500" />
                         {item}
                       </button>
                     </li>
