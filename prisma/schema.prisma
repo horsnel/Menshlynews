@@ -38,3 +38,12 @@ model Like {
 
   @@unique([postId, fingerprint])
 }
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("popup")   // popup, footer, sidebar
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

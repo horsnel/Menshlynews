@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Generate a simple browser fingerprint (stored in localStorage)
 function getFingerprint(): string {
@@ -43,13 +43,13 @@ interface LikeData {
 
 export function useLikes() {
   const [likeData, setLikeData] = useState<LikeData>({});
-  const [fingerprint, setFingerprint] = useState('');
+  const fingerprintRef = useRef('');
   const [loading, setLoading] = useState(true);
 
   // Initialize fingerprint and fetch likes
   useEffect(() => {
     const fp = getFingerprint();
-    setFingerprint(fp);
+    fingerprintRef.current = fp;
 
     fetch(`/api/likes?fp=${fp}`)
       .then((res) => res.json())
@@ -62,7 +62,7 @@ export function useLikes() {
 
   const toggleLike = useCallback(
     async (postId: string) => {
-      if (!fingerprint) return;
+      if (!fingerprintRef.current) return;
 
       // Optimistic update
       const current = likeData[postId] || { count: 0, liked: false };
@@ -80,7 +80,7 @@ export function useLikes() {
         const res = await fetch('/api/likes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ postId, fingerprint }),
+          body: JSON.stringify({ postId, fingerprint: fingerprintRef.current }),
         });
         const data = await res.json();
         // Update with server response
@@ -96,7 +96,7 @@ export function useLikes() {
         }));
       }
     },
-    [fingerprint, likeData]
+    [likeData]
   );
 
   const getLikeCount = useCallback(

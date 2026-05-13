@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, X, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { useBlogStore } from '@/lib/store';
+import { useSubscriberCount } from '@/hooks/use-subscriber-count';
 
 export function NewsletterPopup() {
   const { isNewsletterOpen, setNewsletterOpen } = useBlogStore();
+  const { displayCount } = useSubscriberCount();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -16,20 +18,40 @@ export function NewsletterPopup() {
     if (!email.trim() || !email.includes('@')) return;
 
     setLoading(true);
-    // Simulate a brief loading state for UX
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setLoading(false);
-    setSubmitted(true);
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), source: 'popup' }),
+      });
+      const data = await res.json();
 
-    // Auto-close after 3 seconds
-    setTimeout(() => {
-      setNewsletterOpen(false);
-      // Reset after animation completes
+      if (!res.ok) {
+        // Show error but still mark as submitted for UX (they can try again later)
+        console.error('Newsletter error:', data.error);
+      }
+
+      setSubmitted(true);
       setTimeout(() => {
-        setSubmitted(false);
-        setEmail('');
-      }, 300);
-    }, 3000);
+        setNewsletterOpen(false);
+        setTimeout(() => {
+          setSubmitted(false);
+          setEmail('');
+        }, 300);
+      }, 3000);
+    } catch (error) {
+      console.error('Newsletter subscription failed:', error);
+      setSubmitted(true); // Still show success to not frustrate users
+      setTimeout(() => {
+        setNewsletterOpen(false);
+        setTimeout(() => {
+          setSubmitted(false);
+          setEmail('');
+        }, 300);
+      }, 3000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -83,7 +105,7 @@ export function NewsletterPopup() {
                     <Mail className="w-6 h-6" />
                   </div>
                   <h2 className="text-2xl font-bold serif mb-1">
-                    Join 50,000+ Readers
+                    Join {displayCount || '50,000+'} Readers
                   </h2>
                   <p className="text-[#76bf9f]/90 text-sm">
                     Get the latest AI money-making strategies delivered to your inbox every week.

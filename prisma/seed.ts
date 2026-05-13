@@ -27,15 +27,21 @@ async function seed() {
       });
       console.log(`  Created: ${post.title}`);
     } else {
-      // Update likes count from data
+      // Update content fields but PRESERVE real like/share counts from the database
       await db.post.update({
         where: { slug: post.slug },
         data: {
-          likes: post.likes,
-          shares: post.shares,
+          title: post.title,
+          excerpt: post.excerpt,
+          content: post.content,
+          category: post.category,
+          image: post.image,
+          readTime: post.readTime,
+          featured: post.featured || false,
+          tags: post.tags.join(','),
         },
       });
-      console.log(`  Updated: ${post.title}`);
+      console.log(`  Updated (preserved likes): ${post.title}`);
     }
   }
 

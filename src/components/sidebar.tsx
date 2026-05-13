@@ -5,11 +5,15 @@ import { BookOpen, Users, FileText, TrendingUp, Mail, ArrowRight } from 'lucide-
 import { categories, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 import { useLikes } from '@/hooks/use-likes';
+import { useSubscriberCount } from '@/hooks/use-subscriber-count';
+import { useStats } from '@/hooks/use-stats';
 import { CategoryIcon } from './category-icon';
 
 export function Sidebar() {
   const { setCurrentArticle, setActiveCategory, activeCategory, setNewsletterOpen } = useBlogStore();
   const { getLikeCount } = useLikes();
+  const { displayCount } = useSubscriberCount();
+  const { stats } = useStats();
 
   const popularPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 4);
 
@@ -33,21 +37,21 @@ export function Sidebar() {
         <div className="grid grid-cols-3 gap-3">
           <div className="text-center p-3 rounded-lg bg-slate-50">
             <Users className="w-4 h-4 text-[#166f4f] mx-auto mb-1" />
-            <p className="text-lg font-bold text-[#121212]">50K+</p>
+            <p className="text-lg font-bold text-[#121212]">{stats ? `${(stats.subscribers / 1000).toFixed(0)}K+` : '50K+'}</p>
             <p className="text-[10px] text-slate-500 uppercase tracking-wider">
               Readers
             </p>
           </div>
           <div className="text-center p-3 rounded-lg bg-slate-50">
             <FileText className="w-4 h-4 text-[#166f4f] mx-auto mb-1" />
-            <p className="text-lg font-bold text-[#121212]">200+</p>
+            <p className="text-lg font-bold text-[#121212]">{stats?.posts || '200+'}</p>
             <p className="text-[10px] text-slate-500 uppercase tracking-wider">
               Articles
             </p>
           </div>
           <div className="text-center p-3 rounded-lg bg-slate-50">
             <TrendingUp className="w-4 h-4 text-[#166f4f] mx-auto mb-1" />
-            <p className="text-lg font-bold text-[#121212]">12</p>
+            <p className="text-lg font-bold text-[#121212]">{stats?.categories || 6}</p>
             <p className="text-[10px] text-slate-500 uppercase tracking-wider">
               Categories
             </p>
@@ -101,7 +105,7 @@ export function Sidebar() {
           <h3 className="text-lg font-bold serif">Newsletter</h3>
         </div>
         <p className="text-[#76bf9f]/80 text-sm mb-1">
-          Join <span className="font-bold text-white">50,000+</span> readers
+          Join <span className="font-bold text-white">{displayCount || '50,000+'}</span> readers
         </p>
         <p className="text-[#76bf9f]/60 text-xs mb-4">
           Get the latest AI money-making strategies delivered to your inbox every week.

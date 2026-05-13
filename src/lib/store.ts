@@ -3,11 +3,6 @@ import { persist } from 'zustand/middleware';
 import type { Post } from './data';
 
 interface BlogStore {
-  // Likes - stored as array for serialization, used as Set in logic
-  likedPosts: string[];
-  toggleLike: (id: string) => void;
-  isLiked: (id: string) => boolean;
-
   // Current article
   currentArticle: Post | null;
   setCurrentArticle: (post: Post | null) => void;
@@ -35,21 +30,7 @@ interface BlogStore {
 
 export const useBlogStore = create<BlogStore>()(
   persist(
-    (set, get) => ({
-      // Likes
-      likedPosts: [],
-      toggleLike: (id: string) => {
-        const current = get().likedPosts;
-        if (current.includes(id)) {
-          set({ likedPosts: current.filter((postId) => postId !== id) });
-        } else {
-          set({ likedPosts: [...current, id] });
-        }
-      },
-      isLiked: (id: string) => {
-        return get().likedPosts.includes(id);
-      },
-
+    (set) => ({
       // Current article
       currentArticle: null,
       setCurrentArticle: (post: Post | null) => set({ currentArticle: post }),
@@ -76,9 +57,7 @@ export const useBlogStore = create<BlogStore>()(
     }),
     {
       name: 'menshlynews-blog-store',
-      partialize: (state) => ({
-        likedPosts: state.likedPosts,
-      }),
+      partialize: () => ({}),
     }
   )
 );

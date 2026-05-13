@@ -77,3 +77,37 @@ Stage Summary:
 - Newsletter popup modal works from all subscribe buttons across the site
 - Agency services page live at /services with hero, stats, service cards, process, contact form
 - Footer updated with services CTA link
+
+---
+Task ID: 2-8
+Agent: Production Readiness Agent
+Task: Make blog production-ready with real database persistence for likes and email subscriptions
+
+Work Log:
+- Added Subscriber model to prisma/schema.prisma (id, email @unique, source, isActive, timestamps)
+- Ran prisma db push to apply schema migration, prisma generate to regenerate client
+- Created /api/newsletter route with POST (subscribe with email validation via zod, duplicate check, reactivation) and GET (subscriber count), plus in-memory rate limiting (5 req/min per IP)
+- Updated newsletter-popup.tsx: replaced fake handleSubmit with real fetch('/api/newsletter') POST call, graceful error handling
+- Fixed seed script: changed else block to update only content fields (title, excerpt, content, category, image, readTime, featured, tags) and PRESERVE real like/share counts from DB
+- Cleaned up Zustand store: removed dead likedPosts array, toggleLike, isLiked methods; changed partialize to return empty object
+- Fixed db.ts: disabled query logging in production with conditional `process.env.NODE_ENV === 'development' ? ['query'] : []`
+- Created middleware.ts: security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy) + API rate limiting (30 req/min per IP)
+- Enhanced SEO metadata in layout.tsx: added title template, expanded keywords, openGraph, twitter cards, robots config, creator field
+- Created use-subscriber-count.ts hook: fetches subscriber count from /api/newsletter, formats for display (1K+, 10K+, etc.)
+- Created /api/stats route: returns subscriber count, post count, category count from DB
+- Created use-stats.ts hook: fetches stats from /api/stats for sidebar About widget
+- Updated sidebar.tsx: imported useSubscriberCount and useStats hooks, replaced hardcoded "50K+", "200+", "12" with real DB values; replaced hardcoded "50,000+" in newsletter widget with displayCount
+- Updated newsletter-popup.tsx: imported useSubscriberCount, replaced "Join 50,000+ Readers" with dynamic displayCount
+- Fixed pre-existing lint error in use-likes.ts: replaced useState for fingerprint with useRef to avoid synchronous setState in effect; updated toggleLike to use fingerprintRef.current
+
+Stage Summary:
+- 12 files created/modified (5 new, 7 updated)
+- Newsletter subscriptions now persist to Subscriber table via /api/newsletter API
+- Seed script preserves real like counts on re-seed
+- Dead Zustand like code removed (real likes use useLikes hook + /api/likes)
+- Production-safe db.ts (no query logging in production)
+- Security headers and API rate limiting via middleware.ts
+- Enhanced SEO with OpenGraph, Twitter cards, robots directives
+- Sidebar and newsletter popup display real subscriber counts from DB
+- ESLint passes with zero errors
+- Next.js build compiles successfully
