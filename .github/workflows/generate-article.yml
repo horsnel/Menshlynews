@@ -1,0 +1,90 @@
+name: Generate Weekly Article
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Article title'
+        required: false
+        default: ''
+      category:
+        description: 'Category (Investing, Saving, Retirement, Crypto, Real Estate, Side Hustles)'
+        required: false
+        default: ''
+      excerpt:
+        description: 'Article excerpt'
+        required: false
+        default: ''
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install z-ai-web-dev-sdk
+        run: npm install -g z-ai-web-dev-sdk
+      
+      - name: Generate article (scheduled)
+        if: github.event_name == 'schedule'
+        run: |
+          # Rotate through topics for variety
+          TOPICS=(
+            "AI-Powered Drop Servicing Business|Side Hustles|How to build a $6K/month drop servicing agency using AI to fulfill client work while you focus on sales"
+            "Selling Notion Templates for Passive Income|Saving|The complete guide to creating and selling Notion templates that generate $3K/month on Gumroad and Etsy"
+            "AI Stock Trading Bots for Beginners|Investing|A realistic guide to using AI trading bots — what works, what doesn't, and how to start with $500"
+            "Building a Paid Discord Community|Side Hustles|How to build a $10K/month paid Discord community using AI for content and engagement automation"
+            "Rental Arbitrage with AI Market Analysis|Real Estate|Use AI tools to find underpriced rentals, sublet on Airbnb, and build a $8K/month rental arbitrage business"
+            "Staking Cryptocurrency for Passive Yield|Crypto|The beginner's guide to earning 5-15% APY through crypto staking — risks, strategies, and the best platforms"
+            "AI Freelance Consulting on Clarity.fm|Side Hustles|How to earn $200/hour giving AI consulting calls on Clarity.fm and similar platforms"
+            "Dividend Investing with AI Stock Screeners|Investing|Build a $3K/month dividend portfolio using AI stock screening tools — the complete beginner's guide"
+            "Flipping Domain Names with AI Valuation|Real Estate|How to buy and sell domain names for profit using AI valuation tools — a $4K/month side hustle"
+            "Creating and Selling Online Courses with AI|Saving|Build a $7K/month online course business using AI for content creation, video editing, and marketing"
+          )
+          
+          # Use week number to rotate topics
+          WEEK=$(date +%U)
+          INDEX=$((WEEK % ${#TOPICS[@]}))
+          IFS='|' read -r TITLE CATEGORY EXCERPT <<< "${TOPICS[$INDEX]}"
+          
+          echo "Generating: $TITLE ($CATEGORY)"
+          npx tsx scripts/generate-article.ts "$TITLE" "$CATEGORY" "$EXCERPT"
+      
+      - name: Generate article (manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ -n "${{ inputs.title }}" ]; then
+            npx tsx scripts/generate-article.ts "${{ inputs.title }}" "${{ inputs.category }}" "${{ inputs.excerpt }}"
+          else
+            echo "No title provided, using random topic..."
+            npx tsx scripts/generate-article.ts
+          fi
+      
+      - name: Build and verify
+        run: npx next build
+      
+      - name: Commit and push
+        run: |
+          git config user.name "Article Generator Bot"
+          git config user.email "bot@menshlynews.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "📝 Auto-generate new article [skip ci]"
+          git push

@@ -1,6 +1,6 @@
 'use client';
 
-import { Twitter, Linkedin, Facebook, Link2, Check } from 'lucide-react';
+import { Twitter, Linkedin, Facebook, Link2, Check, Share2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface ShareButtonsProps {
@@ -50,6 +50,25 @@ export function ShareButtons({
     }
   };
 
+  // Use native Web Share API on supported devices (mobile-first)
+  const handleNativeShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `Check out this article: ${title}`,
+          url: url,
+        });
+        return;
+      } catch (err) {
+        // User cancelled or API failed — fall through to copy
+        if ((err as DOMException).name === 'AbortError') return;
+      }
+    }
+    // Fallback: copy to clipboard
+    await handleCopyLink();
+  };
+
   if (variant === 'floating') {
     return (
       <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md rounded-full px-4 py-2.5 shadow-lg border border-slate-200">
@@ -66,18 +85,18 @@ export function ShareButtons({
           </a>
         ))}
         <button
-          onClick={handleCopyLink}
+          onClick={handleNativeShare}
           className={`p-2 rounded-full transition-colors ${
             copied
               ? 'text-[#166f4f] bg-[#f0f0f0]'
               : 'text-slate-400 hover:bg-[#f0f0f0] hover:text-[#166f4f]'
           }`}
-          aria-label="Copy link"
+          aria-label="Share"
         >
           {copied ? (
             <Check className="w-4 h-4" />
           ) : (
-            <Link2 className="w-4 h-4" />
+            <Share2 className="w-4 h-4" />
           )}
         </button>
       </div>
@@ -99,15 +118,15 @@ export function ShareButtons({
         </a>
       ))}
       <button
-        onClick={handleCopyLink}
+        onClick={handleNativeShare}
         className={`p-2.5 rounded-lg transition-colors border ${
           copied
             ? 'text-[#166f4f] bg-[#f0f0f0] border-[#76bf9f]'
             : 'text-slate-400 border-slate-200 hover:bg-[#f0f0f0] hover:text-[#166f4f]'
         }`}
-        aria-label="Copy link"
+        aria-label="Share"
       >
-        {copied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
+        {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
       </button>
     </div>
   );

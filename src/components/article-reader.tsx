@@ -67,16 +67,6 @@ export function ArticleReader({ post }: ArticleReaderProps) {
     toggleLike(post.id);
   };
 
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        `${window.location.origin}/article/${post.slug}`
-      );
-    } catch {
-      // Fallback
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
