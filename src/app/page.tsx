@@ -260,9 +260,11 @@ export default function HomePage() {
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#166f4f] to-[#1c7352] flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-white" />
-                </div>
+                <img
+                  src="/images/icon-192.png"
+                  alt="Menshly Wire"
+                  className="w-8 h-8 rounded-lg"
+                />
                 <span className="text-lg font-bold text-white serif">
                   Menshly Wire
                 </span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, Search, X, Menu } from 'lucide-react';
+import { Search, X, Menu } from 'lucide-react';
 import { useBlogStore } from '@/lib/store';
 import { posts } from '@/lib/data';
 
@@ -83,9 +83,11 @@ export function Header() {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => handleNavClick(null)}
           >
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#166f4f] to-[#1c7352] flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
+            <img
+              src="/images/icon-192.png"
+              alt="Menshly Wire"
+              className="w-9 h-9 rounded-lg"
+            />
             <div>
               <h1 className="text-lg font-bold text-[#121212] leading-tight serif">
                 Menshly Wire
