@@ -259,6 +259,57 @@ export function ArticleReader({ post }: ArticleReaderProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Content protection: disable right-click, copy, and keyboard shortcuts on article content
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.prose-content')) {
+        e.preventDefault();
+      }
+    };
+
+    const handleCopy = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.prose-content')) {
+        e.preventDefault();
+      }
+    };
+
+    const handleKeyDownProtect = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.prose-content')) return;
+      // Block Ctrl+C, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, F12
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'u')) {
+        e.preventDefault();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'J')) {
+        e.preventDefault();
+      }
+      if (e.key === 'F12') {
+        e.preventDefault();
+      }
+    };
+
+    const handleDragStart = (e: DragEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.prose-content')) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('copy', handleCopy);
+    document.addEventListener('keydown', handleKeyDownProtect);
+    document.addEventListener('dragstart', handleDragStart);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('copy', handleCopy);
+      document.removeEventListener('keydown', handleKeyDownProtect);
+      document.removeEventListener('dragstart', handleDragStart);
+    };
+  }, []);
+
   const handleLike = () => {
     toggleLike(post.id);
   };

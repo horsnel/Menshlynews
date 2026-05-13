@@ -59,15 +59,15 @@ The real estate industry spends over $1 billion annually on marketing, yet most 
 
 Let's be honest about what this takes:
 
-> **Truth #1:** You won't make $8K in your first month. Expect $1-2K while you learn the ropes. My first month, I made $497 from one client who was a friend. Month two, I had three clients. It builds.
+> **You won't make $8K in your first month.** Expect $1-2K while you learn the ropes. My first month, I made $497 from one client who was a friend. Month two, I had three clients. It builds.
 
-> **Truth #2:** You need to understand real estate terminology. "Escrow," "comps," and "CMA" aren't optional vocabulary. Spend a weekend reading Inman and AgentAdvice so you sound like you belong.
+> **You need to understand real estate terminology.** "Escrow," "comps," and "CMA" aren't optional vocabulary. Spend a weekend reading Inman and AgentAdvice so you sound like you belong.
 
-> **Truth #3:** AI does 80% of the work, but that last 20% requires human judgment and creativity. The difference between a $200/month service and a $800/month service is that 20%.
+> **AI does 80% of the work,** but that last 20% requires human judgment and creativity. The difference between a $200/month service and a $800/month service is that 20%.
 
-> **Truth #4:** Client communication is half the job. If you hate talking to people, this isn't for you. Agents are social creatures who want a partner, not just a vendor.
+> **Client communication is half the job.** If you hate talking to people, this isn't for you. Agents are social creatures who want a partner, not just a vendor.
 
-> **Truth #5:** You will lose clients. Some will move brokerages, some will try doing it themselves, some will just ghost you. Plan for 10-15% churn monthly and always be prospecting.
+> **You will lose clients.** Some will move brokerages, some will try doing it themselves, some will just ghost you. Plan for 10-15% churn monthly and always be prospecting.
 
 ## The Free Stack
 
@@ -1130,19 +1130,19 @@ The first 10 issues are about finding your voice and building your format. Don't
 6. **Community Question** — Engage readers, generate discussion, learn what they care about
 7. **Sign-off** — Consistent closing that becomes your signature
 
-**Issue #1: The "Why I Started This" Issue**
+**The "Why I Started This" Issue**
 - Share your origin story and motivation
 - Set expectations: what readers will get, how often, your perspective
 - Include 3-4 stories to prove the format works
 - End with a strong CTA to share with one friend
 
-**Issues #2-5: Establish the Pattern**
+**Establish the Pattern (Issues 2-5)**
 - Same format, same time, same voice
 - Focus on consistency over perfection
 - Pay attention to which stories get the most clicks
 - Start building your "greatest hits" — topics that resonate
 
-**Issues #6-10: Dial It In**
+**Dial It In (Issues 6-10)**
 - Refine based on click data
 - Add your first affiliate promotion (soft sell only)
 - Start including reader feedback or questions
@@ -2255,15 +2255,15 @@ This is where it gets powerful. These tools run on autopilot:
 
 This is the most important section. Read it twice.
 
-**Rule #1: Never invest more than you can afford to lose.** DeFi yields are attractive, but smart contract hacks, rug pulls, and market crashes are real. I keep 60% of my crypto in cold storage. Only 40% goes into DeFi.
+**Never invest more than you can afford to lose.** DeFi yields are attractive, but smart contract hacks, rug pulls, and market crashes are real. I keep 60% of my crypto in cold storage. Only 40% goes into DeFi.
 
-**Rule #2: Diversify across protocols and chains.** If one protocol gets hacked, you don't lose everything. My capital is split across 6 protocols and 3 chains.
+**Diversify across protocols and chains.** If one protocol gets hacked, you don't lose everything. My capital is split across 6 protocols and 3 chains.
 
-**Rule #3: Set stop-losses.** Use DeFi Saver to set automatic exits if your position drops below a threshold. I use -15% as my hard stop on leveraged positions.
+**Set stop-losses.** Use DeFi Saver to set automatic exits if your position drops below a threshold. I use -15% as my hard stop on leveraged positions.
 
-**Rule #4: Audit your approvals monthly.** Use Revoke.cash to review and revoke unnecessary token approvals. Every approval is a potential attack vector.
+**Audit your approvals monthly.** Use Revoke.cash to review and revoke unnecessary token approvals. Every approval is a potential attack vector.
 
-**Rule #5: Keep a degen wallet.** Have a separate wallet for experimental protocols. Never connect your main wallet to unproven contracts.
+**Keep a degen wallet.** Have a separate wallet for experimental protocols. Never connect your main wallet to unproven contracts.
 
 | Risk Type | Likelihood | Impact | Mitigation |
 |-----------|-----------|--------|------------|

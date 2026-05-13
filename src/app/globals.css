@@ -322,3 +322,22 @@ body {
     padding: 0.5rem 0.65rem;
   }
 }
+
+/* Content protection: prevent text selection and copying */
+.prose-content {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow selection only for interactive elements inside prose */
+.prose-content a,
+.prose-content button,
+.prose-content input {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
