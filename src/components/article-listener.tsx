@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Play, Pause, SkipBack, SkipForward, X, Loader2, ChevronDown, AlertCircle } from 'lucide-react';
+import { Volume2, Play, Pause, SkipBack, SkipForward, X, Loader2, ChevronDown, AlertCircle, RotateCcw } from 'lucide-react';
 
 interface ArticleListenerProps {
   title: string;
@@ -36,6 +36,7 @@ function stripMarkdown(text: string): string {
 export function ArticleListener({ title, content }: ArticleListenerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false); // loading next chunk while playing
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -45,14 +46,21 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
   const [rate, setRate] = useState(1.0);
   const [isDismissed, setIsDismissed] = useState(false);
   const [ttsEngine, setTtsEngine] = useState<'idle' | 'server' | 'browser'>('idle');
+  const [totalTextLength, setTotalTextLength] = useState(0);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
   const progressInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const ttsChunkIndex = useRef(0);
-  const ttsChunks = useRef<string[]>([]);
   const isMountedRef = useRef(true);
+  const plainTextRef = useRef<string>('');
+  const nextOffsetRef = useRef(0);
+  const hasMoreRef = useRef(false);
 
-  const getPlainText = useCallback(() => stripMarkdown(`${title}\n\n${content}`), [title, content]);
+  const getPlainText = useCallback(() => {
+    return stripMarkdown(`${title}\n\n${content}`);
+  }, [title, content]);
 
   const cleanupAudio = useCallback(() => {
     if (audioRef.current) {
@@ -67,27 +75,29 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     }
   }, []);
 
-  // Generate audio via Microsoft TTS on the server
-  const generateAudio = useCallback(async (): Promise<HTMLAudioElement | null> => {
-    setIsLoading(true);
-    setError(null);
-
+  // Fetch one chunk of audio from the server
+  const fetchChunk = useCallback(async (offset: number): Promise<{ audio: HTMLAudioElement; nextOffset: number; hasMore: boolean } | null> => {
     try {
-      const text = getPlainText();
       const response = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: selectedVoice, rate }),
+        body: JSON.stringify({ text: plainTextRef.current, voice: selectedVoice, rate, offset }),
       });
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({ fallback: true }));
-        if (errData.fallback) return null; // triggers browser TTS
+        if (errData.fallback) return null;
         throw new Error(errData.error || `HTTP ${response.status}`);
       }
 
       const blob = await response.blob();
       if (blob.size < 100) throw new Error('Empty audio');
+
+      const nOff = parseInt(response.headers.get('X-TTS-Next-Offset') || '0', 10);
+      const hMore = response.headers.get('X-TTS-Has-More') === 'true';
+      const tLen = parseInt(response.headers.get('X-TTS-Total-Length') || '0', 10);
+
+      if (tLen) setTotalTextLength(tLen);
 
       cleanupAudio();
       const url = URL.createObjectURL(blob);
@@ -99,62 +109,121 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       audioRef.current = audio;
 
       await new Promise<void>((resolve) => {
-        const done = () => {
-          audio.removeEventListener('canplaythrough', done);
-          audio.removeEventListener('error', done);
-          resolve();
-        };
+        const done = () => { audio.removeEventListener('canplaythrough', done); audio.removeEventListener('error', done); resolve(); };
         audio.addEventListener('canplaythrough', done);
         audio.addEventListener('error', done);
-        setTimeout(done, 15000);
+        setTimeout(done, 10000);
       });
 
       if (!isMountedRef.current) return null;
 
-      setDuration(audio.duration || 0);
-      setTtsEngine('server');
-      setIsLoading(false);
-
-      audio.addEventListener('ended', () => {
-        if (isMountedRef.current) { setIsPlaying(false); setProgress(100); }
-      });
-      audio.addEventListener('error', () => {
-        if (isMountedRef.current) { setTtsEngine('browser'); setIsPlaying(false); setError('Audio error — using browser TTS'); }
-      });
-
-      return audio;
+      return { audio, nextOffset: nOff, hasMore: hMore };
     } catch (err) {
-      console.warn('[TTS] Server failed:', err);
-      if (isMountedRef.current) { setIsLoading(false); }
+      console.warn('[TTS] Chunk fetch failed:', err);
       return null;
     }
-  }, [getPlainText, selectedVoice, rate, cleanupAudio]);
+  }, [selectedVoice, rate, cleanupAudio]);
+
+  // Set up event listeners on current audio element
+  const attachAudioListeners = useCallback((audio: HTMLAudioElement) => {
+    audio.addEventListener('ended', async () => {
+      if (!isMountedRef.current) return;
+
+      // Auto-load next chunk if available
+      if (hasMoreRef.current) {
+        setIsBuffering(true);
+        const result = await fetchChunk(nextOffsetRef.current);
+        setIsBuffering(false);
+
+        if (result && isMountedRef.current) {
+          nextOffsetRef.current = result.nextOffset;
+          hasMoreRef.current = result.hasMore;
+          setCurrentOffset(result.nextOffset);
+          setHasMore(result.hasMore);
+          setDuration(result.audio.duration || 0);
+          setCurrentTime(0);
+
+          attachAudioListeners(result.audio);
+
+          try {
+            await result.audio.play();
+          } catch {
+            // autoplay blocked
+            setIsPlaying(false);
+          }
+        } else {
+          // Fallback or done
+          setIsPlaying(false);
+          setProgress(100);
+        }
+      } else {
+        setIsPlaying(false);
+        setProgress(100);
+      }
+    });
+
+    audio.addEventListener('error', () => {
+      if (isMountedRef.current) {
+        setTtsEngine('browser');
+        setIsPlaying(false);
+        setError('Audio error — using browser TTS');
+      }
+    });
+  }, [fetchChunk]);
+
+  // Generate first chunk and play
+  const generateAndPlay = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    plainTextRef.current = getPlainText();
+    setCurrentOffset(0);
+
+    const result = await fetchChunk(0);
+    setIsLoading(false);
+
+    if (result && isMountedRef.current) {
+      nextOffsetRef.current = result.nextOffset;
+      hasMoreRef.current = result.hasMore;
+      setCurrentOffset(result.nextOffset);
+      setHasMore(result.hasMore);
+      setDuration(result.audio.duration || 0);
+      setCurrentTime(0);
+      setTtsEngine('server');
+
+      attachAudioListeners(result.audio);
+
+      try {
+        await result.audio.play();
+        setIsPlaying(true);
+      } catch {
+        // autoplay blocked — fall back to browser TTS
+        startBrowserTTS();
+      }
+    } else if (isMountedRef.current) {
+      startBrowserTTS();
+    }
+  }, [getPlainText, fetchChunk, attachAudioListeners]);
 
   // Browser TTS fallback
   const startBrowserTTS = useCallback(() => {
-    if (!('speechSynthesis' in window)) { setError('TTS not supported in this browser.'); return; }
+    if (!('speechSynthesis' in window)) { setError('TTS not supported.'); return; }
     window.speechSynthesis.cancel();
 
     const text = getPlainText();
-    ttsChunks.current = text.match(/.{1,1500}/g) || [text];
-    ttsChunkIndex.current = 0;
+    const chunks = text.match(/.{1,1500}/g) || [text];
+    let idx = 0;
 
     const speakNext = () => {
       if (!isMountedRef.current) return;
-      if (ttsChunkIndex.current >= ttsChunks.current.length) { setIsPlaying(false); setProgress(100); return; }
+      if (idx >= chunks.length) { setIsPlaying(false); setProgress(100); return; }
 
-      const u = new SpeechSynthesisUtterance(ttsChunks.current[ttsChunkIndex.current]);
+      const u = new SpeechSynthesisUtterance(chunks[idx]);
       u.rate = rate;
       const voices = window.speechSynthesis.getVoices();
       const v = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) || voices.find(v => v.lang.startsWith('en')) || voices[0];
       if (v) u.voice = v;
 
-      u.onend = () => {
-        if (!isMountedRef.current) return;
-        ttsChunkIndex.current++;
-        setProgress(Math.round((ttsChunkIndex.current / ttsChunks.current.length) * 100));
-        speakNext();
-      };
+      u.onend = () => { if (!isMountedRef.current) return; idx++; setProgress(Math.round((idx / chunks.length) * 100)); speakNext(); };
       u.onerror = () => { if (isMountedRef.current) { setIsPlaying(false); setError('Browser TTS error.'); } };
       window.speechSynthesis.speak(u);
     };
@@ -179,39 +248,42 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     }
 
     // Resume paused browser TTS
-    if (ttsEngine === 'browser' && ttsChunkIndex.current > 0 && ttsChunkIndex.current < ttsChunks.current.length) {
+    if (ttsEngine === 'browser') {
       window.speechSynthesis.resume(); setIsPlaying(true); return;
     }
 
     // Start fresh
-    const audio = await generateAudio();
-    if (audio) {
-      try { await audio.play(); setIsPlaying(true); } catch { startBrowserTTS(); }
-    } else {
-      startBrowserTTS();
-    }
-  }, [isPlaying, ttsEngine, generateAudio, startBrowserTTS]);
+    await generateAndPlay();
+  }, [isPlaying, ttsEngine, generateAndPlay, startBrowserTTS]);
 
   const handleStop = useCallback(() => {
     cleanupAudio();
     window.speechSynthesis.cancel();
-    setIsPlaying(false); setProgress(0); setCurrentTime(0); setTtsEngine('idle');
-    ttsChunkIndex.current = 0; setError(null);
+    setIsPlaying(false); setIsBuffering(false); setProgress(0); setCurrentTime(0);
+    setTtsEngine('idle'); setCurrentOffset(0); setHasMore(false); setError(null);
   }, [cleanupAudio]);
 
+  // Progress tracking
   useEffect(() => {
     if (isPlaying && ttsEngine === 'server' && audioRef.current) {
       progressInterval.current = setInterval(() => {
         if (audioRef.current && isMountedRef.current) {
           setCurrentTime(audioRef.current.currentTime);
-          if (audioRef.current.duration > 0 && isFinite(audioRef.current.duration))
-            setProgress(Math.round((audioRef.current.currentTime / audioRef.current.duration) * 100));
+          if (audioRef.current.duration > 0 && isFinite(audioRef.current.duration)) {
+            // Overall progress = completed portion + current chunk progress
+            const chunkProgress = audioRef.current.currentTime / audioRef.current.duration;
+            const overallProgress = totalTextLength > 0
+              ? ((currentOffset + chunkProgress * (audioRef.current.duration * 50)) / totalTextLength) * 100 // rough estimate
+              : chunkProgress * 100;
+            setProgress(Math.min(Math.round(overallProgress), 99));
+          }
         }
       }, 500);
     }
     return () => { if (progressInterval.current) clearInterval(progressInterval.current); };
-  }, [isPlaying, ttsEngine]);
+  }, [isPlaying, ttsEngine, currentOffset, totalTextLength]);
 
+  // Cleanup on unmount
   useEffect(() => {
     isMountedRef.current = true;
     return () => { isMountedRef.current = false; cleanupAudio(); window.speechSynthesis.cancel(); };
@@ -239,7 +311,7 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-[#166f4f] to-[#1c7352]">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            {isLoading ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Volume2 className="w-4 h-4 text-white" />}
+            {isLoading || isBuffering ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Volume2 className="w-4 h-4 text-white" />}
           </div>
           <div>
             <span className="text-sm font-bold text-white">Listen to this article</span>
@@ -320,8 +392,9 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
 
           <button onClick={() => {
             const speeds = [0.75, 1.0, 1.25, 1.5, 2.0];
-            setRate(speeds[(speeds.indexOf(rate) + 1) % speeds.length]);
-            if (audioRef.current) audioRef.current.playbackRate = speeds[(speeds.indexOf(rate) + 1) % speeds.length];
+            const nextRate = speeds[(speeds.indexOf(rate) + 1) % speeds.length];
+            setRate(nextRate);
+            if (audioRef.current) audioRef.current.playbackRate = nextRate;
           }}
             className="ml-auto px-3 py-1.5 rounded-lg bg-[#166f4f]/10 text-[#166f4f] text-xs font-bold hover:bg-[#166f4f]/20 transition-colors min-w-[48px] text-center">
             {rate}x
@@ -331,14 +404,19 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
         {/* Time */}
         {duration > 0 && ttsEngine === 'server' && (
           <div className="flex items-center justify-between mt-3 text-[11px] text-slate-400 font-medium tabular-nums">
-            <span>{formatTime(currentTime)}</span><span>{formatTime(duration)}</span>
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
           </div>
         )}
 
-        {ttsEngine === 'browser' && isPlaying && (
-          <div className="mt-3 text-[11px] text-slate-400 font-medium">Part {ttsChunkIndex.current + 1} of {ttsChunks.current.length}</div>
+        {/* Buffering indicator */}
+        {isBuffering && (
+          <div className="mt-3 flex items-center gap-2 text-[11px] text-[#166f4f] font-medium">
+            <Loader2 className="w-3 h-3 animate-spin" /> Loading next part...
+          </div>
         )}
 
+        {/* Loading */}
         {isLoading && (
           <div className="mt-3 flex items-center gap-2 text-[11px] text-[#166f4f] font-medium">
             <Loader2 className="w-3 h-3 animate-spin" /> Generating audio...
