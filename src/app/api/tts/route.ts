@@ -14,8 +14,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Truncate text to stay within Speechify's free tier limit
+    // Truncate text to stay within Speechify limits (free tier: 50K chars)
     const truncatedText = text.slice(0, 50000);
+
+    console.log(`[TTS] Requesting audio for ${truncatedText.length} chars, voice: ${voice}, speed: ${rate}`);
 
     // Call Speechify API with correct format
     const response = await fetch(SPEECHIFY_API_URL, {
@@ -35,28 +37,28 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errText = await response.text().catch(() => '');
-      console.error('Speechify API error:', response.status, errText);
+      console.error('[TTS] Speechify API error:', response.status, errText);
 
-      // Return a fallback response that tells the client to use browser TTS
       return NextResponse.json(
         { error: `Speechify API error: ${response.status}`, fallback: true },
         { status: response.status }
       );
     }
 
-    // Stream audio back as MP3
+    // Get audio data
     const audioBuffer = await response.arrayBuffer();
+    console.log(`[TTS] Received audio: ${audioBuffer.byteLength} bytes`);
 
     return new NextResponse(audioBuffer, {
       status: 200,
       headers: {
         'Content-Type': 'audio/mpeg',
         'Content-Length': String(audioBuffer.byteLength),
-        'Cache-Control': 'public, max-age=86400', // Cache for 24h
+        'Cache-Control': 'public, max-age=86400',
       },
     });
   } catch (error) {
-    console.error('TTS API error:', error);
+    console.error('[TTS] Error:', error);
     return NextResponse.json(
       { error: 'TTS generation failed', fallback: true },
       { status: 500 }
