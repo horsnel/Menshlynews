@@ -136,3 +136,28 @@ Stage Summary:
 - Reading progress bar now has smooth spring animation, gradient colors, glow effect, and percentage tooltip
 - Entire site has cohesive glassmorphism design language with consistent use of semi-transparent backgrounds, backdrop blur, and frosted borders
 - Brand colors preserved throughout all glass effects
+
+---
+Task ID: 1-4
+Agent: Main Agent
+Task: Fix CLI script DB insert, set up cron, add Speechify TTS, push to GitHub
+
+Work Log:
+- Fixed scripts/generate-article.ts to import PrismaClient and insert into DB after data.ts
+- Fixed src/app/api/route.ts to import db and insert into Prisma after data.ts insert
+- Created /api/cron endpoint with 20-topic rotating pool, secret auth, DB-only inserts
+- Created scripts/cron-generate.sh for system cron invocation
+- Created vercel.json with Vercel Cron Jobs config (daily at 6 AM)
+- Created src/components/article-listener.tsx — full TTS player with Speechify API + browser fallback
+- Created src/app/api/tts/route.ts — Speechify API proxy endpoint
+- Added ArticleListener to article-reader.tsx (after hero image, before content)
+- Pushed all changes to GitHub (commit 307ed79)
+- Cleaned PAT from remote URL after push
+
+Stage Summary:
+- CLI script and API route now insert into both data.ts AND Prisma database
+- Cron job endpoint ready at /api/cron with 20 rotating topics
+- Vercel Cron configured in vercel.json for daily generation
+- TTS listener component with 6 voice options, speed control, skip forward/back, progress bar
+- Browser TTS fallback when Speechify API unavailable
+- All code pushed to GitHub successfully
