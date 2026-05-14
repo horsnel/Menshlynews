@@ -12,6 +12,7 @@ import { useArticleTranslator, useT } from '@/hooks/use-translator';
 import { ReadingProgress } from './reading-progress';
 import { ShareButtons } from './share-buttons';
 import { CategoryIcon } from './category-icon';
+import { ArticleListener } from './article-listener';
 
 interface ArticleReaderProps {
   post: Post;
@@ -429,6 +430,11 @@ export function ArticleReader({ post }: ArticleReaderProps) {
               <span className="text-xs text-[#166f4f] font-medium">Translating article...</span>
             </div>
           )}
+
+          {/* Article Listener (TTS) */}
+          <div className="mb-6">
+            <ArticleListener title={post.title} content={post.content} />
+          </div>
 
           {/* Article body — first half */}
           <div className="prose-content">

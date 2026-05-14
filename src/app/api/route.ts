@@ -3,6 +3,7 @@ import ZAI from "z-ai-web-dev-sdk";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
+import { db } from "@/lib/db";
 
 const VALID_CATEGORIES = ["Investing", "Saving", "Retirement", "Crypto", "Real Estate", "Side Hustles"];
 
@@ -429,6 +430,35 @@ export async function POST(request: NextRequest) {
 
     // Insert into data.ts
     insertPostIntoDataTs(post);
+
+    // Insert into Prisma database
+    try {
+      await db.post.create({
+        data: {
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt,
+          content: post.content,
+          category: post.category,
+          categoryIcon: "",
+          image: post.image,
+          author: post.author,
+          date: post.date,
+          readTime: post.readTime,
+          featured: false,
+          likes: post.likes,
+          shares: post.shares,
+          tags: (post.tags as string[]).join(","),
+        },
+      });
+      console.log("Article inserted into DB:", post.slug);
+    } catch (dbErr: any) {
+      if (dbErr.code === "P2002") {
+        console.log("Article already exists in DB, skipping:", post.slug);
+      } else {
+        console.error("DB insert failed:", dbErr.message);
+      }
+    }
 
     return NextResponse.json({
       success: true,

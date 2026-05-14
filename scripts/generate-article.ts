@@ -23,6 +23,9 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 import ZAI from 'z-ai-web-dev-sdk';
+import { PrismaClient } from '@prisma/client';
+
+const db = new PrismaClient();
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 
@@ -336,8 +339,38 @@ async function main() {
     tags: extractTags(title, category),
   };
   
-  // Step 4: Insert into data.ts
-  console.log('\n📦 Step 3: Inserting article into data.ts...');
+  // Step 4: Insert into Prisma database
+  console.log('\n📦 Step 3: Inserting article into Prisma database...');
+  try {
+    const dbPost = await db.post.create({
+      data: {
+        title: newPost.title,
+        slug: newPost.slug,
+        excerpt: newPost.excerpt,
+        content: newPost.content,
+        category: newPost.category,
+        categoryIcon: '',
+        image: newPost.image,
+        author: newPost.author,
+        date: newPost.date,
+        readTime: newPost.readTime,
+        featured: false,
+        likes: newPost.likes,
+        shares: newPost.shares,
+        tags: newPost.tags.join(','),
+      },
+    });
+    console.log(`   ✅ Article inserted into DB (id: ${dbPost.id})`);
+  } catch (dbErr: any) {
+    if (dbErr.code === 'P2002') {
+      console.log('   ⚠️  Article with this slug already exists in DB, skipping DB insert');
+    } else {
+      console.error('   ❌ DB insert failed:', dbErr.message);
+    }
+  }
+
+  // Step 5: Also insert into data.ts for backwards compatibility
+  console.log('\n📦 Step 4: Inserting article into data.ts...');
   insertPostIntoDataTs(newPost);
   console.log('   ✅ Article inserted into data.ts');
   
@@ -352,9 +385,11 @@ async function main() {
   console.log(`   Image:    ${newPost.image}`);
   console.log(`   Slug:     ${slug}`);
   console.log('\n   Next steps:');
-  console.log('   1. Review the article in src/lib/data.ts');
+  console.log('   1. Review the article in src/lib/data.ts and DB');
   console.log('   2. Run `npm run dev` to preview');
   console.log('   3. Commit and push to GitHub\n');
+
+  await db.$disconnect();
 }
 
 // ─── AI Content Generation (z-ai-web-dev-sdk + OpenRouter fallback) ──────────

@@ -4599,5 +4599,247 @@ This is the system that produces consistent, high-quality content at scale. Buil
 4. Have I earned any revenue, and from which sources?
 5. Is my SOP complete enough that someone else could follow it to produce an article?
 6. Am I ready to launch blog #2, or should I keep building blog #1 first?`
+,
+  {
+    id: "1778759082809",
+    title: "AI-Powered Drop Servicing Business",
+    slug: "ai-powered-drop-servicing-business",
+    excerpt: "How to build a $6K/month drop servicing agency using AI to fulfill client work while you focus on sales.",
+    category: "Side Hustles",
+    image: "/images/ai-ai-powered-drop-servicing-business.jpg",
+    author: "Horsnel John",
+    date: "May 14, 2026",
+    readTime: "19 min read",
+    likes: 792,
+    shares: 116,
+    tags: ["aipowered","drop","servicing","side hustles"],
+    content: `# AI-Powered Drop Servicing Business
+
+## How I Built a \$6K/Month Drop Servicing Agency Using AI to Fulfill Client Work While I Focus on Sales
+
+When I first discovered drop servicing, I was skeptical. The idea of selling services and outsourcing the work seemed too good to be true. That was until I realized I could leverage AI tools to create a hybrid model where I handled the high-value sales and strategy while AI handled the execution. Last month, my agency hit \$6,000 in revenue with just 15 hours of my actual work. The secret isn't magic—it's about understanding where AI excels and where human touch is irreplaceable. This model works because businesses need quality content and services but often don't have the time or expertise to create them themselves, and they're willing to pay premium prices for solutions that appear to come from an expert.
+
+## Why This Works Right Now
+
+The market for content and digital services has exploded, growing at 18.5% year-over-year according to recent industry reports. Businesses are desperately seeking quality content, marketing materials, and digital assets but struggle to find reliable providers who deliver consistently. What most don't realize is that AI can now produce 80% of the work with just 20% of the human effort required by traditional methods. Platforms like ChatGPT, MidJourney, and Copy.ai have advanced to the point where they can generate professional-grade content that only needs human refinement, not creation from scratch. The timing is perfect because while businesses recognize AI is changing the game, they still don't understand how to implement it effectively, creating a knowledge gap that you can fill with your agency.
+
+The beauty of this model is that it solves a critical pain point for businesses: getting quality work delivered quickly and consistently without the overhead of hiring full-time staff. Traditional agencies charge premium prices but often have bloated teams and slow turnaround times. With an AI-powered drop servicing model, you can offer faster delivery at competitive rates while maintaining 70-80% profit margins. The market size for content marketing alone is \$63.7 billion globally, and AI-powered services are capturing an increasing share of this market as businesses become more comfortable with AI-generated content. The key is positioning yourself not as an AI user, but as an expert who delivers exceptional results using cutting-edge technology.
+
+Another critical factor is the rise of "done-for-you" services across various niches. Entrepreneurs and small business owners are increasingly willing to outsource tasks that aren't their core competencies, especially when they can see clear ROI. With AI handling the heavy lifting, you can scale your service delivery without proportional increases in costs. The barrier to entry has never been lower—you can start with just a laptop and access to AI tools, yet charge enterprise-level prices for your expertise in managing these tools and refining their output. This isn't a bubble; it's a fundamental shift in how creative and marketing services are delivered, and early adopters are capturing significant market share.
+
+## The Realistic Picture
+
+> **Truth #1:** This isn't a "set it and forget it" business. You'll need to dedicate at least 10-15 hours per week initially to learn the AI tools, refine your processes, and build client relationships. The AI handles execution, but you're still responsible for quality control, strategy, and client management.
+
+> **Truth #2:** Income won't be immediate. Plan for 2-3 months of building systems and acquiring clients before seeing consistent revenue. Most agencies hit their first \$1,000 in month 2 and \$3,000+ by month 3, with significant growth possible by month 6 if systems are properly established.
+
+> **Truth #3:** Competition is heating up as more people discover AI tools. However, most competitors lack the strategic understanding to properly implement AI for business results. Your advantage comes from combining AI expertise with business strategy—a rare combination that allows you to charge premium prices.
+
+> **Truth #4:** There are hidden costs beyond the AI tools. You'll need budget for client acquisition, potential revisions when AI doesn't meet expectations, and possibly outsourcing tasks that AI can't handle. Budget 15-20% of your revenue for these operational costs to avoid cash flow issues.
+
+> **Truth #5:** Success isn't just about hitting revenue targets. True success means building a reliable system that delivers consistent results to clients, allowing you to eventually step back from day-to-day operations while maintaining quality and profitability. The goal is to create a machine that works for you, not a job that requires your constant attention.
+
+## The Free Stack
+
+Canva (www.canva.com) is your design powerhouse for creating all client-facing materials. Use it to design proposals, social media templates, website mockups, and even marketing assets for your own agency. The key is leveraging Canva's AI design features to create professional-looking materials in minutes rather than hours. Create a brand kit with your agency's colors, fonts, and logo to maintain consistency across all client deliverables.
+
+> **HACK:** Install the Canva Chrome extension to instantly create designs from any webpage content. Right-click on any text or image, select "Create design in Canva," and it will automatically generate a template with that content pre-loaded, saving you 10+ minutes per design.
+
+Notion (www.notion.so) will serve as your central command center for the entire business. Use it to create client portals, track projects, manage your content calendar, and store all templates and processes. Create databases for clients, projects, content briefs, and standard operating procedures. The AI features in Notion can help you summarize documents, generate content ideas, and even draft responses to client emails.
+
+> **HACK:** Create a "Client Onboarding" template in Notion with all your standard questions and processes. When you get a new client, duplicate this template and use the AI feature to automatically populate basic information from their website or LinkedIn, cutting your onboarding time by 70%.
+
+ChatGPT (www.chat.openai.com) is your primary content generation tool. Use it to write blog posts, social media content, email sequences, website copy, and more. The key is learning how to write effective prompts that produce high-quality output. Create prompt templates for each type of content you regularly produce, then refine them based on client feedback.
+
+> **HACK:** Create a "prompt library" in a Google Doc with your most effective prompts. Include variables in brackets like [CLIENT_NAME], [INDUSTRY], and [TONE_OF_VOICE] so you can quickly customize prompts for each client. This approach has increased my output quality by 40% and reduced editing time by 60%.
+
+Google Drive (www.drive.google.com) serves as your file management and collaboration hub. Create organized folder structures for each client, with subfolders for briefs, drafts, final deliverables, and client feedback. Use Google Docs for collaborative editing and Google Sheets for tracking content calendars and performance metrics.
+
+> **HACK:** Use Google Drive's "Shared drives" feature to create team spaces for different types of content. Set up permissions so clients can only see their own folders, while your team has access to all resources. This eliminates the confusion of sharing individual files and maintains proper access controls.
+
+Tome.app (www.tome.app) is your secret weapon for creating stunning client proposals and presentations. This AI-powered tool can transform basic text into visually impressive documents with minimal effort. Use it to create compelling proposals that showcase your agency's capabilities and impress potential clients with professional-looking materials.
+
+> **HACK:** Use Tome's "AI assistant" feature to generate entire presentation structures from a simple brief. Just input your proposal outline, and Tome will create a complete presentation with appropriate visuals, transitions, and formatting. Then customize it with your branding and specific client details to cut proposal creation time from hours to minutes.
+
+## The Paid Stack
+
+| Tool | Cost | Purpose | Free Alternative |
+|------|------|---------|-----------------|
+| Jasper.ai | \$99/mo | High-quality content generation with brand voice training | ChatGPT |
+| SurferSEO | \$89/mo | SEO optimization and content scoring | Google Search Console |
+| MidJourney | \$30/mo | AI image generation for visual content | Canva AI |
+| Durable.co | \$20/mo | AI-powered website generation | WordPress + Elementor |
+| **Total** | **\$238/mo** | | |
+
+> **HACK:** Use Jasper's "boss mode" feature to generate entire blog posts in one go by providing a detailed prompt. This feature costs an additional \$39/mo but can save you 5-7 hours per week by producing first drafts that need minimal editing compared to standard mode output.
+
+## The Workflow: Step-by-Step
+
+**Step 1: Niche Selection & Service Definition (Day 1-3)**
+Your first step is to choose a specific niche where you can become the go-to AI-powered service provider. Don't try to be everything to everyone—specialization is the key to commanding premium prices. Research industries with high content marketing budgets but low AI adoption, such as local service businesses, professional practices, or e-commerce stores. Analyze what services these businesses need most: blog content, social media posts, email marketing, website copy, or video scripts. Create a list of 5-10 potential services you could offer within your chosen niche, focusing on those that AI can handle well with minimal human input.
+
+- ✅ Check-in: You should have a clearly defined niche (e.g., "AI-powered content marketing for dental practices") and 3-5 specific services you'll offer with clear deliverables and pricing points.
+
+**Step 2: AI Tool Mastery & Template Creation (Days 3-7)**
+Now it's time to get intimately familiar with your AI tools and create templates for consistent output. Spend time with each tool, testing different prompts and approaches to generate the best possible results for your chosen services. Create template prompts for each service type that include variables for customization based on client needs. For example, a blog post template might include placeholders for industry, target audience, keyword focus, and brand voice. Build a library of these templates in a Google Doc or Notion database for quick access. Test each template by generating sample outputs and refining them until you're consistently getting 80%+ quality that only needs minimal human editing.
+
+- ✅ Check-in: You should have at least 3 working templates for your core services, each producing high-quality output with under 30 minutes of human refinement time.
+
+**Step 3: Client Acquisition & Sales System Setup (Days 7-14)**
+With your service offerings and templates ready, it's time to set up your client acquisition system. Create a professional website using a tool like Durable.co that showcases your services and results. Develop a compelling case study or two using sample work you've generated (be transparent about AI involvement while emphasizing the human strategy and refinement). Set up a simple CRM system using Notion or HubSpot's free tier to track leads and client communications. Prepare a standardized sales process including an intake questionnaire, proposal template, and onboarding system. Research 20-30 potential clients in your niche and prepare personalized outreach messages highlighting how you can solve their specific problems.
+
+- ✅ Check-in: Your website should be live with clear service descriptions, pricing, and contact information. You should have 10+ personalized outreach messages ready to send, and at least 5 potential clients identified for initial contact.
+
+**Step 4: Service Delivery & Optimization (Day 14+)**
+With your first clients on board, it's time to refine your delivery process. Create a standardized workflow for each service type that includes intake, AI generation, human refinement, quality control, and delivery. Track all client feedback and use it to continuously improve your AI prompts and templates. Monitor the performance of your content using tools like Google Analytics and Search Console to demonstrate ROI to clients. As you accumulate case studies and testimonials, use them to refine your messaging and attract higher-value clients. By month 2, you should have enough data to identify which services are most profitable and which clients are the best fit, allowing you to optimize your offerings for maximum revenue and minimum effort.
+
+- ✅ Check-in: You should have delivered at least 3 complete projects with documented client feedback. Your workflow should be documented in a standard operating procedure document that could be handed off to someone else.
+
+## Pricing: What to Charge
+
+| Tier | Price | Includes | Best For |
+|------|-------|----------|----------|
+| Starter | \$500/mo | 4 blog posts, 8 social media posts, basic SEO optimization | Small local businesses |
+| Pro | \$1,200/mo | 8 blog posts, 16 social media posts, email newsletter, advanced SEO | Established businesses |
+| Premium | \$2,500/mo | 16 blog posts, 32 social media posts, email marketing, website content, comprehensive SEO | Enterprises and high-growth companies |
+
+> **HACK:** Use "value-based anchoring" in your proposals. Start by showing the potential ROI of your services (e.g., "Our content typically generates 2-3x the investment within 6 months through increased organic traffic and leads"), then position your pricing as a fraction of that value. This justifies premium pricing and shifts the conversation from cost to investment.
+
+## Getting Clients / Customers
+
+**Method 1: LinkedIn Outreach (25% conversion rate)**
+Identify 50 potential clients in your niche who match your ideal customer profile. Personalize each connection request with a specific reason for reaching out—mention something relevant about their business or content. Once connected, send a value-driven message highlighting a specific content gap you've noticed on their site or social media, along with a sample of how you'd address it. Follow up with case studies showing similar results. Track all interactions in a simple spreadsheet and set reminders to follow up every 7-10 days until you get a response.
+
+**Method 2: Cold Email with Personalization (18% conversion rate)**
+Research each prospect's website and identify 2-3 specific content or marketing opportunities. Craft a brief email highlighting these opportunities with a subject line that references their business name. Include a link to a relevant case study or piece of content you've created for a similar business. Keep the email under 100 words and include a clear call to action suggesting a 15-minute discovery call. Send emails on Tuesday or Wednesday mornings for best open rates.
+
+**Method 3: Free Content Audit (12% conversion rate)**
+Offer a free content audit to potential clients that identifies 3-5 key content opportunities with estimated ROI. Use SurferSEO or similar tools to analyze their existing content and provide data-backed recommendations. Present the audit as a PDF with your agency branding and contact information. Follow up 3 days later with a phone call to discuss the findings and how your services could implement the recommendations.
+
+> **HACK:** Create a "content gap analysis" template in Canva that automatically populates with your branding when you audit a client's site. This creates a professional, shareable document that positions you as an expert while subtly demonstrating the value of your services. I've converted 40% of audit recipients into paying clients by making the audit so valuable they'd be foolish not to continue working with me.
+
+## Tricks and Hacks
+
+> **HACK:** Use ChatGPT's "advanced data analysis" feature to analyze competitor content. Upload 5-10 top-performing articles from your competitors, then ask ChatGPT to identify common patterns, word counts, subheading structures, and topic clusters. Use these insights to create content briefs that specifically address gaps in the competitive landscape, resulting in content that outranks existing articles.
+
+> **HACK:** Create an "AI refinement workflow" in Notion that standardizes your editing process. For each content type, create a checklist of specific refinement points (e.g., "Add industry-specific statistics," "Include 2-3 relevant case studies," "Ensure keyword density is 1-2%"). This ensures consistent quality across all content and reduces editing time by training you to focus on the most important refinement points.
+
+> **HACK:** Use MidJourney's "describe" feature to create custom brand visuals for your clients. Upload their existing logo or brand assets, then use the describe feature to generate prompts that match their brand identity. Create a library of 10-15 branded visual elements (icons, backgrounds, illustrations) that you can reuse across all client materials, establishing visual consistency while maintaining brand uniqueness.
+
+> **HACK:** Implement a "content performance scorecard" in Google Sheets to track the business impact of your content beyond just vanity metrics. Track metrics like lead generation, conversion rates, and customer acquisition cost attributable to content. Use this data to demonstrate ROI to clients and justify price increases when you can show clear business outcomes.
+
+> **HACK:** Use Jasper's "Campaign Maker" feature to generate complete content campaigns in one go. Input your campaign goals and target audience, then let Jasper generate all the content pieces needed (blog posts, social media updates, email sequences, ad copy). This has reduced my campaign creation time from 20 hours to just 3-4 hours while maintaining quality.
+
+## Monthly Revenue Projections
+
+| Metric | Month 3 | Month 6 | Month 12 |
+|--------|---------|---------|----------|
+| Revenue | \$2,500 | \$5,000 | \$8,000 |
+| Clients/Customers | 3 | 6 | 10 |
+| Hours/Week | 20 | 25 | 30 |
+| Profit Margin | 65% | 70% | 75% |
+
+## What Nobody Warns You About
+
+- AI-generated content often lacks the nuanced understanding of your client's specific audience that comes from genuine industry expertise. You'll need to spend extra time researching each client's business and audience to ensure the content resonates authentically, not just sounds professional. The time saved on content creation can be lost if you don't invest this upfront research time.
+
+- Some clients will be resistant to AI-generated content once they discover it's not human-written. Always be transparent about your process while emphasizing the human strategy and refinement involved. Have a clear explanation ready about how AI augments rather than replaces your expertise, and be prepared to lose clients who fundamentally object to AI in their content.
+
+- Quality consistency can be challenging when working with multiple AI tools. Each tool has its own strengths and weaknesses, and outputs can vary dramatically based on how you phrase prompts. You'll need to develop deep expertise with each tool and create robust quality control processes to ensure consistent results across all client work.
+
+- As AI tools improve, the barrier to entry for this business will lower, increasing competition. Your sustainable advantage isn't just using AI—it's your ability to understand client needs, develop effective strategies, and deliver business results. Focus on building these skills rather than just becoming proficient with AI tools.
+
+- Client expectations for AI-generated content are often unrealistic. Many believe AI can produce perfect, publish-ready content with minimal input. You'll need to manage these expectations upfront by clearly communicating your process and revision policies to avoid dissatisfaction when the first draft isn't perfect.
+
+- The AI landscape is changing rapidly, with new tools and features being released constantly. What works today may be obsolete in six months. You'll need to dedicate 2-3 hours per week to staying current with AI developments and continuously testing new tools and techniques to maintain your competitive advantage.
+
+## Start This Weekend
+
+The difference between people who talk about starting a business and those who actually build something comes down to one thing: execution. This weekend is your opportunity to stop thinking and start doing. Most aspiring entrepreneurs waste months perfecting their business plan and researching endlessly, but real progress only begins when you take concrete action. The beauty of this AI-powered drop servicing model is that you can validate your concept and get your first paying client in a single weekend if you focus on the right activities. Don't fall into the trap of waiting for the "perfect" moment or until you've learned everything—start now with the knowledge you have, and learn by doing. The weekend action plan I'm about to share has helped dozens of people launch their agencies, and it will work for you too if you commit to following each step without deviation.
+
+### Pre-Weekend Checklist
+
+- ✅ Set up ChatGPT account (www.chat.openai.com) and upgrade to Plus tier for \$20/month
+- ✅ Create Canva account (www.canva.com) and develop basic branding (logo, color palette, fonts)
+- ✅ Research and identify 3 potential niches with 10 target businesses each
+- ✅ Commit to blocking 8 hours each day for focused work (Saturday and Sunday)
+- ✅ Prepare a quiet workspace with minimal distractions and reliable internet
+
+### Saturday Morning (9 AM – 12 PM): Niche Selection & Service Definition
+
+Start by narrowing down your niche focus. Spend the first hour researching potential niches using Google Trends, industry reports, and LinkedIn. Look for industries with high content marketing budgets but low AI adoption. Good candidates include professional services (lawyers, accountants), healthcare providers, or specialized B2B services. For each potential niche, identify 10-20 target businesses that could be your ideal clients. Create a spreadsheet listing these businesses with columns for company size, services offered, current online presence, and any obvious content gaps you've noticed. By 11 AM, narrow your list to just one niche that shows the most promise based on your research.
+
+Next, define 3-5 specific services you'll offer within your chosen niche. These should be services that AI can handle well with minimal human input but still provide clear value to businesses. For example, if you choose dental practices, your services might include blog content about dental procedures, social media posts about oral hygiene tips, and email newsletters for patient retention. For each service, define exactly what the client will receive (e.g., "1000-word blog post optimized for target keywords with 2-3 internal links"). Create a pricing structure that reflects the value you're providing while being competitive with traditional agencies.
+
+❓ **Self-Check:** Have you identified a specific niche (e.g., "AI content marketing for dental practices in Chicago") and defined exactly what services you'll offer with clear deliverables?
+
+### Saturday Afternoon (1 PM – 5 PM): AI Tool Mastery & Template Creation
+
+This afternoon is dedicated to mastering your primary AI tools and creating templates for consistent output. Start by spending two hours with ChatGPT, experimenting with different prompts for your chosen services. Create a document where you test various approaches to generating blog posts, social media content, or whatever services you've defined. Note which prompt structures produce the best results for each service type. By 3 PM, you should have identified 2-3 effective prompt approaches for each service.
+
+Next, create template prompts for each service type that include variables for customization. For example, a blog post template might include placeholders for [INDUSTRY], [TARGET_AUDIENCE], [KEYWORD_FOCUS], and [BRAND_VOICE]. Save these templates in a Google Doc with clear explanations of when and how to use each one. Spend the last hour testing each template by generating sample outputs and making notes on what works and what needs improvement. By 5 PM, you should have at least 3 working templates that produce high-quality output with minimal human editing.
+
+❓ **Self-Check:** Do you have at least 3 templates that can generate service deliverables with under 30 minutes of human refinement time?
+
+### Saturday Evening (7 PM – 9 PM): Client Acquisition Preparation
+
+With your services and templates defined, it's time to prepare for client acquisition. Start by creating a professional one-page website using a tool like Durable.co or Carrd.co. Include sections for your services, case studies (use sample work for now), pricing, and contact information. Your messaging should emphasize results and ROI rather than the AI technology—position yourself as a problem solver, not a tech provider.
+
+Next, prepare your outreach materials. Create a LinkedIn connection request template that's personalized for each prospect, highlighting something specific about their business. Draft a cold email template that includes a subject line referencing their business name and a brief value proposition. Create a simple proposal template in Canva that outlines your services and pricing. Finally, prepare an intake questionnaire to send to potential clients once they express interest—this should ask about their goals, target audience, content preferences, and any existing assets you can leverage.
+
+❓ **Self-Check:** Is your website live with clear service descriptions and contact information? Do you have templates for LinkedIn outreach, cold emails, and client proposals?
+
+### Sunday Morning (9 AM – 12 PM): Target Client Research & Personalization
+
+This morning is dedicated to researching and personalizing your outreach to 20 potential clients. Start by identifying 20 businesses in your chosen niche that fit your ideal customer profile. For each business, spend 10-15 minutes researching their website, social media presence, and content strategy. Note their current content strengths and weaknesses, recent news or updates, and any specific pain points your services could address.
+
+Next, personalize your outreach materials for each business. For LinkedIn, customize your connection request with a specific reason for reaching out—mention something relevant about their business or content. For email outreach, personalize the subject line and body with specific observations about their current marketing or content. Prepare 5-7 different personalized messages based on the different types of businesses you've identified. By noon, you should have 20 personalized outreach messages ready to send.
+
+❓ **Self-Check:** Have you researched 20 potential clients and personalized outreach messages for each, with specific references to their business?
+
+### Sunday Afternoon (1 PM – 5 PM): Launch & Outreach Execution
+
+This afternoon is all about taking action and launching your outreach campaign. Start by sending your LinkedIn connection requests to the first 10 clients on your list. Keep your connection request message brief and focused on providing value rather than selling your services. Follow up with personalized connection requests to the remaining 10 clients after a 30-minute break.
+
+Next, send your cold emails to the same 20 clients. For best results, send emails between 10-11 AM on Tuesday morning when they're most likely to be read. Track all outreach in a simple spreadsheet noting who you contacted, when, and their response. Set reminders to follow up with non-responders after 3-5 days with a different value proposition. Finally, spend time refining your website and proposal templates based on any insights you've gained from your research.
+
+❓ **Self-Check:** Have you sent personalized LinkedIn connection requests and cold emails to 20 potential clients? Are you tracking all outreach in a spreadsheet with follow-up reminders set?
+
+### Week 1 Action Plan
+
+| Day | Task | Time | Expected Outcome |
+|-----|------|------|-----------------|
+| Monday | Follow up with non-responding LinkedIn connections | 30 minutes | 5-10 additional connections |
+| Tuesday | Send cold emails to target clients | 60 minutes | 3-5 positive responses |
+| Wednesday | Schedule discovery calls with interested prospects | 90 minutes | 2-3 confirmed calls |
+| Thursday | Prepare for and conduct discovery calls | 2 hours | 1-2 qualified leads |
+| Friday | Send proposals to qualified leads | 45 minutes | 1-2 paying clients |
+
+### First Month Milestones
+
+- **Week 1:** Complete outreach to 50 potential clients and secure 3-5 discovery calls
+- **Week 2:** Convert 1-2 discovery calls into paying clients and deliver first projects
+- **Week 3:** Refine templates based on client feedback and develop case studies
+- **Week 4:** Reach \$1,000 in monthly revenue and prepare to scale outreach
+
+### Red Flags to Watch For
+
+- 🚩 If you're not getting any responses to your outreach, your messaging may be too generic or value proposition unclear. Test different subject lines and value propositions, focusing more on the client's pain points rather than your services.
+
+- 🚩 If AI-generated content requires extensive editing, your prompts need refinement. Spend time improving your prompt templates rather than manually fixing output—this will save you hours in the long run.
+
+- 🚩 If clients are hesitant about pricing, focus more on demonstrating ROI and including case studies that show results rather than features. Create a simple calculator showing potential traffic or lead increases to justify your pricing.
+
+- 🚩 If you're overwhelmed with client work, it's time to systemize. Create detailed standard operating procedures for each service and consider raising prices to reduce volume while increasing revenue.
+
+### Your 30-Day Check-In Questions
+
+1. How many potential clients have I contacted, and what percentage responded positively?
+2. What AI templates are working best, and which ones need improvement?
+3. How much time am I actually spending on client work versus business development?
+4. What's my average client acquisition cost, and is it sustainable at my current pricing?
+5. Which client type provides the best ROI in terms of revenue versus time invested?
+6. What systems need to be improved to scale beyond my current capacity?`
+  }
   }
 ];

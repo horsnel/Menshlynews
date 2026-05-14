@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron?secret=menshly-wire-cron-2024",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
