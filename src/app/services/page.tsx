@@ -511,6 +511,9 @@ export default function ServicesPage() {
             <p className="text-xs text-slate-500">
               &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
             </p>
+            <p className="text-xs text-slate-600 font-medium mt-1">
+              Product of O.L.H.M.E.S
+            </p>
           </div>
         </div>
       </footer>
