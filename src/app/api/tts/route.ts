@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SPEECHIFY_API_KEY = 'I1YSNWxfj8CTUPuhq6xpMRhK0aD_ttpqbcyI37Vz1lA=';
-const SPEECHIFY_API_URL = 'https://api.speechify.com/v1/audio/stream';
+const SPEECHIFY_API_KEY = process.env.SPEECHIFY_API_KEY || 'I1YSNWxfj8CTUPuhq6xpMRhK0aD_ttpqbcyI37Vz1lA=';
+const SPEECHIFY_API_URL = 'https://api.speechify.ai/v1/audio/stream';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +14,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Truncate text to avoid API limits (Speechify supports up to ~100K chars)
+    // Truncate text to stay within Speechify's free tier limit
     const truncatedText = text.slice(0, 50000);
 
-    // Call Speechify API
+    // Call Speechify API with correct format
     const response = await fetch(SPEECHIFY_API_URL, {
       method: 'POST',
       headers: {
@@ -26,11 +26,8 @@ export async function POST(request: NextRequest) {
         'Accept': 'audio/mpeg',
       },
       body: JSON.stringify({
-        text: truncatedText,
-        voice: {
-          id: voice,
-          type: 'speechify_voice',
-        },
+        input: truncatedText,
+        voice_id: voice,
         audio_format: 'mp3',
         speed: rate,
       }),

@@ -11,12 +11,12 @@ interface ArticleListenerProps {
 
 // Voice options for Speechify
 const VOICES = [
+  { id: 'david', name: 'David', description: 'Clear & authoritative' },
+  { id: 'gwyneth', name: 'Gwyneth', description: 'Warm & professional' },
   { id: 'mrbeast', name: 'MrBeast', description: 'Energetic & engaging' },
   { id: 'snoop', name: 'Snoop Dogg', description: 'Chill & smooth' },
-  { id: 'gwyneth', name: 'Gwyneth', description: 'Warm & professional' },
-  { id: 'david', name: 'David', description: 'Clear & authoritative' },
-  { id: 'amber', name: 'Amber', description: 'Friendly & natural' },
-  { id: 'hugh', name: 'Hugh', description: 'British & sophisticated' },
+  { id: 'emma', name: 'Emma', description: 'Friendly & natural' },
+  { id: 'kimberly', name: 'Kimberly', description: 'Sophisticated & clear' },
 ];
 
 function stripMarkdown(text: string): string {
@@ -104,7 +104,9 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       });
 
       audio.addEventListener('error', () => {
-        throw new Error('Audio playback error — falling back to browser TTS');
+        console.warn('Audio playback error — falling back to browser TTS');
+        setUseBrowserTTS(true);
+        setIsPlaying(false);
       });
 
       setIsLoading(false);
