@@ -4,10 +4,11 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Heart, Clock, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { Heart, Clock, ChevronLeft, ChevronRight, ArrowRight, Languages } from 'lucide-react';
 import { Post, posts } from '@/lib/data';
 import { useBlogStore } from '@/lib/store';
 import { useLikes } from '@/hooks/use-likes';
+import { useArticleTranslator, useT } from '@/hooks/use-translator';
 import { ReadingProgress } from './reading-progress';
 import { ShareButtons } from './share-buttons';
 import { CategoryIcon } from './category-icon';
@@ -214,12 +215,29 @@ function PrevNextNavigation({ currentPost }: { currentPost: Post }) {
 export function ArticleReader({ post }: ArticleReaderProps) {
   const { setCurrentArticle } = useBlogStore();
   const { toggleLike, isLiked, getLikeCount } = useLikes();
+  const { translateContent, isTranslating, targetLang } = useArticleTranslator();
+  const t = useT;
   const liked = isLiked(post.id);
   const displayLikes = getLikeCount(post.id, post.likes);
   const [showFloatingShare, setShowFloatingShare] = useState(false);
+  const [translatedFirstHalf, setTranslatedFirstHalf] = useState<string | null>(null);
+  const [translatedSecondHalf, setTranslatedSecondHalf] = useState<string | null>(null);
 
   // Split content for mid-article suggestions
   const { firstHalf, secondHalf } = useMemo(() => splitContent(post.content), [post.content]);
+
+  // Auto-translate article content when language is detected
+  useEffect(() => {
+    if (!targetLang || targetLang === 'en') return;
+    let cancelled = false;
+    translateContent(post.id + '-first', firstHalf).then(result => {
+      if (!cancelled) setTranslatedFirstHalf(result);
+    });
+    translateContent(post.id + '-second', secondHalf).then(result => {
+      if (!cancelled) setTranslatedSecondHalf(result);
+    });
+    return () => { cancelled = true; };
+  }, [targetLang, post.id, firstHalf, secondHalf, translateContent]);
 
   // Push a history entry so the browser back button closes the overlay
   useEffect(() => {
@@ -400,9 +418,17 @@ export function ArticleReader({ post }: ArticleReaderProps) {
             />
           </div>
 
+          {/* Translation indicator */}
+          {isTranslating && targetLang && targetLang !== 'en' && (
+            <div className="flex items-center gap-2 mb-4 px-4 py-2 bg-[#166f4f]/5 rounded-lg border border-[#166f4f]/10">
+              <Languages className="w-4 h-4 text-[#166f4f] animate-pulse" />
+              <span className="text-xs text-[#166f4f] font-medium">Translating article...</span>
+            </div>
+          )}
+
           {/* Article body — first half */}
           <div className="prose-content">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{firstHalf}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{translatedFirstHalf || firstHalf}</ReactMarkdown>
           </div>
 
           {/* Mid-article suggestions */}
@@ -410,7 +436,7 @@ export function ArticleReader({ post }: ArticleReaderProps) {
 
           {/* Article body — second half */}
           <div className="prose-content">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{secondHalf}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{translatedSecondHalf || secondHalf}</ReactMarkdown>
           </div>
 
           {/* Tags */}
