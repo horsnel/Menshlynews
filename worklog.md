@@ -161,3 +161,26 @@ Stage Summary:
 - TTS listener component with 6 voice options, speed control, skip forward/back, progress bar
 - Browser TTS fallback when Speechify API unavailable
 - All code pushed to GitHub successfully
+---
+Task ID: tts-fix-3
+Agent: Main
+Task: Fix Speechify TTS and add Microsoft Edge TTS as fallback
+
+Work Log:
+- Discovered Speechify API URL was wrong (api.speechify.com → api.speechify.ai)
+- Discovered Speechify request format was wrong (text/voice object → input/voice_id)
+- Discovered voice IDs amber and hugh don't work with Speechify
+- Installed node-edge-tts package for Microsoft Edge TTS (free, no API key)
+- Tested all voices: Aria, Guy, Jenny, Christopher, Sonia, Ryan all work
+- Rewrote /api/tts/route.ts with 3-tier fallback: Speechify → Microsoft → browser
+- Added X-TTS-Engine response header so client knows which engine produced the audio
+- Microsoft Edge TTS chunks text at sentence boundaries (3K chars max per chunk)
+- Simplified ArticleListener component - removed redundant client-side retry logic
+- Verified Speechify returns valid MP3 (14KB) through the API route
+- Browser TTS now shows as blue info banner instead of amber error
+
+Stage Summary:
+- TTS fallback chain: Speechify (premium) → Microsoft Edge TTS (free) → Browser TTS
+- 6 voices available: Aria, David, Jenny, Christopher, Sonia, Ryan
+- All voices work with both Speechify and Microsoft Edge TTS
+- Pushed to GitHub: commit 4244f01
