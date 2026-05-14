@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { EdgeTTS } from 'node-edge-tts';
-import { writeFile, readFile, unlink } from 'fs/promises';
+import { readFile, unlink } from 'fs/promises';
 import { join } from 'path';
 import { tmpdir } from 'os';
 
@@ -10,13 +10,7 @@ const SPEECHIFY_API_URL = 'https://api.speechify.ai/v1/audio/stream';
 // Map of voice IDs to Microsoft Edge TTS voice names
 const MICROSOFT_VOICES: Record<string, string> = {
   david: 'en-US-GuyNeural',
-  gwyneth: 'en-US-AriaNeural',
-  mrbeast: 'en-US-ChristopherNeural',
-  snoop: 'en-US-GuyNeural',
-  emma: 'en-US-JennyNeural',
-  kimberly: 'en-GB-SoniaNeural',
   aria: 'en-US-AriaNeural',
-  guy: 'en-US-GuyNeural',
   jenny: 'en-US-JennyNeural',
   christopher: 'en-US-ChristopherNeural',
   sonia: 'en-GB-SoniaNeural',
@@ -25,52 +19,44 @@ const MICROSOFT_VOICES: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, voice = 'david', rate = 1.0, engine = 'auto' } = await request.json();
+    const { text, voice = 'aria', rate = 1.0 } = await request.json();
 
     if (!text || typeof text !== 'string') {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }
 
-    // Truncate text to reasonable limit
     const truncatedText = text.slice(0, 50000);
-    const msVoice = MICROSOFT_VOICES[voice] || MICROSOFT_VOICES.david;
+    const msVoice = MICROSOFT_VOICES[voice] || MICROSOFT_VOICES.aria;
     const speedPercent = Math.round((rate - 1) * 100);
     const rateStr = speedPercent >= 0 ? `+${speedPercent}%` : `${speedPercent}%`;
 
-    console.log(`[TTS] Request: ${truncatedText.length} chars, voice: ${voice}, rate: ${rate}, engine: ${engine}`);
+    console.log(`[TTS] Request: ${truncatedText.length} chars, voice: ${voice}, rate: ${rate}`);
 
-    // Strategy: Try Speechify first, then Microsoft Edge TTS, then return error for browser fallback
-    let audioBuffer: Buffer | null = null;
-
-    // ATTEMPT 1: Speechify (only if engine is 'auto' or 'speechify')
-    if (engine === 'auto' || engine === 'speechify') {
-      try {
-        audioBuffer = await trySpeechify(truncatedText, voice, rate);
-        if (audioBuffer) {
-          console.log(`[TTS] Speechify success: ${audioBuffer.length} bytes`);
-          return sendAudio(audioBuffer);
-        }
-      } catch (err) {
-        console.warn('[TTS] Speechify failed:', err instanceof Error ? err.message : err);
+    // STEP 1: Try Speechify (premium voices, fast)
+    try {
+      const speechifyAudio = await trySpeechify(truncatedText, voice, rate);
+      if (speechifyAudio) {
+        console.log(`[TTS] Speechify success: ${speechifyAudio.length} bytes`);
+        return sendAudio(speechifyAudio, 'speechify');
       }
+    } catch (err) {
+      console.warn('[TTS] Speechify failed:', err instanceof Error ? err.message : String(err));
     }
 
-    // ATTEMPT 2: Microsoft Edge TTS (free, reliable)
-    if (engine === 'auto' || engine === 'microsoft' || engine === 'edge') {
-      try {
-        audioBuffer = await tryMicrosoftEdge(truncatedText, msVoice, rateStr);
-        if (audioBuffer) {
-          console.log(`[TTS] Microsoft Edge TTS success: ${audioBuffer.length} bytes`);
-          return sendAudio(audioBuffer);
-        }
-      } catch (err) {
-        console.warn('[TTS] Microsoft Edge TTS failed:', err instanceof Error ? err.message : err);
+    // STEP 2: Try Microsoft Edge TTS (free, reliable, no API key)
+    try {
+      const msAudio = await tryMicrosoftEdge(truncatedText, msVoice, rateStr);
+      if (msAudio) {
+        console.log(`[TTS] Microsoft Edge TTS success: ${msAudio.length} bytes`);
+        return sendAudio(msAudio, 'microsoft');
       }
+    } catch (err) {
+      console.warn('[TTS] Microsoft Edge TTS failed:', err instanceof Error ? err.message : String(err));
     }
 
     // All server-side TTS failed — tell client to use browser TTS
     return NextResponse.json(
-      { error: 'Server TTS unavailable', fallback: true },
+      { error: 'Server TTS unavailable, using browser fallback', fallback: true },
       { status: 503 }
     );
   } catch (error) {
@@ -83,43 +69,47 @@ export async function POST(request: NextRequest) {
 }
 
 async function trySpeechify(text: string, voice: string, rate: number): Promise<Buffer | null> {
-  const response = await fetch(SPEECHIFY_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${SPEECHIFY_API_KEY}`,
-      'Content-Type': 'application/json',
-      'Accept': 'audio/mpeg',
-    },
-    body: JSON.stringify({
-      input: text,
-      voice_id: voice,
-      audio_format: 'mp3',
-      speed: rate,
-    }),
-    signal: AbortSignal.timeout(30000), // 30s timeout
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  if (!response.ok) {
-    const errText = await response.text().catch(() => '');
-    console.warn(`[TTS] Speechify API error: ${response.status}`, errText);
-    return null;
+  try {
+    const response = await fetch(SPEECHIFY_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SPEECHIFY_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Accept': 'audio/mpeg',
+      },
+      body: JSON.stringify({
+        input: text,
+        voice_id: voice,
+        audio_format: 'mp3',
+        speed: rate,
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const arrayBuf = await response.arrayBuffer();
+    if (arrayBuf.byteLength < 100) return null;
+
+    return Buffer.from(arrayBuf);
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const arrayBuf = await response.arrayBuffer();
-  if (arrayBuf.byteLength < 100) return null;
-
-  return Buffer.from(arrayBuf);
 }
 
 async function tryMicrosoftEdge(text: string, voice: string, rateStr: string): Promise<Buffer | null> {
-  // For very long texts, chunk them to avoid timeout issues
+  // Chunk long texts at sentence boundaries to avoid Vercel serverless timeout
   const MAX_CHUNK_CHARS = 3000;
   const chunks: string[] = [];
 
   if (text.length <= MAX_CHUNK_CHARS) {
     chunks.push(text);
   } else {
-    // Split at sentence boundaries
     const sentences = text.split(/(?<=[.!?])\s+/);
     let currentChunk = '';
     for (const sentence of sentences) {
@@ -148,7 +138,7 @@ async function tryMicrosoftEdge(text: string, voice: string, rateStr: string): P
         lang: 'en-US',
         outputFormat: 'audio-24khz-48kbitrate-mono-mp3',
         rate: rateStr,
-        timeout: 30000,
+        timeout: 20000,
       });
 
       await tts.ttsPromise(chunks[i], tmpFile);
@@ -164,20 +154,20 @@ async function tryMicrosoftEdge(text: string, voice: string, rateStr: string): P
 
     return Buffer.concat(audioBuffers);
   } finally {
-    // Clean up temp files
     for (const f of tmpFiles) {
       try { await unlink(f); } catch {}
     }
   }
 }
 
-function sendAudio(buffer: Buffer) {
+function sendAudio(buffer: Buffer, engine: string) {
   return new NextResponse(buffer, {
     status: 200,
     headers: {
       'Content-Type': 'audio/mpeg',
       'Content-Length': String(buffer.length),
       'Cache-Control': 'public, max-age=86400',
+      'X-TTS-Engine': engine,
     },
   });
 }

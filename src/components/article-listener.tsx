@@ -9,14 +9,14 @@ interface ArticleListenerProps {
   content: string;
 }
 
-// Voice options — works with both Speechify and Microsoft Edge TTS
+// Voice options — all work with both Speechify and Microsoft Edge TTS
 const VOICES = [
-  { id: 'david', name: 'David', description: 'Clear & authoritative', msVoice: 'en-US-GuyNeural' },
-  { id: 'aria', name: 'Aria', description: 'Warm & professional', msVoice: 'en-US-AriaNeural' },
-  { id: 'jenny', name: 'Jenny', description: 'Friendly & natural', msVoice: 'en-US-JennyNeural' },
-  { id: 'christopher', name: 'Christopher', description: 'Deep & engaging', msVoice: 'en-US-ChristopherNeural' },
-  { id: 'sonia', name: 'Sonia', description: 'British & elegant', msVoice: 'en-GB-SoniaNeural' },
-  { id: 'ryan', name: 'Ryan', description: 'British & clear', msVoice: 'en-GB-RyanNeural' },
+  { id: 'aria', name: 'Aria', description: 'Warm & professional' },
+  { id: 'david', name: 'David', description: 'Clear & authoritative' },
+  { id: 'jenny', name: 'Jenny', description: 'Friendly & natural' },
+  { id: 'christopher', name: 'Christopher', description: 'Deep & engaging' },
+  { id: 'sonia', name: 'Sonia', description: 'British & elegant' },
+  { id: 'ryan', name: 'Ryan', description: 'British & clear' },
 ];
 
 function stripMarkdown(text: string): string {
@@ -72,11 +72,38 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     }
   }, []);
 
-  // Generate audio from server TTS (tries Speechify first, then Microsoft)
+  // Create an Audio element from a blob and wait for it to be ready
+  const createAudioFromBlob = useCallback(async (blob: Blob): Promise<HTMLAudioElement> => {
+    cleanupAudio();
+    const url = URL.createObjectURL(blob);
+    audioUrlRef.current = url;
+
+    const audio = new Audio();
+    audio.preload = 'auto';
+    audio.src = url;
+    audioRef.current = audio;
+
+    // Wait for audio to be ready
+    await new Promise<void>((resolve, reject) => {
+      const onReady = () => { done(); resolve(); };
+      const onErr = () => { done(); reject(new Error('Audio load failed')); };
+      const done = () => {
+        audio.removeEventListener('canplaythrough', onReady);
+        audio.removeEventListener('error', onErr);
+      };
+      audio.addEventListener('canplaythrough', onReady);
+      audio.addEventListener('error', onErr);
+      setTimeout(() => { done(); resolve(); }, 15000);
+    });
+
+    return audio;
+  }, [cleanupAudio]);
+
+  // Generate audio from server TTS (tries Speechify → Microsoft Edge TTS → returns null for browser fallback)
   const generateServerAudio = useCallback(async (): Promise<HTMLAudioElement | null> => {
     setIsLoading(true);
     setError(null);
-    setStatusMsg('Generating audio with Speechify...');
+    setStatusMsg('Generating audio...');
 
     try {
       const text = getPlainText();
@@ -85,172 +112,58 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       const response = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text,
-          voice: selectedVoice,
-          rate,
-          engine: 'auto', // Try Speechify first, then Microsoft
-        }),
+        body: JSON.stringify({ text, voice: selectedVoice, rate }),
       });
 
-      // Check which engine was used based on response headers or status
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error', fallback: false }));
-        console.warn('[ArticleListener] Server TTS error:', response.status, errorData);
-
-        if (errorData.fallback) {
-          // Server TTS completely failed — use browser TTS
-          throw new Error('server-fallback');
-        }
-        throw new Error(errorData.error || `HTTP ${response.status}`);
+        const errData = await response.json().catch(() => ({ error: 'Unknown', fallback: true }));
+        console.warn('[ArticleListener] Server TTS error:', response.status, errData);
+        if (errData.fallback) return null; // Signal to use browser TTS
+        throw new Error(errData.error || `HTTP ${response.status}`);
       }
+
+      // Determine which engine was used from the response header
+      const engineUsed = response.headers.get('X-TTS-Engine') as 'speechify' | 'microsoft' || 'microsoft';
+      console.log(`[ArticleListener] Engine used: ${engineUsed}`);
 
       const audioBlob = await response.blob();
-      console.log(`[ArticleListener] Received blob: type=${audioBlob.type}, size=${audioBlob.size}`);
+      if (audioBlob.size < 100) throw new Error('Empty audio response');
 
-      // Validate audio response
-      if (audioBlob.size < 100) {
-        throw new Error('Empty audio response');
-      }
-
-      // Clean up previous audio
-      cleanupAudio();
-
-      const url = URL.createObjectURL(audioBlob);
-      audioUrlRef.current = url;
-
-      const audio = new Audio();
-      audio.preload = 'auto';
-      audio.src = url;
-      audioRef.current = audio;
-
-      // Determine which engine was used (Speechify gives larger files typically)
-      const usedEngine = 'speechify'; // We'll update this if Speechify fails
-
-      // Wait for audio to be ready to play
       setStatusMsg('Loading audio...');
-      await new Promise<void>((resolve, reject) => {
-        const onCanPlay = () => { cleanup(); resolve(); };
-        const onError = () => { cleanup(); reject(new Error('Audio failed to load')); };
-        const cleanup = () => {
-          audio.removeEventListener('canplaythrough', onCanPlay);
-          audio.removeEventListener('error', onError);
-        };
-        audio.addEventListener('canplaythrough', onCanPlay);
-        audio.addEventListener('error', onError);
-        setTimeout(() => {
-          cleanup();
-          if (audio.duration > 0) resolve();
-          else reject(new Error('Audio loading timed out'));
-        }, 15000);
-      });
+      const audio = await createAudioFromBlob(audioBlob);
 
       if (!isMountedRef.current) return null;
 
       setDuration(audio.duration || 0);
-      setTtsEngine(usedEngine);
+      setTtsEngine(engineUsed);
       setIsLoading(false);
       setStatusMsg(null);
 
-      // Set up event listeners
+      // Playback event listeners
       audio.addEventListener('ended', () => {
-        if (isMountedRef.current) {
-          setIsPlaying(false);
-          setProgress(100);
-        }
+        if (isMountedRef.current) { setIsPlaying(false); setProgress(100); }
       });
-
       audio.addEventListener('error', () => {
-        console.warn('[ArticleListener] Audio playback error');
         if (isMountedRef.current) {
           setError('Audio playback error. Trying browser TTS...');
-          setIsPlaying(false);
           setTtsEngine('browser');
+          setIsPlaying(false);
         }
       });
 
       return audio;
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : 'Unknown error';
-      console.warn('[ArticleListener] Server TTS failed:', errMsg);
-
-      if (errMsg === 'server-fallback') {
-        // Both Speechify and Microsoft TTS failed — use browser TTS
-        setIsLoading(false);
-        setStatusMsg(null);
-        setTtsEngine('browser');
-        return null;
-      }
-
-      // Try Microsoft TTS specifically
-      setError(null);
-      setStatusMsg('Trying Microsoft TTS...');
-      try {
-        const msResponse = await fetch('/api/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: getPlainText(),
-            voice: selectedVoice,
-            rate,
-            engine: 'microsoft',
-          }),
-        });
-
-        if (msResponse.ok) {
-          const msBlob = await msResponse.blob();
-          if (msBlob.size > 100) {
-            cleanupAudio();
-            const url = URL.createObjectURL(msBlob);
-            audioUrlRef.current = url;
-            const audio = new Audio();
-            audio.preload = 'auto';
-            audio.src = url;
-            audioRef.current = audio;
-
-            await new Promise<void>((resolve, reject) => {
-              const onCanPlay = () => { cleanup(); resolve(); };
-              const onError = () => { cleanup(); reject(new Error('Audio load failed')); };
-              const cleanup = () => {
-                audio.removeEventListener('canplaythrough', onCanPlay);
-                audio.removeEventListener('error', onError);
-              };
-              audio.addEventListener('canplaythrough', onCanPlay);
-              audio.addEventListener('error', onError);
-              setTimeout(() => { cleanup(); resolve(); }, 15000);
-            });
-
-            if (isMountedRef.current) {
-              setDuration(audio.duration || 0);
-              setTtsEngine('microsoft');
-              setIsLoading(false);
-              setStatusMsg(null);
-              setError(null);
-
-              audio.addEventListener('ended', () => {
-                if (isMountedRef.current) { setIsPlaying(false); setProgress(100); }
-              });
-
-              return audio;
-            }
-          }
-        }
-      } catch (msErr) {
-        console.warn('[ArticleListener] Microsoft TTS also failed:', msErr);
-      }
-
-      // Everything failed — use browser TTS
+      console.warn('[ArticleListener] Server TTS failed:', err);
       if (isMountedRef.current) {
         setIsLoading(false);
         setStatusMsg(null);
-        setTtsEngine('browser');
-        setError('Using browser text-to-speech (server TTS unavailable)');
+        // Will fall through to browser TTS
       }
       return null;
     }
-  }, [getPlainText, selectedVoice, rate, cleanupAudio]);
+  }, [getPlainText, selectedVoice, rate, createAudioFromBlob]);
 
-  // Browser TTS
+  // Browser TTS — last resort
   const startBrowserTTS = useCallback(() => {
     if (!('speechSynthesis' in window)) {
       setError('Text-to-speech is not supported in this browser.');
@@ -278,8 +191,7 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
 
       const voices = window.speechSynthesis.getVoices();
       const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
-                           voices.find(v => v.lang.startsWith('en')) ||
-                           voices[0];
+                           voices.find(v => v.lang.startsWith('en')) || voices[0];
       if (englishVoice) utterance.voice = englishVoice;
 
       utterance.onend = () => {
@@ -288,7 +200,6 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
         setProgress(Math.round((ttsChunkIndex.current / ttsChunks.current.length) * 100));
         speakNextChunk();
       };
-
       utterance.onerror = () => {
         if (!isMountedRef.current) return;
         setIsPlaying(false);
@@ -301,10 +212,11 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     speakNextChunk();
     setTtsEngine('browser');
     setIsPlaying(true);
-    setError(null);
+    setError('Using browser text-to-speech');
   }, [getPlainText, rate]);
 
   const handlePlay = useCallback(async () => {
+    // Pause if playing
     if (isPlaying) {
       if (ttsEngine === 'browser') {
         window.speechSynthesis.pause();
@@ -323,7 +235,6 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
           setIsPlaying(true);
           return;
         } catch {
-          // Autoplay blocked
           startBrowserTTS();
           return;
         }
@@ -337,18 +248,18 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       return;
     }
 
-    // Start fresh — try server TTS
+    // Start fresh — try server TTS (Speechify → Microsoft → browser)
     const audio = await generateServerAudio();
     if (audio) {
       try {
         await audio.play();
         setIsPlaying(true);
       } catch {
-        // Autoplay blocked — try browser TTS
+        // Autoplay blocked — fall back to browser TTS
         startBrowserTTS();
       }
-    } else if (ttsEngine === 'browser') {
-      // Server TTS failed, browser TTS was set as fallback
+    } else {
+      // Server TTS failed entirely — use browser TTS
       startBrowserTTS();
     }
   }, [isPlaying, ttsEngine, generateServerAudio, startBrowserTTS]);
@@ -433,7 +344,7 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       animate={{ opacity: 1, y: 0 }}
       className="relative bg-white/70 backdrop-blur-2xl rounded-2xl border border-white/40 shadow-xl overflow-hidden"
     >
-      {/* Green gradient header */}
+      {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-[#166f4f] to-[#1c7352]">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -446,7 +357,7 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
           <div>
             <span className="text-sm font-bold text-white">Listen to this article</span>
             <span className="block text-[10px] text-white/60">
-              {engineLabel || 'Powered by Speechify & Microsoft TTS'}
+              {engineLabel || 'Speechify & Microsoft TTS'}
             </span>
           </div>
         </div>
@@ -467,11 +378,17 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
         />
       </div>
 
-      {/* Error banner */}
+      {/* Error/info banner */}
       {error && !isLoading && (
-        <div className="px-5 py-2.5 bg-amber-50 border-b border-amber-100 flex items-start gap-2">
-          <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-amber-700 leading-relaxed">{error}</p>
+        <div className={`px-5 py-2.5 border-b flex items-start gap-2 ${
+          ttsEngine === 'browser' ? 'bg-blue-50 border-blue-100' : 'bg-amber-50 border-amber-100'
+        }`}>
+          <AlertCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
+            ttsEngine === 'browser' ? 'text-blue-500' : 'text-amber-500'
+          }`} />
+          <p className={`text-xs leading-relaxed ${
+            ttsEngine === 'browser' ? 'text-blue-700' : 'text-amber-700'
+          }`}>{error}</p>
         </div>
       )}
 
@@ -557,23 +474,21 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
           </button>
 
           {/* Speed control */}
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              onClick={() => {
-                const speeds = [0.75, 1.0, 1.25, 1.5, 2.0];
-                const currentIndex = speeds.indexOf(rate);
-                const nextRate = speeds[(currentIndex + 1) % speeds.length];
-                setRate(nextRate);
-                if (audioRef.current) audioRef.current.playbackRate = nextRate;
-              }}
-              className="px-3 py-1.5 rounded-lg bg-[#166f4f]/10 text-[#166f4f] text-xs font-bold hover:bg-[#166f4f]/20 transition-colors min-w-[48px] text-center"
-            >
-              {rate}x
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              const speeds = [0.75, 1.0, 1.25, 1.5, 2.0];
+              const currentIndex = speeds.indexOf(rate);
+              const nextRate = speeds[(currentIndex + 1) % speeds.length];
+              setRate(nextRate);
+              if (audioRef.current) audioRef.current.playbackRate = nextRate;
+            }}
+            className="ml-auto px-3 py-1.5 rounded-lg bg-[#166f4f]/10 text-[#166f4f] text-xs font-bold hover:bg-[#166f4f]/20 transition-colors min-w-[48px] text-center"
+          >
+            {rate}x
+          </button>
         </div>
 
-        {/* Time display (server TTS modes) */}
+        {/* Time display (server TTS) */}
         {duration > 0 && (ttsEngine === 'speechify' || ttsEngine === 'microsoft') && (
           <div className="flex items-center justify-between mt-3 text-[11px] text-slate-400 font-medium tabular-nums">
             <span>{formatTime(currentTime)}</span>
@@ -581,14 +496,14 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
           </div>
         )}
 
-        {/* Browser TTS progress */}
+        {/* Browser TTS chunk progress */}
         {ttsEngine === 'browser' && isPlaying && (
           <div className="mt-3 text-[11px] text-slate-400 font-medium">
-            Playing chunk {ttsChunkIndex.current + 1} of {ttsChunks.current.length}
+            Part {ttsChunkIndex.current + 1} of {ttsChunks.current.length}
           </div>
         )}
 
-        {/* Loading / status message */}
+        {/* Loading status */}
         {(isLoading || statusMsg) && (
           <div className="mt-3 flex items-center gap-2 text-[11px] text-[#166f4f] font-medium">
             {isLoading && <Loader2 className="w-3 h-3 animate-spin" />}
