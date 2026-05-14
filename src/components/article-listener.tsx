@@ -2,18 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Play, Pause, SkipBack, SkipForward, X, Loader2 } from 'lucide-react';
+import { Volume2, Play, Pause, SkipBack, SkipForward, X, Loader2, ChevronDown } from 'lucide-react';
 
 interface ArticleListenerProps {
   title: string;
   content: string;
 }
 
-// Speechify API configuration
-const SPEECHIFY_API_KEY = 'I1YSNWxfj8CTUPuhq6xpMRhK0aD_ttpqbcyI37Vz1lA=';
-const SPEECHIFY_API_URL = 'https://api.speechify.com/v1/audio/stream';
-
-// Voice options
+// Voice options for Speechify
 const VOICES = [
   { id: 'mrbeast', name: 'MrBeast', description: 'Energetic & engaging' },
   { id: 'snoop', name: 'Snoop Dogg', description: 'Chill & smooth' },
@@ -25,21 +21,20 @@ const VOICES = [
 
 function stripMarkdown(text: string): string {
   return text
-    .replace(/^#{1,6}\s+/gm, '') // Remove headings
-    .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold
-    .replace(/\*(.+?)\*/g, '$1') // Remove italic
-    .replace(/\[(.+?)\]\(.+?\)/g, '$1') // Remove links, keep text
-    .replace(/>\s*\*\*(.+?)\*\*:/g, '$1:') // Remove blockquote bold
-    .replace(/^>\s+/gm, '') // Remove blockquotes
-    .replace(/[-*✅❓🚩]\s*/g, '') // Remove list markers
-    .replace(/\|/g, ' ') // Replace table pipes with space
-    .replace(/-{3,}/g, '') // Remove horizontal rules
-    .replace(/\n{3,}/g, '\n\n') // Normalize newlines
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+    .replace(/>\s*\*\*(.+?)\*\*:/g, '$1:')
+    .replace(/^>\s+/gm, '')
+    .replace(/[-*✅❓🚩]\s*/g, '')
+    .replace(/\|/g, ' ')
+    .replace(/-{3,}/g, '')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
 export function ArticleListener({ title, content }: ArticleListenerProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -50,8 +45,12 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
   const [error, setError] = useState<string | null>(null);
   const [showVoicePicker, setShowVoicePicker] = useState(false);
   const [rate, setRate] = useState(1.0);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [useBrowserTTS, setUseBrowserTTS] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const progressInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const ttsChunkIndex = useRef(0);
+  const ttsChunks = useRef<string[]>([]);
 
   const plainText = useCallback(() => {
     return stripMarkdown(`${title}\n\n${content}`);
@@ -74,16 +73,19 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       });
 
       if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || `TTS API error: ${response.status}`);
+        throw new Error('Speechify API error — falling back to browser TTS');
       }
 
-      // Get audio as blob
       const audioBlob = await response.blob();
+
+      // Check if the response is actually audio (not an error JSON)
+      if (audioBlob.type && !audioBlob.type.startsWith('audio/')) {
+        throw new Error('Invalid audio response — falling back to browser TTS');
+      }
+
       const url = URL.createObjectURL(audioBlob);
       setAudioUrl(url);
 
-      // Create and setup audio element
       if (audioRef.current) {
         audioRef.current.pause();
         URL.revokeObjectURL(audioRef.current.src);
@@ -102,48 +104,45 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       });
 
       audio.addEventListener('error', () => {
-        setError('Audio playback failed. Trying browser TTS fallback.');
-        setIsPlaying(false);
+        throw new Error('Audio playback error — falling back to browser TTS');
       });
 
       setIsLoading(false);
+      setUseBrowserTTS(false);
       return audio;
     } catch (err) {
-      console.error('Speechify TTS failed:', err);
-      setError('Speechify TTS failed. Using browser TTS fallback.');
+      console.warn('Speechify TTS failed, using browser fallback:', err);
       setIsLoading(false);
+      setUseBrowserTTS(true);
       return null;
     }
   }, [plainText, selectedVoice, rate]);
 
-  // Browser TTS fallback
-  const browserTTS = useCallback(() => {
+  // Browser TTS — speak chunks sequentially
+  const startBrowserTTS = useCallback(() => {
     if (!('speechSynthesis' in window)) {
       setError('Text-to-speech not supported in this browser.');
       return;
     }
 
-    // Cancel any existing speech
     window.speechSynthesis.cancel();
 
     const text = plainText();
-    // Split into chunks for better performance
-    const chunks = text.match(/.{1,3000}/g) || [text];
-    let chunkIndex = 0;
+    ttsChunks.current = text.match(/.{1,2000}/g) || [text];
+    ttsChunkIndex.current = 0;
 
-    const speakChunk = () => {
-      if (chunkIndex >= chunks.length) {
+    const speakNextChunk = () => {
+      if (ttsChunkIndex.current >= ttsChunks.current.length) {
         setIsPlaying(false);
         setProgress(100);
         return;
       }
 
-      const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex]);
+      const utterance = new SpeechSynthesisUtterance(ttsChunks.current[ttsChunkIndex.current]);
       utterance.rate = rate;
       utterance.pitch = 1;
       utterance.volume = 1;
 
-      // Try to find a good English voice
       const voices = window.speechSynthesis.getVoices();
       const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
                            voices.find(v => v.lang.startsWith('en')) ||
@@ -151,9 +150,9 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       if (englishVoice) utterance.voice = englishVoice;
 
       utterance.onend = () => {
-        chunkIndex++;
-        setProgress(Math.round((chunkIndex / chunks.length) * 100));
-        speakChunk();
+        ttsChunkIndex.current++;
+        setProgress(Math.round((ttsChunkIndex.current / ttsChunks.current.length) * 100));
+        speakNextChunk();
       };
 
       utterance.onerror = () => {
@@ -164,24 +163,24 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       window.speechSynthesis.speak(utterance);
     };
 
-    speakChunk();
+    speakNextChunk();
     setIsPlaying(true);
   }, [plainText, rate]);
 
   const handlePlay = useCallback(async () => {
     if (isPlaying) {
       // Pause
-      if (audioRef.current) {
-        audioRef.current.pause();
-      } else {
+      if (useBrowserTTS) {
         window.speechSynthesis.pause();
+      } else if (audioRef.current) {
+        audioRef.current.pause();
       }
       setIsPlaying(false);
       return;
     }
 
-    // Resume or start
-    if (audioRef.current && audioUrl) {
+    // Resume paused audio
+    if (!useBrowserTTS && audioRef.current && audioUrl) {
       if (audioRef.current.paused && audioRef.current.currentTime > 0) {
         audioRef.current.play();
         setIsPlaying(true);
@@ -189,20 +188,26 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
       }
     }
 
-    // Generate new audio
+    // Resume paused browser TTS
+    if (useBrowserTTS && ttsChunkIndex.current > 0 && ttsChunkIndex.current < ttsChunks.current.length) {
+      window.speechSynthesis.resume();
+      setIsPlaying(true);
+      return;
+    }
+
+    // Start fresh — try Speechify first, then fallback
     const audio = await generateAudio();
     if (audio) {
       try {
         await audio.play();
         setIsPlaying(true);
       } catch {
-        // Fallback to browser TTS
-        browserTTS();
+        startBrowserTTS();
       }
     } else {
-      browserTTS();
+      startBrowserTTS();
     }
-  }, [isPlaying, audioUrl, generateAudio, browserTTS]);
+  }, [isPlaying, audioUrl, useBrowserTTS, generateAudio, startBrowserTTS]);
 
   const handleStop = useCallback(() => {
     if (audioRef.current) {
@@ -213,11 +218,12 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
+    ttsChunkIndex.current = 0;
   }, []);
 
-  // Progress tracking
+  // Progress tracking for audio element
   useEffect(() => {
-    if (isPlaying && audioRef.current) {
+    if (isPlaying && !useBrowserTTS && audioRef.current) {
       progressInterval.current = setInterval(() => {
         if (audioRef.current) {
           setCurrentTime(audioRef.current.currentTime);
@@ -230,7 +236,7 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     return () => {
       if (progressInterval.current) clearInterval(progressInterval.current);
     };
-  }, [isPlaying]);
+  }, [isPlaying, useBrowserTTS]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -243,15 +249,14 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     };
   }, [audioUrl]);
 
-  // Skip forward/back 15 seconds
   const skipForward = () => {
-    if (audioRef.current) {
+    if (audioRef.current && !useBrowserTTS) {
       audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 15, audioRef.current.duration);
     }
   };
 
   const skipBack = () => {
-    if (audioRef.current) {
+    if (audioRef.current && !useBrowserTTS) {
       audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 15, 0);
     }
   };
@@ -262,19 +267,14 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Floating listen button
-  if (!isOpen) {
+  if (isDismissed) {
     return (
       <motion.button
-        onClick={() => setIsOpen(true)}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-semibold shadow-lg shadow-[#166f4f]/25 hover:shadow-xl hover:shadow-[#166f4f]/30 transition-all"
+        onClick={() => setIsDismissed(false)}
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#166f4f]/10 text-[#166f4f] text-sm font-medium hover:bg-[#166f4f]/20 transition-all"
       >
         <Volume2 className="w-4 h-4" />
-        Listen to Article
+        Listen
       </motion.button>
     );
   }
@@ -283,41 +283,46 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      className="bg-white/60 backdrop-blur-2xl rounded-2xl border border-white/40 shadow-xl overflow-hidden"
+      className="relative bg-white/70 backdrop-blur-2xl rounded-2xl border border-white/40 shadow-xl overflow-hidden"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/30 bg-gradient-to-r from-[#166f4f]/5 to-[#76bf9f]/5">
-        <div className="flex items-center gap-2">
-          <Volume2 className="w-4 h-4 text-[#166f4f]" />
-          <span className="text-sm font-semibold text-[#121212]">Article Reader</span>
+      {/* Green gradient header */}
+      <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-[#166f4f] to-[#1c7352]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <Volume2 className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <span className="text-sm font-bold text-white">Listen to this article</span>
+            <span className="block text-[10px] text-white/60">Powered by Speechify</span>
+          </div>
         </div>
         <button
-          onClick={() => { handleStop(); setIsOpen(false); }}
-          className="p-1 rounded-full hover:bg-slate-100 transition-colors"
+          onClick={() => { handleStop(); setIsDismissed(true); }}
+          className="p-1.5 rounded-full hover:bg-white/20 transition-colors"
+          aria-label="Close player"
         >
-          <X className="w-4 h-4 text-slate-400" />
+          <X className="w-4 h-4 text-white/80" />
         </button>
       </div>
 
       {/* Progress bar */}
       <div className="h-1 bg-slate-100">
         <motion.div
-          className="h-full bg-gradient-to-r from-[#166f4f] to-[#76bf9f]"
+          className="h-full bg-gradient-to-r from-[#166f4f] to-[#76bf9f] transition-all duration-300"
           style={{ width: `${progress}%` }}
-          transition={{ duration: 0.3 }}
         />
       </div>
 
       {/* Controls */}
-      <div className="px-4 py-3">
+      <div className="px-5 py-4">
         {/* Voice picker */}
         <div className="mb-3">
           <button
             onClick={() => setShowVoicePicker(!showVoicePicker)}
-            className="text-xs text-slate-500 hover:text-[#166f4f] transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#166f4f] transition-colors"
           >
-            Voice: {VOICES.find(v => v.id === selectedVoice)?.name || 'David'} ▾
+            <span className="font-medium">Voice: {VOICES.find(v => v.id === selectedVoice)?.name || 'David'}</span>
+            <ChevronDown className={`w-3 h-3 transition-transform ${showVoicePicker ? 'rotate-180' : ''}`} />
           </button>
           <AnimatePresence>
             {showVoicePicker && (
@@ -325,19 +330,24 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-2 grid grid-cols-2 gap-1.5 overflow-hidden"
+                className="mt-2 grid grid-cols-3 gap-1.5 overflow-hidden"
               >
                 {VOICES.map(voice => (
                   <button
                     key={voice.id}
-                    onClick={() => { setSelectedVoice(voice.id); setShowVoicePicker(false); handleStop(); }}
-                    className={`text-left px-2.5 py-1.5 rounded-lg text-xs transition-all ${
+                    onClick={() => {
+                      setSelectedVoice(voice.id);
+                      setShowVoicePicker(false);
+                      handleStop();
+                      setUseBrowserTTS(false);
+                    }}
+                    className={`text-left px-2.5 py-2 rounded-lg text-xs transition-all ${
                       selectedVoice === voice.id
-                        ? 'bg-[#166f4f]/10 text-[#166f4f] font-semibold border border-[#76bf9f]/30'
-                        : 'bg-white/50 text-slate-600 border border-white/30 hover:bg-white/80'
+                        ? 'bg-[#166f4f]/10 text-[#166f4f] font-semibold border border-[#76bf9f]/30 ring-1 ring-[#166f4f]/20'
+                        : 'bg-white/60 text-slate-600 border border-white/30 hover:bg-white/80'
                     }`}
                   >
-                    <span className="font-medium">{voice.name}</span>
+                    <span className="font-medium block">{voice.name}</span>
                     <span className="block text-[10px] text-slate-400">{voice.description}</span>
                   </button>
                 ))}
@@ -350,8 +360,10 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
         <div className="flex items-center gap-3">
           <button
             onClick={skipBack}
-            className="p-1.5 rounded-full text-slate-400 hover:text-[#166f4f] hover:bg-[#166f4f]/10 transition-all"
+            disabled={useBrowserTTS}
+            className="p-2 rounded-full text-slate-400 hover:text-[#166f4f] hover:bg-[#166f4f]/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Skip back 15s"
+            title="Skip back 15s"
           >
             <SkipBack className="w-4 h-4" />
           </button>
@@ -359,22 +371,24 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
           <button
             onClick={handlePlay}
             disabled={isLoading}
-            className="w-10 h-10 rounded-full bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white flex items-center justify-center shadow-md shadow-[#166f4f]/25 hover:shadow-lg hover:shadow-[#166f4f]/30 transition-all disabled:opacity-50"
+            className="w-12 h-12 rounded-full bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white flex items-center justify-center shadow-lg shadow-[#166f4f]/30 hover:shadow-xl hover:shadow-[#166f4f]/40 transition-all disabled:opacity-60 active:scale-95"
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : isPlaying ? (
-              <Pause className="w-4 h-4" />
+              <Pause className="w-5 h-5" />
             ) : (
-              <Play className="w-4 h-4 ml-0.5" />
+              <Play className="w-5 h-5 ml-0.5" />
             )}
           </button>
 
           <button
             onClick={skipForward}
-            className="p-1.5 rounded-full text-slate-400 hover:text-[#166f4f] hover:bg-[#166f4f]/10 transition-all"
+            disabled={useBrowserTTS}
+            className="p-2 rounded-full text-slate-400 hover:text-[#166f4f] hover:bg-[#166f4f]/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Skip forward 15s"
+            title="Skip forward 15s"
           >
             <SkipForward className="w-4 h-4" />
           </button>
@@ -389,7 +403,7 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
                 setRate(nextRate);
                 if (audioRef.current) audioRef.current.playbackRate = nextRate;
               }}
-              className="px-2 py-0.5 rounded-md bg-[#166f4f]/10 text-[#166f4f] text-xs font-semibold hover:bg-[#166f4f]/20 transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-[#166f4f]/10 text-[#166f4f] text-xs font-bold hover:bg-[#166f4f]/20 transition-colors min-w-[48px] text-center"
             >
               {rate}x
             </button>
@@ -397,10 +411,18 @@ export function ArticleListener({ title, content }: ArticleListenerProps) {
         </div>
 
         {/* Time display */}
-        {duration > 0 && (
-          <div className="flex items-center justify-between mt-2 text-[10px] text-slate-400">
+        {duration > 0 && !useBrowserTTS && (
+          <div className="flex items-center justify-between mt-3 text-[11px] text-slate-400 font-medium tabular-nums">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
+          </div>
+        )}
+
+        {/* Browser TTS indicator */}
+        {useBrowserTTS && (
+          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-slate-400">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400" />
+            Using browser TTS (Speechify unavailable)
           </div>
         )}
 
