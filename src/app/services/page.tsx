@@ -104,10 +104,33 @@ export default function ServicesPage() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const res = await fetch('/api/services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Service inquiry error:', error);
+      setErrorMsg('Failed to send your inquiry. Please try again or email us directly at hello@menshlynews.com');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -373,6 +396,11 @@ export default function ServicesPage() {
               onSubmit={handleSubmit}
               className="space-y-5"
             >
+              {errorMsg && (
+                <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+                  {errorMsg}
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium text-[#121212] mb-1.5">
@@ -432,10 +460,15 @@ export default function ServicesPage() {
               </div>
               <button
                 type="submit"
-                className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white font-semibold hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-md flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white font-semibold hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Send Message
-                <Mail className="w-4 h-4" />
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Mail className="w-4 h-4" />
+                )}
+                {loading ? 'Sending...' : 'Send Message'}
               </button>
             </motion.form>
           ) : (

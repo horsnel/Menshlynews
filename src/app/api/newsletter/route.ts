@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { z } from 'zod';
+import { sendWelcomeEmail } from '@/lib/email';
 
 // Simple in-memory rate limiter
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -21,7 +22,7 @@ function isRateLimited(ip: string): boolean {
 
 const subscribeSchema = z.object({
   email: z.string().email('Invalid email address'),
-  source: z.enum(['popup', 'footer', 'sidebar']).default('popup'),
+  source: z.enum(['popup', 'footer', 'sidebar', 'about']).default('popup'),
 });
 
 export async function POST(req: NextRequest) {
@@ -57,6 +58,11 @@ export async function POST(req: NextRequest) {
 
     await db.subscriber.create({
       data: { email, source },
+    });
+
+    // Send welcome email via Resend (non-blocking — don't fail if email doesn't send)
+    sendWelcomeEmail({ email }).catch((err) => {
+      console.error('Welcome email failed (non-blocking):', err);
     });
 
     return NextResponse.json({ message: 'Successfully subscribed!', success: true });

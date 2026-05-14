@@ -84,6 +84,8 @@ export default function ContactPage() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const handleChange = (
@@ -92,9 +94,30 @@ export default function ContactPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Contact form error:', error);
+      setErrorMsg('Failed to send your message. Please try again or email us directly at hello@menshlynews.com');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -213,6 +236,11 @@ export default function ContactPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
+                    {errorMsg && (
+                      <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                        {errorMsg}
+                      </div>
+                    )}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label
@@ -299,10 +327,15 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-semibold hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-sm"
+                      disabled={loading}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-semibold hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      <Send className="w-4 h-4" />
-                      Send Message
+                      {loading ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                      {loading ? 'Sending...' : 'Send Message'}
                     </button>
                   </form>
                 )}
