@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -219,6 +219,7 @@ export function ArticleReader({ post }: ArticleReaderProps) {
   const t = useT;
   const liked = isLiked(post.id);
   const displayLikes = getLikeCount(post.id, post.likes);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showFloatingShare, setShowFloatingShare] = useState(false);
   const [translatedFirstHalf, setTranslatedFirstHalf] = useState<string | null>(null);
   const [translatedSecondHalf, setTranslatedSecondHalf] = useState<string | null>(null);
@@ -249,11 +250,13 @@ export function ArticleReader({ post }: ArticleReaderProps) {
   }, []);
 
   useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
     const handleScroll = () => {
-      setShowFloatingShare(window.scrollY > 400);
+      setShowFloatingShare(container.scrollTop > 400);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -340,9 +343,10 @@ export function ArticleReader({ post }: ArticleReaderProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
+      ref={scrollContainerRef}
       className="fixed inset-0 z-50 bg-white overflow-y-auto"
     >
-        <ReadingProgress />
+        <ReadingProgress scrollContainerRef={scrollContainerRef} />
 
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-slate-100">
