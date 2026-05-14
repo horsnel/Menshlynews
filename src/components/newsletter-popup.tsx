@@ -85,7 +85,7 @@ export function NewsletterPopup() {
             className="fixed inset-0 z-[90] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative w-full max-w-md bg-white/90 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/40 overflow-hidden">
+            <div className="relative w-full max-w-md bg-white/70 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/50 overflow-hidden">
               {/* Close button */}
               <button
                 onClick={handleClose}

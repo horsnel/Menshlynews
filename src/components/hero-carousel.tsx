@@ -120,7 +120,7 @@ export function HeroCarousel() {
                   e.stopPropagation();
                   setCurrentArticle(slide);
                 }}
-                className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#166f4f] text-white text-sm font-semibold hover:bg-[#1c7352] transition-colors group/cta"
+                className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#166f4f]/80 backdrop-blur-lg text-white text-sm font-semibold hover:bg-[#166f4f] shadow-lg shadow-[#166f4f]/30 transition-all group/cta"
               >
                 Read Article
                 <ArrowRight className="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
@@ -135,7 +135,7 @@ export function HeroCarousel() {
             e.stopPropagation();
             goPrev();
           }}
-          className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60"
+          className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/10 backdrop-blur-lg text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white/20 border border-white/10"
           aria-label="Previous slide"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -145,7 +145,7 @@ export function HeroCarousel() {
             e.stopPropagation();
             goNext();
           }}
-          className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60"
+          className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/10 backdrop-blur-lg text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white/20 border border-white/10"
           aria-label="Next slide"
         >
           <ChevronRight className="w-5 h-5" />

@@ -24,7 +24,7 @@ export function Sidebar() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="bg-white rounded-xl border border-slate-200 p-6"
+        className="bg-white/60 backdrop-blur-xl rounded-xl border border-white/40 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.04)]"
       >
         <h3 className="text-lg font-bold text-[#121212] mb-3 serif">
           About Menshly Wire
@@ -64,7 +64,7 @@ export function Sidebar() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
-        className="bg-white rounded-xl border border-slate-200 p-6"
+        className="bg-white/60 backdrop-blur-xl rounded-xl border border-white/40 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.04)]"
       >
         <h3 className="text-lg font-bold text-[#121212] mb-4 serif">
           Popular Posts
@@ -98,7 +98,7 @@ export function Sidebar() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
-        className="bg-gradient-to-br from-[#166f4f] to-[#1c7352] rounded-xl p-6 text-white"
+        className="bg-gradient-to-br from-[#166f4f] to-[#1c7352] rounded-xl p-6 text-white shadow-[0_4px_30px_rgba(22,111,79,0.15)]"
       >
         <div className="flex items-center gap-2 mb-2">
           <Mail className="w-5 h-5" />
@@ -124,7 +124,7 @@ export function Sidebar() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.4 }}
-        className="bg-white rounded-xl border border-slate-200 p-6"
+        className="bg-white/60 backdrop-blur-xl rounded-xl border border-white/40 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.04)]"
       >
         <h3 className="text-lg font-bold text-[#121212] mb-4 serif">
           Categories

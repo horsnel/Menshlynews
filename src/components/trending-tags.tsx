@@ -35,10 +35,10 @@ export function TrendingTags() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
               onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-              className={`tag-pill px-3.5 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              className={`tag-pill px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                 activeTag === tag
-                  ? 'bg-[#166f4f] text-white border-[#166f4f]'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-[#166f4f]'
+                  ? 'bg-[#166f4f] text-white border-[#166f4f] shadow-md shadow-[#166f4f]/20'
+                  : 'bg-white/60 backdrop-blur-lg text-slate-600 border-white/40 hover:border-[#166f4f]/40 hover:bg-white/80 hover:shadow-sm'
               }`}
             >
               {tag}

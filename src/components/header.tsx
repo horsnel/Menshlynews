@@ -75,7 +75,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200">
+    <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/30 shadow-[0_1px_20px_rgba(0,0,0,0.04)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -104,10 +104,10 @@ export function Header() {
               <button
                 key={link.label}
                 onClick={() => handleNavClick(link.category)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeCategory === link.category
-                    ? 'bg-[#f0f0f0] text-[#1c7352]'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'bg-[#166f4f]/10 text-[#1c7352] backdrop-blur-sm'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                 }`}
               >
                 {link.label}
@@ -265,7 +265,7 @@ export function Header() {
             {/* Subscribe Button */}
             <button
               onClick={() => setNewsletterOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-medium hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-sm"
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-[#166f4f] to-[#1c7352] text-white text-sm font-medium hover:from-[#1c7352] hover:to-[#166f4f] transition-all shadow-lg shadow-[#166f4f]/20"
             >
               Subscribe
             </button>

@@ -184,7 +184,7 @@ export function ShareButtons({
   const dropdownContent = (
     <div
       ref={dropdownRef}
-      className="absolute right-0 bottom-full mb-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200"
+      className="absolute right-0 bottom-full mb-2 w-56 bg-white/70 backdrop-blur-2xl rounded-xl shadow-xl border border-white/40 py-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200"
     >
       <div className="px-3 py-1.5 border-b border-slate-100">
         <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Share this article</p>
@@ -195,7 +195,7 @@ export function ShareButtons({
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+          className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-white/40 transition-colors rounded-lg mx-1"
           onClick={() => setShowDropdown(false)}
         >
           <link.icon className="w-4 h-4 text-slate-400" />
@@ -208,7 +208,7 @@ export function ShareButtons({
             handleCopyLink();
             setShowDropdown(false);
           }}
-          className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 w-full transition-colors"
+          className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-white/40 w-full transition-colors rounded-lg mx-1"
         >
           {copied ? (
             <>
@@ -231,7 +231,7 @@ export function ShareButtons({
 
   if (variant === 'floating') {
     return (
-      <div className="relative flex items-center gap-2 bg-white/95 backdrop-blur-md rounded-full px-4 py-2.5 shadow-lg border border-slate-200">
+      <div className="relative flex items-center gap-2 bg-white/60 backdrop-blur-2xl rounded-full px-4 py-2.5 shadow-xl border border-white/40">
         {barLinks.map((link) => (
           <a
             key={link.name}
@@ -271,7 +271,7 @@ export function ShareButtons({
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={`p-2.5 rounded-lg transition-colors text-slate-400 border border-slate-200 ${link.color}`}
+          className={`p-2.5 rounded-lg transition-colors text-slate-400 border border-white/30 bg-white/30 backdrop-blur-lg ${link.color}`}
           aria-label={`Share on ${link.name}`}
         >
           <link.icon className="w-4 h-4" />
@@ -281,10 +281,10 @@ export function ShareButtons({
         <button
           ref={buttonRef}
           onClick={handleNativeShare}
-          className={`p-2.5 rounded-lg transition-colors border ${
+          className={`p-2.5 rounded-lg transition-colors border backdrop-blur-lg ${
             copied
-              ? 'text-[#166f4f] bg-[#f0f0f0] border-[#76bf9f]'
-              : 'text-slate-400 border-slate-200 hover:bg-[#f0f0f0] hover:text-[#166f4f]'
+              ? 'text-[#166f4f] bg-[#166f4f]/10 border-[#76bf9f]/40'
+              : 'text-slate-400 border-white/30 bg-white/30 hover:bg-[#166f4f]/10 hover:text-[#166f4f] hover:border-[#76bf9f]/30'
           }`}
           aria-label="Share"
         >

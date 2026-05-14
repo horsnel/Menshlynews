@@ -195,7 +195,7 @@ export default function HomePage() {
                 {filteredPosts.length} article{filteredPosts.length !== 1 ? 's' : ''} found
               </p>
             </div>
-            <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
+            <div className="flex items-center gap-1 bg-white/60 backdrop-blur-xl rounded-lg border border-white/40 p-1 shadow-[0_2px_20px_rgba(0,0,0,0.03)]">
               <button
                 onClick={() => setSortBy('recent')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${

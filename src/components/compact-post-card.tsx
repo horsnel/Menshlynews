@@ -28,7 +28,7 @@ export function CompactPostCard({ post, index }: CompactPostCardProps) {
       initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer group hover:border-[#76bf9f]/50 transition-all hover:shadow-lg"
+      className="bg-white/70 backdrop-blur-xl rounded-xl border border-white/40 overflow-hidden cursor-pointer group shadow-[0_4px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(22,111,79,0.08)] hover:border-[#76bf9f]/30 transition-all duration-300"
       onClick={() => setCurrentArticle(post)}
     >
       {/* Image */}

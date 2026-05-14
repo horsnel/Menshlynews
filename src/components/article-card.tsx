@@ -44,7 +44,7 @@ export function ArticleCard({ post, index }: ArticleCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
-      className="article-card bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer group"
+      className="article-card bg-white/70 backdrop-blur-xl rounded-xl border border-white/40 overflow-hidden cursor-pointer group shadow-[0_4px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(22,111,79,0.08)] hover:border-[#76bf9f]/30 transition-all duration-300"
       onClick={() => setCurrentArticle(post)}
     >
       <div className="flex flex-col sm:flex-row">

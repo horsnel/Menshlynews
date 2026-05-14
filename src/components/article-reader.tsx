@@ -79,7 +79,7 @@ function MidArticleSuggestions({ currentPost }: { currentPost: Post }) {
   };
 
   return (
-    <div className="my-10 py-8 border-t border-b border-slate-200 bg-gradient-to-r from-[#f0f0f0]/50 to-white/50 -mx-4 px-4 sm:-mx-6 sm:px-6">
+    <div className="my-10 py-8 border-t border-b border-white/30 bg-white/40 backdrop-blur-xl -mx-4 px-4 sm:-mx-6 sm:px-6 shadow-[inset_0_1px_30px_rgba(22,111,79,0.03)]">
       <div className="flex items-center gap-2 mb-5">
         <div className="w-1 h-6 bg-[#166f4f] rounded-full" />
         <h3 className="text-lg font-bold text-[#121212]">Continue Reading</h3>
@@ -89,7 +89,7 @@ function MidArticleSuggestions({ currentPost }: { currentPost: Post }) {
           <button
             key={suggestion.id}
             onClick={() => handleClick(suggestion)}
-            className="group text-left bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-[#76bf9f]/50 hover:shadow-lg transition-all duration-300"
+            className="group text-left bg-white/60 backdrop-blur-xl rounded-xl border border-white/40 overflow-hidden hover:border-[#76bf9f]/30 hover:shadow-[0_8px_40px_rgba(22,111,79,0.08)] transition-all duration-300"
           >
             <div className="relative aspect-[16/9] overflow-hidden">
               <img
@@ -140,13 +140,13 @@ function PrevNextNavigation({ currentPost }: { currentPost: Post }) {
   if (!prevPost && !nextPost) return null;
 
   return (
-    <div className="mt-10 pt-8 border-t border-slate-200">
+    <div className="mt-10 pt-8 border-t border-white/30">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Previous Article */}
         {prevPost ? (
           <button
             onClick={() => handleClick(prevPost)}
-            className="group text-left bg-white rounded-xl border border-slate-200 p-4 hover:border-[#76bf9f]/50 hover:shadow-lg transition-all duration-300"
+            className="group text-left bg-white/60 backdrop-blur-xl rounded-xl border border-white/40 p-4 hover:border-[#76bf9f]/30 hover:shadow-[0_8px_40px_rgba(22,111,79,0.08)] transition-all duration-300"
           >
             <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-2">
               <ChevronLeft className="w-3.5 h-3.5" />
@@ -179,7 +179,7 @@ function PrevNextNavigation({ currentPost }: { currentPost: Post }) {
         {nextPost ? (
           <button
             onClick={() => handleClick(nextPost)}
-            className="group text-left bg-white rounded-xl border border-slate-200 p-4 hover:border-[#76bf9f]/50 hover:shadow-lg transition-all duration-300"
+            className="group text-left bg-white/60 backdrop-blur-xl rounded-xl border border-white/40 p-4 hover:border-[#76bf9f]/30 hover:shadow-[0_8px_40px_rgba(22,111,79,0.08)] transition-all duration-300"
           >
             <div className="flex items-center justify-end gap-1.5 text-xs text-[#166f4f] mb-2">
               <span className="uppercase tracking-wider font-semibold">Next Read</span>
@@ -349,7 +349,7 @@ export function ArticleReader({ post }: ArticleReaderProps) {
         <ReadingProgress scrollContainerRef={scrollContainerRef} />
 
         {/* Sticky Header */}
-        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-slate-100">
+        <div className="sticky top-0 z-10 bg-white/60 backdrop-blur-2xl border-b border-white/30 shadow-[0_1px_20px_rgba(0,0,0,0.04)]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
             <button
               onClick={() => window.history.back()}

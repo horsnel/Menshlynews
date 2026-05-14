@@ -18,7 +18,7 @@ export function NewsTicker() {
   }, [tickerPosts.length]);
 
   return (
-    <div className="bg-[#121212] text-white overflow-hidden">
+    <div className="bg-[#121212]/90 backdrop-blur-xl text-white overflow-hidden border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-9 gap-3">
           {/* Breaking label */}
