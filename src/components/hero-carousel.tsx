@@ -3,23 +3,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
-import { Post, posts } from '@/lib/data';
+import { Post } from '@/lib/types';
+import { usePosts } from '@/lib/posts-provider';
 import { useBlogStore } from '@/lib/store';
 import { CategoryIcon } from './category-icon';
 
-// Pick top posts for carousel (featured first, then by likes)
-const carouselPosts = [
-  ...posts.filter((p) => p.featured),
-  ...posts
-    .filter((p) => !p.featured)
-    .sort((a, b) => b.likes - a.likes)
-    .slice(0, 3),
-].slice(0, 5);
-
 export function HeroCarousel() {
+  const { posts } = usePosts();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const { setCurrentArticle } = useBlogStore();
+
+  // Pick top posts for carousel (featured first, then by likes)
+  const carouselPosts = [
+    ...posts.filter((p) => p.featured),
+    ...posts
+      .filter((p) => !p.featured)
+      .sort((a, b) => b.likes - a.likes)
+      .slice(0, 3),
+  ].slice(0, 5);
 
   const total = carouselPosts.length;
 

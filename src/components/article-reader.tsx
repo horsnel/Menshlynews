@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Heart, Clock, ChevronLeft, ChevronRight, ArrowRight, Languages } from 'lucide-react';
-import { Post, posts } from '@/lib/data';
+import { Post } from '@/lib/types';
+import { usePosts } from '@/lib/posts-provider';
 import { useBlogStore } from '@/lib/store';
 import { useLikes } from '@/hooks/use-likes';
 import { useArticleTranslator, useT } from '@/hooks/use-translator';
@@ -55,6 +56,7 @@ function splitContent(content: string): { firstHalf: string; secondHalf: string 
 // Mid-article suggestions component
 function MidArticleSuggestions({ currentPost }: { currentPost: Post }) {
   const { setCurrentArticle } = useBlogStore();
+  const { posts } = usePosts();
 
   const suggestions = useMemo(() => {
     // Get 3 articles from different categories, excluding current
@@ -124,6 +126,7 @@ function MidArticleSuggestions({ currentPost }: { currentPost: Post }) {
 // Previous / Next navigation cards
 function PrevNextNavigation({ currentPost }: { currentPost: Post }) {
   const { setCurrentArticle } = useBlogStore();
+  const { posts } = usePosts();
 
   const { prevPost, nextPost } = useMemo(() => {
     const currentIndex = posts.findIndex(p => p.id === currentPost.id);

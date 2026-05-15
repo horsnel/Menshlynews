@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Menu } from 'lucide-react';
 import { useBlogStore } from '@/lib/store';
-import { posts } from '@/lib/data';
+import { usePosts } from '@/lib/posts-provider';
 
 const navLinks = [
   { label: 'Home', category: null },
@@ -29,6 +29,8 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  const { posts } = usePosts();
 
   const searchResults = useMemo(() => {
     if (searchQuery.trim().length > 0) {
@@ -68,7 +70,7 @@ export function Header() {
     setMobileMenuOpen(false);
   };
 
-  const handleSearchResultClick = (post: (typeof posts)[0]) => {
+  const handleSearchResultClick = (post: (typeof posts)[number]) => {
     setSearchOpen(false);
     setSearchQuery('');
     useBlogStore.getState().setCurrentArticle(post);

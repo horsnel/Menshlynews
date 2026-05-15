@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { BookOpen, Users, FileText, TrendingUp, Mail, ArrowRight } from 'lucide-react';
-import { categories, posts } from '@/lib/data';
+import { usePosts } from '@/lib/posts-provider';
 import { useBlogStore } from '@/lib/store';
 import { useLikes } from '@/hooks/use-likes';
 import { useSubscriberCount } from '@/hooks/use-subscriber-count';
@@ -11,6 +11,7 @@ import { CategoryIcon } from './category-icon';
 
 export function Sidebar() {
   const { setCurrentArticle, setActiveCategory, activeCategory, setNewsletterOpen } = useBlogStore();
+  const { posts, categories } = usePosts();
   const { getLikeCount } = useLikes();
   const { displayCount } = useSubscriberCount();
   const { stats } = useStats();

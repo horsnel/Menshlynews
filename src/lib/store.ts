@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Post } from './data';
+import type { Post } from './types';
 
 interface BlogStore {
   // Current article

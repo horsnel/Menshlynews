@@ -2,11 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, User } from 'lucide-react';
-import { posts } from '@/lib/data';
+import { usePosts } from '@/lib/posts-provider';
 import { useBlogStore } from '@/lib/store';
 import { CategoryIcon } from './category-icon';
 
 export function HeroSection() {
+  const { posts } = usePosts();
   const featuredPost = posts.find((p) => p.featured) || posts[0];
   const { setCurrentArticle } = useBlogStore();
 

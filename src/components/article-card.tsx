@@ -2,7 +2,7 @@
 
 import { Heart, Share2, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Post } from '@/lib/data';
+import { Post } from '@/lib/types';
 import { useBlogStore } from '@/lib/store';
 import { useLikes } from '@/hooks/use-likes';
 import { CategoryIcon } from './category-icon';

@@ -1,6 +1,15 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy-initialize Resend to avoid build-time errors when API key is not available
+let _resend: Resend | null = null;
+function getResend(): Resend {
+  if (!_resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
+    _resend = new Resend(apiKey);
+  }
+  return _resend;
+}
 
 // The "from" address for all outgoing emails.
 // On Resend free tier, use onboarding@resend.dev.
@@ -29,7 +38,7 @@ interface SendWelcomeEmailParams {
 }
 
 export async function sendContactNotification({ name, email, subject, message }: SendContactEmailParams) {
-  const { data, error } = await resend.emails.send({
+  const { data, error } = await getResend().emails.send({
     from: FROM_EMAIL,
     to: [ADMIN_EMAIL],
     subject: `Contact Form: ${subject}`,
@@ -75,7 +84,7 @@ export async function sendContactNotification({ name, email, subject, message }:
 export async function sendServiceNotification({ name, email, service, message }: SendServiceEmailParams) {
   const serviceLabel = service || 'Not specified';
 
-  const { data, error } = await resend.emails.send({
+  const { data, error } = await getResend().emails.send({
     from: FROM_EMAIL,
     to: [ADMIN_EMAIL],
     subject: `Service Inquiry: ${serviceLabel} — from ${name}`,
@@ -121,7 +130,7 @@ export async function sendServiceNotification({ name, email, service, message }:
 }
 
 export async function sendWelcomeEmail({ email }: SendWelcomeEmailParams) {
-  const { data, error } = await resend.emails.send({
+  const { data, error } = await getResend().emails.send({
     from: FROM_EMAIL,
     to: [email],
     subject: 'Welcome to Menshly Wire! 🎉',

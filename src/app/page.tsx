@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import { TrendingUp, Clock, Heart, ArrowRight } from 'lucide-react';
-import { posts } from '@/lib/data';
+import { usePosts, PostsProvider } from '@/lib/posts-provider';
 import { useBlogStore } from '@/lib/store';
 import { Header } from '@/components/header';
 import { HeroCarousel } from '@/components/hero-carousel';
@@ -17,7 +17,8 @@ import { Sidebar } from '@/components/sidebar';
 import { CategoryIcon } from '@/components/category-icon';
 import { NewsletterPopup } from '@/components/newsletter-popup';
 
-export default function HomePage() {
+function HomePageContent() {
+  const { posts, loading } = usePosts();
   const { currentArticle, sortBy, activeCategory, activeTag, searchQuery } =
     useBlogStore();
 
@@ -61,11 +62,9 @@ export default function HomePage() {
     }
 
     return result;
-  }, [sortBy, activeCategory, activeTag, searchQuery]);
+  }, [sortBy, activeCategory, activeTag, searchQuery, posts]);
 
   // Posts for the CNN-style hero section
-  // Carousel shows featured + top posts (handled inside HeroCarousel)
-  // Side cards show the remaining popular posts
   const carouselPostIds = [
     ...posts.filter((p) => p.featured).map((p) => p.id),
     ...posts
@@ -89,6 +88,21 @@ export default function HomePage() {
   );
 
   const { setSortBy } = useBlogStore();
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#f0f0f0]">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-10 h-10 border-3 border-[#166f4f]/20 border-t-[#166f4f] rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-slate-500 text-sm">Loading articles...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f0f0]">
@@ -375,5 +389,13 @@ export default function HomePage() {
       {/* Newsletter Popup */}
       <NewsletterPopup />
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <PostsProvider>
+      <HomePageContent />
+    </PostsProvider>
   );
 }

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { posts } from '@/lib/data';
+import { usePosts } from '@/lib/posts-provider';
 import { useBlogStore } from '@/lib/store';
 
 export function NewsTicker() {
   const { setCurrentArticle } = useBlogStore();
+  const { posts } = usePosts();
   // Pick top 5 most popular posts
   const tickerPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 5);
   const [activeIndex, setActiveIndex] = useState(0);
