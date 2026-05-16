@@ -375,6 +375,8 @@ function HomePageContent() {
           <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs text-slate-500">
             <p>
               © {new Date().getFullYear()} Menshly Wire. All rights reserved.
+            </p>
+            <p className="text-slate-400 font-medium mt-1">
               Product of O.L.H.M.E.S
             </p>
           </div>

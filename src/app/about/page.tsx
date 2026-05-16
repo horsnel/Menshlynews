@@ -430,6 +430,8 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm text-slate-500">
             &copy; {new Date().getFullYear()} Menshly Wire. All rights reserved.
+          </p>
+          <p className="text-sm text-slate-400 font-medium mt-1">
             Product of O.L.H.M.E.S
           </p>
         </div>
