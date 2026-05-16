@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { db } from '@/lib/db';
+import { posts as staticPosts } from '@/lib/data';
 
 const BASE_URL = 'https://menshlywire.com';
 
@@ -44,27 +44,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic article pages
-  let articles: MetadataRoute.Sitemap = [];
-  try {
-    const posts = await db.post.findMany({
-      select: {
-        slug: true,
-        updatedAt: true,
-        category: true,
-      },
-      orderBy: { updatedAt: 'desc' },
-    });
-
-    articles = posts.map((post) => ({
-      url: `${BASE_URL}/article/${post.slug}`,
-      lastModified: post.updatedAt,
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    }));
-  } catch {
-    // DB not available during build, skip dynamic articles
-  }
+  // Dynamic article pages from data.ts
+  const articles: MetadataRoute.Sitemap = staticPosts.map((post) => ({
+    url: `${BASE_URL}/article/${post.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
 
   // Category pages
   const categories = ['Investing', 'Saving', 'Retirement', 'Crypto', 'Real Estate', 'Side Hustles'];

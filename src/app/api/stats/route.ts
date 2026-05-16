@@ -1,20 +1,23 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { posts as staticPosts, categories as staticCategories } from '@/lib/data';
 
 export async function GET() {
   try {
-    const [subscriberCount, postCount] = await Promise.all([
-      db.subscriber.count({ where: { isActive: true } }),
-      db.post.count(),
-    ]);
+    // Subscriber count from DB (only thing that needs DB)
+    const subscriberCount = await db.subscriber.count({ where: { isActive: true } });
 
     return NextResponse.json({
       subscribers: subscriberCount,
-      posts: postCount,
-      categories: 6,
+      posts: staticPosts.length,
+      categories: staticCategories.length,
     });
   } catch (error) {
     console.error('Error fetching stats:', error);
-    return NextResponse.json({ subscribers: 0, posts: 0, categories: 6 });
+    return NextResponse.json({
+      subscribers: 0,
+      posts: staticPosts.length,
+      categories: staticCategories.length,
+    });
   }
 }

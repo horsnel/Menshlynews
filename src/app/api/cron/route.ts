@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import ZAI from 'z-ai-web-dev-sdk';
 import { execSync } from 'child_process';
 import { join } from 'path';
-import { db } from '@/lib/db';
 
 const VALID_CATEGORIES = ['Investing', 'Saving', 'Retirement', 'Crypto', 'Real Estate', 'Side Hustles'];
 
@@ -249,6 +248,42 @@ function extractTags(title: string, category: string): string[] {
   return tags.slice(0, 4);
 }
 
+function insertPostIntoDataTs(post: Record<string, unknown>): void {
+  const { readFileSync, writeFileSync, existsSync } = require('fs');
+  const dataPath = join(process.cwd(), 'src', 'lib', 'data.ts');
+  if (!existsSync(dataPath)) return;
+
+  let data = readFileSync(dataPath, 'utf-8');
+  const escapedContent = String(post.content)
+    .replace(/\\/g, '\\\\')
+    .replace(/`/g, '\\`')
+    .replace(/\$/g, '\\$');
+
+  const newPostStr = `  {
+    id: "${post.id}",
+    title: "${String(post.title).replace(/"/g, '\\"')}",
+    slug: "${post.slug}",
+    excerpt: "${String(post.excerpt).replace(/"/g, '\\"')}",
+    category: "${post.category}",
+    image: "${post.image}",
+    author: "${post.author}",
+    date: "${post.date}",
+    readTime: "${post.readTime}",
+    likes: ${post.likes},
+    shares: ${post.shares},
+    tags: ${JSON.stringify(post.tags)},
+    featured: false,
+    content: \`${escapedContent}\`
+  }`;
+
+  const lastPostEnd = data.lastIndexOf('  }\n];');
+  if (lastPostEnd === -1) return;
+
+  const before = data.slice(0, lastPostEnd);
+  const after = data.slice(lastPostEnd);
+  writeFileSync(dataPath, before + ',\n' + newPostStr + '\n' + after, 'utf-8');
+}
+
 async function generateContent(title: string, category: string, excerpt: string, forceLonger = false): Promise<string> {
   const longerInstruction = forceLonger
     ? '\n\nIMPORTANT: The previous attempt was too short. You MUST write at least 3000 words. Expand every section with more detail, more examples, more specific numbers. Add more HACK blockquotes. Make the Start This Weekend section at least 1500 words. Every paragraph must be 4-6 sentences.'
@@ -326,26 +361,6 @@ export async function POST(request: NextRequest) {
     const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % TOPIC_POOL.length;
     const topic = TOPIC_POOL[dayIndex];
 
-    // Check if an article with this slug already exists in DB
-    const slug = slugify(topic.title);
-    const existing = await db.post.findUnique({ where: { slug } });
-    if (existing) {
-      // Try the next topic in the pool
-      const nextIndex = (dayIndex + 1) % TOPIC_POOL.length;
-      const nextTopic = TOPIC_POOL[nextIndex];
-      const nextSlug = slugify(nextTopic.title);
-      const nextExisting = await db.post.findUnique({ where: { slug: nextSlug } });
-      if (nextExisting) {
-        return NextResponse.json({
-          message: 'Articles for today and tomorrow already exist. Skipping.',
-          todaySlug: slug,
-          nextSlug: nextSlug,
-        });
-      }
-      // Use the next topic
-      return generateAndInsert(nextTopic);
-    }
-
     return generateAndInsert(topic);
   } catch (error) {
     console.error('Cron generation error:', error);
@@ -393,38 +408,37 @@ async function generateAndInsert(topic: { title: string; category: string; excer
   const dateStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   const tags = extractTags(topic.title, topic.category);
 
-  // Insert into database only (data.ts not needed for cron — app reads from DB)
-  const dbPost = await db.post.create({
-    data: {
-      title: topic.title,
-      slug,
-      excerpt: topic.excerpt,
-      content,
-      category: topic.category,
-      categoryIcon: '',
-      image: imageUrl,
-      author: 'Horsnel John',
-      date: dateStr,
-      readTime: `${Math.max(6, Math.ceil(wordCount / 250))} min read`,
-      featured: false,
-      likes: Math.floor(Math.random() * 500) + 500,
-      shares: Math.floor(Math.random() * 100) + 50,
-      tags: tags.join(','),
-    },
-  });
+  const post = {
+    id: String(Date.now()),
+    title: topic.title,
+    slug,
+    excerpt: topic.excerpt,
+    category: topic.category,
+    image: imageUrl,
+    author: 'Horsnel John',
+    date: dateStr,
+    readTime: `${Math.max(6, Math.ceil(wordCount / 250))} min read`,
+    likes: Math.floor(Math.random() * 500) + 500,
+    shares: Math.floor(Math.random() * 100) + 50,
+    tags,
+    content,
+  };
 
-  console.log(`Cron: Article "${topic.title}" generated (id: ${dbPost.id}, ${wordCount} words)`);
+  // Insert into data.ts only
+  insertPostIntoDataTs(post);
+
+  console.log(`Cron: Article "${topic.title}" generated (${wordCount} words)`);
 
   return NextResponse.json({
     success: true,
     generated: true,
     post: {
-      id: dbPost.id,
+      id: post.id,
       title: topic.title,
       slug,
       category: topic.category,
       wordCount,
-      readTime: dbPost.readTime,
+      readTime: post.readTime,
       image: imageUrl,
     },
   });
