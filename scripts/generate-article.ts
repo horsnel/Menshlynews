@@ -316,7 +316,12 @@ async function main() {
   }
   
   // Step 3: Build the post object
-  const postId = String(Date.now());
+  // Use sequential ID matching data.ts format
+  const existingPostIds = readFileSync(join(process.cwd(), 'src', 'lib', 'data.ts'), 'utf-8')
+    .match(/id: "(\d+)"/g)
+    ?.map(m => parseInt(m.match(/"(\d+)"/)?.[1] || '0'))
+    || [];
+  const postId = String(Math.max(...existingPostIds, 0) + 1);
   const slug = slugify(title);
   
   const readTime = `${Math.max(6, Math.ceil(wordCount / 250))} min read`;
@@ -339,34 +344,17 @@ async function main() {
     tags: extractTags(title, category),
   };
   
-  // Step 4: Insert into Prisma database
-  console.log('\n📦 Step 3: Inserting article into Prisma database...');
+  // Step 4: Insert PostMeta record for likes/views tracking
+  console.log('\n📦 Step 3: Creating PostMeta record for likes/views tracking...');
   try {
-    const dbPost = await db.post.create({
-      data: {
-        title: newPost.title,
-        slug: newPost.slug,
-        excerpt: newPost.excerpt,
-        content: newPost.content,
-        category: newPost.category,
-        categoryIcon: '',
-        image: newPost.image,
-        author: newPost.author,
-        date: newPost.date,
-        readTime: newPost.readTime,
-        featured: false,
-        likes: newPost.likes,
-        shares: newPost.shares,
-        tags: newPost.tags.join(','),
-      },
+    await db.postMeta.upsert({
+      where: { id: newPost.id },
+      update: { likes: newPost.likes },
+      create: { id: newPost.id, likes: newPost.likes, views: 0 },
     });
-    console.log(`   ✅ Article inserted into DB (id: ${dbPost.id})`);
+    console.log(`   ✅ PostMeta record created (id: ${newPost.id})`);
   } catch (dbErr: any) {
-    if (dbErr.code === 'P2002') {
-      console.log('   ⚠️  Article with this slug already exists in DB, skipping DB insert');
-    } else {
-      console.error('   ❌ DB insert failed:', dbErr.message);
-    }
+    console.error('   ⚠️ PostMeta insert failed (non-fatal):', dbErr.message);
   }
 
   // Step 5: Also insert into data.ts for backwards compatibility
